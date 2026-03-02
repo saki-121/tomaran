@@ -94,6 +94,6 @@ export const config = {
      *   • Next.js 内部 (_next/static, _next/image)
      *   • 静的ファイル (svg, png, jpg, …)
      */
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|css|js|woff2?)$).*)',
+    '/((?!_next).*)',
   ],
 }
