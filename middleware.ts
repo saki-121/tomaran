@@ -11,15 +11,29 @@ const MOBILE_UA = /Mobile|Android|iPhone|iPad/i
 // エリア制限 — 許可プレフィックスリスト
 // ---------------------------------------------------------------------------
 
-// 両端末共通の許可パス
-const COMMON = ['/api', '/auth', '/_next', '/login', '/onboarding', '/payment-required', '/payment-success']
+const MOBILE_ALLOWED = [
+  '/deliveries',
+  '/api',
+  '/auth',
+  '/_next',
+  '/favicon.ico',
+  '/login',
+  '/onboarding',
+  '/payment-required',
+  '/payment-success',
+]
 
-const MOBILE_ALLOWED = ['/deliveries', ...COMMON]
-const PC_ALLOWED     = ['/dashboard',  ...COMMON]
-
-function isAllowed(pathname: string, allowed: string[]): boolean {
-  return allowed.some(p => pathname === p || pathname.startsWith(p + '/'))
-}
+const PC_ALLOWED = [
+  '/dashboard',
+  '/api',
+  '/auth',
+  '/_next',
+  '/favicon.ico',
+  '/login',
+  '/onboarding',
+  '/payment-required',
+  '/payment-success',
+]
 
 // ---------------------------------------------------------------------------
 // Middleware
@@ -30,7 +44,6 @@ export async function middleware(request: NextRequest) {
   const sessionRes = await updateSession(request)
 
   // 2. updateSession が認証リダイレクトを返した場合はそのまま返す
-  //    （未ログインユーザーはセッションミドルウェアに任せる）
   if (sessionRes.status >= 300 && sessionRes.status < 400) {
     return sessionRes
   }
@@ -38,16 +51,24 @@ export async function middleware(request: NextRequest) {
   // 3. UA判定
   const ua       = request.headers.get('user-agent') ?? ''
   const isMobile = MOBILE_UA.test(ua)
-  const allowed  = isMobile ? MOBILE_ALLOWED : PC_ALLOWED
-  const home     = isMobile ? '/deliveries'  : '/dashboard'
+  const allowedPaths = isMobile ? MOBILE_ALLOWED : PC_ALLOWED
+  const home         = isMobile ? '/deliveries'  : '/dashboard'
 
-  // 4. 許可パスならそのまま返す
+  // 4. 許可パス判定
   const { pathname } = request.nextUrl
-  if (isAllowed(pathname, allowed)) {
+  const isAllowed = allowedPaths.some(
+    p => pathname === p || pathname.startsWith(p + '/'),
+  )
+  if (isAllowed) {
     return sessionRes
   }
 
-  // 5. 非許可パス → ホームへリダイレクト＋セッション Cookie 引き継ぎ
+  // 5. 無限リダイレクト防止
+  if (pathname === home) {
+    return sessionRes
+  }
+
+  // 6. 非許可パス → ホームへリダイレクト＋セッション Cookie 引き継ぎ
   const redirectUrl = request.nextUrl.clone()
   redirectUrl.pathname = home
   const redirectRes = NextResponse.redirect(redirectUrl)
