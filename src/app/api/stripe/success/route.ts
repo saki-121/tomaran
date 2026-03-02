@@ -27,7 +27,7 @@ export async function GET(req: Request) {
 
   const { error } = await supabase
     .from('profiles')
-    .update({ is_paid: true } as any)
+    .update({ is_paid: true })
     .eq('id', session.client_reference_id!)
 
   if (error) {
