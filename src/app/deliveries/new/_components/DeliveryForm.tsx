@@ -58,10 +58,17 @@ function productToOptions(list: Product[]): ComboOption[] {
 }
 
 // ---------------------------------------------------------------------------
-// ComboBox — 検索可能セレクト（② 修正）
-//   ・部分一致検索（includes）
-//   ・候補リスト z-index:50 でカード上に浮かせる
-//   ・0件時にドロップダウン内に「新規登録」を表示
+// ComboBox
+//
+// ① 選択確定後は表示モードに固定（誤タップ防止）
+//    selectedItem あり → label + 「変更」ボタン のみ表示
+//    「変更」タップ時のみ入力モードへ復帰（onChange('') を呼ぶ）
+//
+// ② 候補・履歴の完全廃止
+//    query = '' の時はドロップダウンを出さない
+//    入力文字がある時だけ部分一致結果を表示
+//
+// ③ 新規登録は 0件時のみドロップダウン内に表示
 // ---------------------------------------------------------------------------
 
 function ComboBox({
@@ -79,10 +86,10 @@ function ComboBox({
 
   const selected = options.find(o => o.id === value)
 
-  // ② 部分一致検索
+  // ② 入力がある時だけフィルタ（空の時は空配列 → ドロップダウン非表示）
   const filtered = query
     ? options.filter(o => o.label.toLowerCase().includes(query.toLowerCase()))
-    : options
+    : []
 
   function select(id: string) {
     onChange(id)
@@ -98,25 +105,41 @@ function ComboBox({
     }
   }
 
+  // ① 選択済み → 表示モード（ロック）
+  if (selected) {
+    return (
+      <div style={cb.selectedRow}>
+        <span style={cb.selectedLabel}>{selected.label}</span>
+        <button
+          onPointerDown={() => onChange('')}
+          style={cb.changeBtn}
+        >
+          変更
+        </button>
+      </div>
+    )
+  }
+
+  // 未選択 → 入力モード
   return (
     <div style={{ position: 'relative' }}>
       <input
         type="text"
         inputMode="search"
-        value={open ? query : (selected?.label ?? '')}
+        value={query}
         placeholder={placeholder}
         disabled={disabled}
-        onFocus={() => { if (!disabled) { setOpen(true); setQuery('') } }}
+        onFocus={() => { if (!disabled) setOpen(true) }}
         onBlur={() => setTimeout(() => setOpen(false), 150)}
-        onChange={e => setQuery(e.target.value)}
+        onChange={e => { setQuery(e.target.value); setOpen(true) }}
         style={{
           ...s.input,
           backgroundColor: disabled ? '#f3f4f6' : '#fff',
         }}
       />
 
-      {/* ② 候補リスト：z-index:50 で前面に浮かせる */}
-      {open && (
+      {/* ② query がある時だけドロップダウン表示 */}
+      {open && query && (
         <ul style={cb.list}>
           {filtered.length > 0 ? (
             filtered.map(o => (
@@ -127,10 +150,10 @@ function ComboBox({
           ) : (
             <>
               <li style={cb.empty}>該当なし</li>
-              {/* ③ 0件時のみドロップダウン内に新規登録ボタン */}
+              {/* ③ 0件時のみ新規登録ボタン */}
               {onAddNew && (
                 <li onPointerDown={handleAddNew} style={cb.addNew}>
-                  {query ? `「${query}」を新規登録` : '新規登録'}
+                  「{query}」を新規登録
                 </li>
               )}
             </>
@@ -270,7 +293,6 @@ export default function DeliveryForm({ initialCompanies, initialProducts }: Prop
     const validItems = items.filter(i => i.product_id && parseFloat(i.quantity) > 0)
     if (validItems.length === 0) { setError('商品を1件以上登録してください'); return }
 
-    // ① 登録ボタン：即 disabled + 「登録中…」表示
     setSubmitting(true)
     try {
       const res  = await postJSON('/api/deliveries', {
@@ -317,10 +339,11 @@ export default function DeliveryForm({ initialCompanies, initialProducts }: Prop
       {/* ── 取引先 ───────────────────────────────── */}
       <section style={s.card}>
         <label style={s.label}>取引先</label>
+        {/* ① 選択後は表示モード固定。変更ボタンで onChange('') → 入力モードへ */}
         <ComboBox
           options={toOptions(companies)}
           value={companyId}
-          placeholder="取引先を選択または入力"
+          placeholder="取引先名を入力して検索"
           onChange={id => handleCompanyChange(id)}
           onAddNew={name => { setNewCompanyName(name); setAddingCompany(true) }}
         />
@@ -346,7 +369,7 @@ export default function DeliveryForm({ initialCompanies, initialProducts }: Prop
             <ComboBox
               options={toOptions(sites)}
               value={siteId}
-              placeholder="現場を選択または入力"
+              placeholder="現場名を入力して検索"
               onChange={setSiteId}
               onAddNew={name => { setNewSiteName(name); setAddingSite(true) }}
             />
@@ -382,11 +405,11 @@ export default function DeliveryForm({ initialCompanies, initialProducts }: Prop
                 )}
               </div>
 
-              {/* 商品選択 */}
+              {/* ① 商品選択：選択後は変更ボタンのみ */}
               <ComboBox
                 options={productToOptions(products)}
                 value={item.product_id}
-                placeholder="商品を選択または入力"
+                placeholder="商品名を入力して検索"
                 onChange={id => updateItem(item._key, { product_id: id })}
                 onAddNew={name => updateItem(item._key, { newProductName: name, addingProduct: true })}
               />
@@ -424,7 +447,7 @@ export default function DeliveryForm({ initialCompanies, initialProducts }: Prop
         </button>
       </section>
 
-      {/* ── 登録ボタン（① 即 disabled + 「登録中…」） ── */}
+      {/* ── 登録ボタン ───────────────────────────── */}
       <button
         onClick={handleSubmit}
         disabled={submitting}
@@ -631,14 +654,46 @@ const s: Record<string, CSSProperties> = {
   },
 }
 
-// ComboBox dropdown styles
+// ComboBox styles
 const cb: Record<string, CSSProperties> = {
+  // ① 表示モード（選択確定後のロック状態）
+  selectedRow: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: '10px 12px',
+    background: '#f9fafb',
+    border: '1px solid #e5e7eb',
+    borderRadius: 8,
+    minHeight: 44,
+  },
+  selectedLabel: {
+    fontSize: 16,
+    fontWeight: 500,
+    color: '#111827',
+    flex: 1,
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  changeBtn: {
+    flexShrink: 0,
+    background: 'none',
+    border: 'none',
+    fontSize: 13,
+    color: '#2563eb',
+    cursor: 'pointer',
+    padding: '4px 8px',
+    minHeight: 44,
+    marginLeft: 8,
+  },
+  // 候補ドロップダウン
   list: {
     position: 'absolute',
     top: '100%',
     left: 0,
     right: 0,
-    zIndex: 50,          // ② カード・隣接要素より前面
+    zIndex: 50,
     background: '#fff',
     border: '1px solid #d1d5db',
     borderRadius: 8,
@@ -666,7 +721,7 @@ const cb: Record<string, CSSProperties> = {
     color: '#9ca3af',
     listStyle: 'none',
   },
-  // ② 0件時の「新規登録」ボタン
+  // ③ 0件時の新規登録
   addNew: {
     padding: '12px 14px',
     fontSize: 14,

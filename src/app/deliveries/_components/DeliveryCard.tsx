@@ -55,9 +55,9 @@ export default function DeliveryCard({ delivery }: { delivery: DeliveryCardRow }
         <div style={s.cardRight}>
           <p style={s.itemCount}>{delivery.delivery_items.length}点</p>
           <p style={s.date}>{formatDate(delivery.delivery_date)}</p>
+          {/* ④ タップ可能である視覚ヒント */}
+          <p style={s.tapHint}>詳細確認 ＞</p>
         </div>
-        {/* ① 視覚ヒント */}
-        <span style={s.chevron}>›</span>
       </Link>
     </li>
   )
@@ -120,11 +120,11 @@ const s: Record<string, CSSProperties> = {
     color: '#9ca3af',
     margin: '2px 0 0',
   },
-  chevron: {
-    fontSize: 20,
-    color: '#d1d5db',
-    flexShrink: 0,
-    lineHeight: 1,
-    marginLeft: 4,
+  tapHint: {
+    fontSize: 11,
+    color: '#6b7280',
+    opacity: 0.6,
+    margin: '4px 0 0',
+    textAlign: 'right',
   },
 }
