@@ -35,11 +35,12 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
   // We need the tenant_id to construct the repository.
   // Read the invoice first (RLS guarantees we can only see it if we belong
   // to its tenant — so this also acts as an implicit membership check).
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data: invoice, error: readError } = await db
     .from('invoices')
     .select('id, tenant_id, status')
     .eq('id', invoiceId)
-    .single()
+    .single() as any
 
   if (readError) {
     return NextResponse.json({ error: 'Invoice not found' }, { status: 404 })
