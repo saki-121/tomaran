@@ -41,7 +41,11 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     .eq('id', invoiceId)
     .single()
 
-  if (readError || !invoice) {
+  if (readError) {
+    return NextResponse.json({ error: 'Invoice not found' }, { status: 404 })
+  }
+
+  if (!invoice) {
     return NextResponse.json({ error: 'Invoice not found' }, { status: 404 })
   }
 
