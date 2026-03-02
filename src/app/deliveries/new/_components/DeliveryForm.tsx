@@ -8,9 +8,10 @@ import type { CSSProperties } from 'react'
 // Types
 // ---------------------------------------------------------------------------
 
-type Company = { id: string; name: string }
-type Site    = { id: string; name: string }
-type Product = { id: string; name: string; unit_price: number }
+type Company     = { id: string; name: string }
+type Site        = { id: string; name: string }
+type Product     = { id: string; name: string; unit_price: number }
+type ComboOption = { id: string; label: string }
 
 type ItemRow = {
   _key:           string
@@ -45,8 +46,80 @@ async function postJSON(path: string, body: unknown) {
   })
 }
 
+function toOptions(list: { id: string; name: string }[]): ComboOption[] {
+  return list.map(x => ({ id: x.id, label: x.name }))
+}
+
+function productToOptions(list: Product[]): ComboOption[] {
+  return list.map(p => ({
+    id:    p.id,
+    label: p.name + (p.unit_price === 0 ? '（単価未設定）' : ''),
+  }))
+}
+
 // ---------------------------------------------------------------------------
-// Component
+// ComboBox — 検索可能セレクト（修正②）
+// ---------------------------------------------------------------------------
+
+function ComboBox({
+  options, value, placeholder, onChange, disabled,
+}: {
+  options:     ComboOption[]
+  value:       string
+  placeholder: string
+  onChange:    (id: string) => void
+  disabled?:   boolean
+}) {
+  const [query, setQuery] = useState('')
+  const [open,  setOpen]  = useState(false)
+
+  const selected = options.find(o => o.id === value)
+  const filtered = query
+    ? options.filter(o => o.label.toLowerCase().includes(query.toLowerCase()))
+    : options
+
+  function select(id: string) {
+    onChange(id)
+    setOpen(false)
+    setQuery('')
+  }
+
+  return (
+    <div style={{ position: 'relative' }}>
+      <input
+        type="text"
+        inputMode="search"
+        value={open ? query : (selected?.label ?? '')}
+        placeholder={placeholder}
+        disabled={disabled}
+        onFocus={() => { if (!disabled) { setOpen(true); setQuery('') } }}
+        onBlur={() => setTimeout(() => setOpen(false), 150)}
+        onChange={e => setQuery(e.target.value)}
+        style={{
+          ...s.input,
+          color:           open || !selected ? '#111827' : '#111827',
+          backgroundColor: disabled ? '#f3f4f6' : '#fff',
+        }}
+      />
+      {open && (
+        <ul style={cb.list}>
+          {filtered.length > 0 ? (
+            filtered.map(o => (
+              <li key={o.id} onPointerDown={() => select(o.id)} style={cb.item}>
+                {o.label}
+              </li>
+            ))
+          ) : (
+            <li style={cb.empty}>該当なし</li>
+          )}
+        </ul>
+      )}
+    </div>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// DeliveryForm
 // ---------------------------------------------------------------------------
 
 export default function DeliveryForm({ initialCompanies, initialProducts }: Props) {
@@ -220,22 +293,20 @@ export default function DeliveryForm({ initialCompanies, initialProducts }: Prop
       {/* ── 取引先 ───────────────────────────────── */}
       <section style={s.card}>
         <label style={s.label}>取引先</label>
-        <select
+        <ComboBox
+          options={toOptions(companies)}
           value={companyId}
-          onChange={e => handleCompanyChange(e.target.value)}
-          style={s.select}
-        >
-          <option value="">選択してください</option>
-          {companies.map(c => (
-            <option key={c.id} value={c.id}>{c.name}</option>
-          ))}
-        </select>
+          placeholder="取引先を選択または入力"
+          onChange={id => handleCompanyChange(id)}
+        />
 
-        {!addingCompany ? (
+        {/* ③ 未選択かつ非展開時のみ表示 */}
+        {!companyId && !addingCompany && (
           <button onClick={() => setAddingCompany(true)} style={s.addLink}>
             ＋ 一覧にない場合は登録
           </button>
-        ) : (
+        )}
+        {addingCompany && (
           <InlineAdd
             placeholder="取引先名を入力"
             value={newCompanyName}
@@ -254,23 +325,21 @@ export default function DeliveryForm({ initialCompanies, initialProducts }: Prop
           {sitesLoading ? (
             <p style={s.hint}>読み込み中…</p>
           ) : (
-            <select
+            <ComboBox
+              options={toOptions(sites)}
               value={siteId}
-              onChange={e => setSiteId(e.target.value)}
-              style={s.select}
-            >
-              <option value="">選択してください</option>
-              {sites.map(site => (
-                <option key={site.id} value={site.id}>{site.name}</option>
-              ))}
-            </select>
+              placeholder="現場を選択または入力"
+              onChange={setSiteId}
+            />
           )}
 
-          {!addingSite ? (
+          {/* ③ 未選択かつ非展開時のみ表示 */}
+          {!siteId && !addingSite && (
             <button onClick={() => setAddingSite(true)} style={s.addLink}>
               ＋ 一覧にない場合は登録
             </button>
-          ) : (
+          )}
+          {addingSite && (
             <InlineAdd
               placeholder="現場名を入力"
               value={newSiteName}
@@ -302,27 +371,23 @@ export default function DeliveryForm({ initialCompanies, initialProducts }: Prop
               </div>
 
               {/* 商品選択 */}
-              <select
+              <ComboBox
+                options={productToOptions(products)}
                 value={item.product_id}
-                onChange={e => updateItem(item._key, { product_id: e.target.value })}
-                style={s.select}
-              >
-                <option value="">商品を選択</option>
-                {products.map(p => (
-                  <option key={p.id} value={p.id}>
-                    {p.name}{p.unit_price === 0 ? '（単価未設定）' : ''}
-                  </option>
-                ))}
-              </select>
+                placeholder="商品を選択または入力"
+                onChange={id => updateItem(item._key, { product_id: id })}
+              />
 
-              {!item.addingProduct ? (
+              {/* ③ 未選択かつ非展開時のみ表示 */}
+              {!item.product_id && !item.addingProduct && (
                 <button
                   onClick={() => updateItem(item._key, { addingProduct: true })}
                   style={s.addLink}
                 >
                   ＋ 一覧にない場合は登録
                 </button>
-              ) : (
+              )}
+              {item.addingProduct && (
                 <InlineAdd
                   placeholder="商品名を入力"
                   value={item.newProductName}
@@ -355,7 +420,7 @@ export default function DeliveryForm({ initialCompanies, initialProducts }: Prop
         </button>
       </section>
 
-      {/* ── 登録ボタン ───────────────────────────── */}
+      {/* ── 登録ボタン（修正①） ──────────────────── */}
       <button
         onClick={handleSubmit}
         disabled={submitting}
@@ -375,11 +440,11 @@ function InlineAdd({
   placeholder, value, busy, onChange, onAdd, onCancel,
 }: {
   placeholder: string
-  value: string
-  busy: boolean
-  onChange: (v: string) => void
-  onAdd: () => void
-  onCancel: () => void
+  value:       string
+  busy:        boolean
+  onChange:    (v: string) => void
+  onAdd:       () => void
+  onCancel:    () => void
 }) {
   return (
     <div style={ia.wrap}>
@@ -473,16 +538,7 @@ const s: Record<string, CSSProperties> = {
     fontSize: 16,
     boxSizing: 'border-box',
     minHeight: 44,
-  },
-  select: {
-    width: '100%',
-    padding: '10px 12px',
-    border: '1px solid #d1d5db',
-    borderRadius: 8,
-    fontSize: 16,
-    backgroundColor: '#fff',
-    boxSizing: 'border-box',
-    minHeight: 44,
+    color: '#111827',
   },
   addLink: {
     background: 'none',
@@ -578,6 +634,43 @@ const s: Record<string, CSSProperties> = {
     fontWeight: 700,
     cursor: 'pointer',
     minHeight: 56,
+  },
+}
+
+// ComboBox dropdown styles
+const cb: Record<string, CSSProperties> = {
+  list: {
+    position: 'absolute',
+    top: '100%',
+    left: 0,
+    right: 0,
+    zIndex: 10,
+    background: '#fff',
+    border: '1px solid #d1d5db',
+    borderRadius: 8,
+    marginTop: 4,
+    maxHeight: 220,
+    overflowY: 'auto',
+    boxShadow: '0 4px 12px rgba(0,0,0,0.12)',
+    listStyle: 'none',
+    padding: 0,
+    margin: '4px 0 0',
+  },
+  item: {
+    padding: '12px 14px',
+    fontSize: 15,
+    color: '#111827',
+    cursor: 'pointer',
+    borderBottom: '1px solid #f3f4f6',
+    minHeight: 44,
+    display: 'flex',
+    alignItems: 'center',
+  },
+  empty: {
+    padding: '12px 14px',
+    fontSize: 14,
+    color: '#9ca3af',
+    listStyle: 'none',
   },
 }
 
