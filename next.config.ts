@@ -125,11 +125,6 @@ const nextConfig: NextConfig = {
     formats: ['image/avif', 'image/webp'],
   },
 
-  // Opt in to the experimental `after()` API for post-response side effects
-  // (e.g. audit logging after a confirmed invoice without blocking the response)
-  experimental: {
-    after: true,
-  },
 }
 
 export default nextConfig
