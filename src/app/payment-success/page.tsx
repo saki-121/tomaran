@@ -10,10 +10,10 @@ export default function PaymentSuccessPage() {
           サービスをご利用いただけます。
         </p>
         <Link
-          href="/dashboard"
+          href="/deliveries"
           className="inline-block w-full rounded-lg bg-blue-600 px-4 py-3 text-sm font-semibold text-white hover:bg-blue-700 active:bg-blue-800"
         >
-          ダッシュボードへ
+          納品一覧へ
         </Link>
       </div>
     </div>
