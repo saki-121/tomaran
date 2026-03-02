@@ -2,10 +2,17 @@ import { type NextRequest, NextResponse } from 'next/server'
 import { updateSession } from '@/lib/supabase/middleware'
 
 // ---------------------------------------------------------------------------
-// UA判定
+// Device detection — 初回アクセス時のみ使用
 // ---------------------------------------------------------------------------
 
-const MOBILE_UA = /Mobile|Android|iPhone|iPad/i
+function detectDevice(request: NextRequest): 'mobile' | 'desktop' {
+  const secChUaMobile = request.headers.get('sec-ch-ua-mobile')
+  if (secChUaMobile !== null) {
+    return secChUaMobile === '?1' ? 'mobile' : 'desktop'
+  }
+  const ua = request.headers.get('user-agent') ?? ''
+  return /iphone|android|mobile/i.test(ua) ? 'mobile' : 'desktop'
+}
 
 // ---------------------------------------------------------------------------
 // エリア制限 — 許可プレフィックスリスト
@@ -36,6 +43,18 @@ const PC_ALLOWED = [
 ]
 
 // ---------------------------------------------------------------------------
+// device cookie 設定
+// ---------------------------------------------------------------------------
+
+const DEVICE_COOKIE = {
+  name:     'device',
+  httpOnly: false,
+  sameSite: 'lax' as const,
+  path:     '/',
+  maxAge:   60 * 60 * 24 * 30, // 30日
+}
+
+// ---------------------------------------------------------------------------
 // Middleware
 // ---------------------------------------------------------------------------
 
@@ -48,27 +67,32 @@ export async function middleware(request: NextRequest) {
     return sessionRes
   }
 
-  // 3. UA判定
-  const ua       = request.headers.get('user-agent') ?? ''
-  const isMobile = MOBILE_UA.test(ua)
+  // 3. device cookie を確認
+  //    存在する場合はそれを最優先使用（UA・headers は一切見ない）
+  //    存在しない初回のみ detectDevice() を実行して cookie を固定する
+  const savedDevice = request.cookies.get(DEVICE_COOKIE.name)?.value
+  const isFirstVisit = savedDevice !== 'mobile' && savedDevice !== 'desktop'
+  const device: 'mobile' | 'desktop' = isFirstVisit
+    ? detectDevice(request)
+    : (savedDevice as 'mobile' | 'desktop')
+
+  const isMobile    = device === 'mobile'
   const allowedPaths = isMobile ? MOBILE_ALLOWED : PC_ALLOWED
   const home         = isMobile ? '/deliveries'  : '/dashboard'
 
-  // 4. 許可パス判定
+  // 4. 許可パス判定 / 無限リダイレクト防止
   const { pathname } = request.nextUrl
-  const isAllowed = allowedPaths.some(
-    p => pathname.startsWith(p)
-  )
-  if (isAllowed) {
+  const isAllowed = allowedPaths.some(p => pathname.startsWith(p))
+
+  if (isAllowed || pathname === home) {
+    // 初回のみ cookie を response に付与
+    if (isFirstVisit) {
+      sessionRes.cookies.set(DEVICE_COOKIE.name, device, DEVICE_COOKIE)
+    }
     return sessionRes
   }
 
-  // 5. 無限リダイレクト防止
-  if (pathname === home) {
-    return sessionRes
-  }
-
-  // 6. 非許可パス → ホームへリダイレクト＋セッション Cookie 引き継ぎ
+  // 5. 非許可パス → ホームへリダイレクト＋セッション Cookie 引き継ぎ
   const redirectUrl = request.nextUrl.clone()
   redirectUrl.pathname = home
   const redirectRes = NextResponse.redirect(redirectUrl)
@@ -83,6 +107,11 @@ export async function middleware(request: NextRequest) {
       sameSite: c.sameSite as 'lax' | 'strict' | 'none' | undefined,
     })
   })
+
+  // 初回のみ device cookie をリダイレクト response にも付与
+  if (isFirstVisit) {
+    redirectRes.cookies.set(DEVICE_COOKIE.name, device, DEVICE_COOKIE)
+  }
 
   return redirectRes
 }
