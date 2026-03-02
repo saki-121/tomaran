@@ -2,9 +2,8 @@ import { createAdminClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
 import Stripe from 'stripe'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
-
 export async function GET(req: Request) {
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
   const { searchParams } = new URL(req.url)
   const sessionId = searchParams.get('session_id')
 
