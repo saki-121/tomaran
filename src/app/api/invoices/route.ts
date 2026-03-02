@@ -81,7 +81,7 @@ export async function POST(request: NextRequest) {
   }
 
   // ── Flatten to invoice line items ─────────────────────────────────────────
-  const lineItems: CreateInvoiceLineItem[] = deliveryItems.map((di) => {
+  const lineItems: CreateInvoiceLineItem[] = deliveryItems.map((di: any) => {
     const delivery = di.delivery as {
       id: string
       delivery_date: string
