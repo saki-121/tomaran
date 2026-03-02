@@ -58,7 +58,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
   }
 
   // ── 3. Confirm via DB transaction ─────────────────────────────────────────
-  const repo = new InvoicesRepository(db, invoice.tenant_id)
+  const repo = new InvoicesRepository(db as any, invoice.tenant_id)
 
   try {
     const snapshot = await repo.confirm(invoiceId)
