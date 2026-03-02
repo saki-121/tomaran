@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import type { CSSProperties } from 'react'
 
@@ -58,24 +58,20 @@ function productToOptions(list: Product[]): ComboOption[] {
 }
 
 // ---------------------------------------------------------------------------
-// ComboBox
+// ComboBox — 検索専用（入力モードのみ）
 //
-// ① 選択確定後は表示モードに固定（誤タップ防止）
-//    selectedItem あり → label + 「変更」ボタン のみ表示
-//    「変更」タップ時のみ入力モードへ復帰（onChange('') を呼ぶ）
+// ③ 1文字バグ修正の要点：
+//   - onChange は setQuery のみ（確定処理なし）
+//   - onPointerDown でブラータイマーをキャンセル（ドロップダウンを維持）
+//   - onClick で選択確定（キーボードタップは click を発生させない）
 //
-// ② 候補・履歴の完全廃止
-//    query = '' の時はドロップダウンを出さない
-//    入力文字がある時だけ部分一致結果を表示
-//
-// ③ 新規登録は 0件時のみドロップダウン内に表示
+// ② 選択確定・ロック・「変更」ボタンは親コンポーネントが管理
 // ---------------------------------------------------------------------------
 
 function ComboBox({
-  options, value, placeholder, onChange, disabled, onAddNew,
+  options, placeholder, onChange, disabled, onAddNew,
 }: {
   options:     ComboOption[]
-  value:       string
   placeholder: string
   onChange:    (id: string) => void
   disabled?:   boolean
@@ -84,9 +80,9 @@ function ComboBox({
   const [query, setQuery] = useState('')
   const [open,  setOpen]  = useState(false)
 
-  const selected = options.find(o => o.id === value)
+  // ③ blur タイマーを ref で管理し、リストタップ時にキャンセルする
+  const blurTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  // ② 入力がある時だけフィルタ（空の時は空配列 → ドロップダウン非表示）
   const filtered = query
     ? options.filter(o => o.label.toLowerCase().includes(query.toLowerCase()))
     : []
@@ -97,40 +93,27 @@ function ComboBox({
     setQuery('')
   }
 
-  function handleAddNew() {
-    if (onAddNew) {
-      onAddNew(query)
-      setOpen(false)
-      setQuery('')
+  function cancelBlur() {
+    if (blurTimer.current) {
+      clearTimeout(blurTimer.current)
+      blurTimer.current = null
     }
   }
 
-  // ① 選択済み → 表示モード（ロック）
-  if (selected) {
-    return (
-      <div style={cb.selectedRow}>
-        <span style={cb.selectedLabel}>{selected.label}</span>
-        <button
-          onPointerDown={() => onChange('')}
-          style={cb.changeBtn}
-        >
-          変更
-        </button>
-      </div>
-    )
-  }
-
-  // 未選択 → 入力モード
   return (
     <div style={{ position: 'relative' }}>
       <input
         type="text"
-        inputMode="search"
+        autoComplete="off"
+        autoCorrect="off"
+        autoCapitalize="none"
+        spellCheck={false}
         value={query}
         placeholder={placeholder}
         disabled={disabled}
-        onFocus={() => { if (!disabled) setOpen(true) }}
-        onBlur={() => setTimeout(() => setOpen(false), 150)}
+        onFocus={() => { cancelBlur(); if (!disabled) setOpen(true) }}
+        onBlur={() => { blurTimer.current = setTimeout(() => setOpen(false), 200) }}
+        // ③ onChange は query 更新のみ — 確定処理なし
         onChange={e => { setQuery(e.target.value); setOpen(true) }}
         style={{
           ...s.input,
@@ -138,21 +121,29 @@ function ComboBox({
         }}
       />
 
-      {/* ② query がある時だけドロップダウン表示 */}
+      {/* query がある時だけドロップダウン表示 */}
       {open && query && (
         <ul style={cb.list}>
           {filtered.length > 0 ? (
             filtered.map(o => (
-              <li key={o.id} onPointerDown={() => select(o.id)} style={cb.item}>
+              <li
+                key={o.id}
+                onPointerDown={cancelBlur}      // blur を防いでドロップダウン維持
+                onClick={() => select(o.id)}    // 意図的タップのみ確定（③ キーボードタップは click を発火しない）
+                style={cb.item}
+              >
                 {o.label}
               </li>
             ))
           ) : (
             <>
               <li style={cb.empty}>該当なし</li>
-              {/* ③ 0件時のみ新規登録ボタン */}
               {onAddNew && (
-                <li onPointerDown={handleAddNew} style={cb.addNew}>
+                <li
+                  onPointerDown={cancelBlur}
+                  onClick={() => { onAddNew(query); setOpen(false); setQuery('') }}
+                  style={cb.addNew}
+                >
                   「{query}」を新規登録
                 </li>
               )}
@@ -314,6 +305,9 @@ export default function DeliveryForm({ initialCompanies, initialProducts }: Prop
 
   // ── render ───────────────────────────────────────────────────────────────
 
+  const selectedCompany = companies.find(c => c.id === companyId)
+  const selectedSite    = sites.find(st => st.id === siteId)
+
   return (
     <main style={s.main}>
 
@@ -338,15 +332,28 @@ export default function DeliveryForm({ initialCompanies, initialProducts }: Prop
 
       {/* ── 取引先 ───────────────────────────────── */}
       <section style={s.card}>
-        <label style={s.label}>取引先</label>
-        {/* ① 選択後は表示モード固定。変更ボタンで onChange('') → 入力モードへ */}
-        <ComboBox
-          options={toOptions(companies)}
-          value={companyId}
-          placeholder="取引先名を入力して検索"
-          onChange={id => handleCompanyChange(id)}
-          onAddNew={name => { setNewCompanyName(name); setAddingCompany(true) }}
-        />
+        {/* ② label行に変更ボタン（タップ領域分離） */}
+        <div style={s.labelRow}>
+          <label style={s.label}>取引先</label>
+          {companyId && (
+            <button onPointerDown={() => handleCompanyChange('')} style={s.changeBtn}>
+              変更
+            </button>
+          )}
+        </div>
+
+        {/* ② 選択済み → 表示のみ（クリック不可）/ 未選択 → 検索入力 */}
+        {selectedCompany ? (
+          <p style={s.selectedValue}>{selectedCompany.name}</p>
+        ) : (
+          <ComboBox
+            options={toOptions(companies)}
+            placeholder="取引先名を入力して検索"
+            onChange={id => handleCompanyChange(id)}
+            onAddNew={name => { setNewCompanyName(name); setAddingCompany(true) }}
+          />
+        )}
+
         {addingCompany && (
           <InlineAdd
             placeholder="取引先名を入力"
@@ -362,18 +369,29 @@ export default function DeliveryForm({ initialCompanies, initialProducts }: Prop
       {/* ── 現場（取引先選択後に表示） ───────────── */}
       {companyId && (
         <section style={s.card}>
-          <label style={s.label}>現場</label>
+          {/* ② label行に変更ボタン */}
+          <div style={s.labelRow}>
+            <label style={s.label}>現場</label>
+            {siteId && (
+              <button onPointerDown={() => setSiteId('')} style={s.changeBtn}>
+                変更
+              </button>
+            )}
+          </div>
+
           {sitesLoading ? (
             <p style={s.hint}>読み込み中…</p>
+          ) : selectedSite ? (
+            <p style={s.selectedValue}>{selectedSite.name}</p>
           ) : (
             <ComboBox
               options={toOptions(sites)}
-              value={siteId}
               placeholder="現場名を入力して検索"
               onChange={setSiteId}
               onAddNew={name => { setNewSiteName(name); setAddingSite(true) }}
             />
           )}
+
           {addingSite && (
             <InlineAdd
               placeholder="現場名を入力"
@@ -392,54 +410,70 @@ export default function DeliveryForm({ initialCompanies, initialProducts }: Prop
         <label style={s.label}>商品</label>
 
         <div style={s.itemList}>
-          {items.map((item, idx) => (
-            <div key={item._key} style={s.itemBox}>
+          {items.map((item, idx) => {
+            const selectedProduct = productToOptions(products).find(p => p.id === item.product_id)
+            return (
+              <div key={item._key} style={s.itemBox}>
 
-              {/* 商品番号 + 削除 */}
-              <div style={s.itemHeader}>
-                <span style={s.itemNum}>商品 {idx + 1}</span>
-                {items.length > 1 && (
-                  <button onClick={() => removeItemRow(item._key)} style={s.removeBtn}>
-                    削除
-                  </button>
+                {/* ② 商品N + 変更・削除ボタン（label行で分離） */}
+                <div style={s.itemHeader}>
+                  <span style={s.itemNum}>商品 {idx + 1}</span>
+                  <div style={s.itemBtns}>
+                    {item.product_id && (
+                      <button
+                        onPointerDown={() => updateItem(item._key, { product_id: '' })}
+                        style={s.changeBtn}
+                      >
+                        変更
+                      </button>
+                    )}
+                    {items.length > 1 && (
+                      <button onClick={() => removeItemRow(item._key)} style={s.removeBtn}>
+                        削除
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {/* ② 選択済み → 表示のみ / 未選択 → 検索入力 */}
+                {selectedProduct ? (
+                  <p style={s.selectedValue}>{selectedProduct.label}</p>
+                ) : (
+                  <ComboBox
+                    options={productToOptions(products)}
+                    placeholder="商品名を入力して検索"
+                    onChange={id => updateItem(item._key, { product_id: id })}
+                    onAddNew={name => updateItem(item._key, { newProductName: name, addingProduct: true })}
+                  />
                 )}
+
+                {item.addingProduct && (
+                  <InlineAdd
+                    placeholder="商品名を入力"
+                    value={item.newProductName}
+                    busy={false}
+                    onChange={v => updateItem(item._key, { newProductName: v })}
+                    onAdd={() => handleAddProduct(item._key)}
+                    onCancel={() => updateItem(item._key, { addingProduct: false, newProductName: '' })}
+                  />
+                )}
+
+                {/* 数量 */}
+                <div style={s.qtyRow}>
+                  <span style={s.qtyLabel}>数量</span>
+                  <input
+                    type="number"
+                    min="1"
+                    step="1"
+                    value={item.quantity}
+                    onChange={e => updateItem(item._key, { quantity: e.target.value })}
+                    style={s.qtyInput}
+                    inputMode="numeric"
+                  />
+                </div>
               </div>
-
-              {/* ① 商品選択：選択後は変更ボタンのみ */}
-              <ComboBox
-                options={productToOptions(products)}
-                value={item.product_id}
-                placeholder="商品名を入力して検索"
-                onChange={id => updateItem(item._key, { product_id: id })}
-                onAddNew={name => updateItem(item._key, { newProductName: name, addingProduct: true })}
-              />
-
-              {item.addingProduct && (
-                <InlineAdd
-                  placeholder="商品名を入力"
-                  value={item.newProductName}
-                  busy={false}
-                  onChange={v => updateItem(item._key, { newProductName: v })}
-                  onAdd={() => handleAddProduct(item._key)}
-                  onCancel={() => updateItem(item._key, { addingProduct: false, newProductName: '' })}
-                />
-              )}
-
-              {/* 数量 */}
-              <div style={s.qtyRow}>
-                <span style={s.qtyLabel}>数量</span>
-                <input
-                  type="number"
-                  min="1"
-                  step="1"
-                  value={item.quantity}
-                  onChange={e => updateItem(item._key, { quantity: e.target.value })}
-                  style={s.qtyInput}
-                  inputMode="numeric"
-                />
-              </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
 
         <button onClick={addItemRow} style={s.addItemBtn}>
@@ -552,10 +586,35 @@ const s: Record<string, CSSProperties> = {
     flexDirection: 'column',
     gap: 8,
   },
+  // ② label行 + 変更ボタン（タップ領域分離）
+  labelRow: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
   label: {
     fontSize: 13,
     fontWeight: 600,
     color: '#374151',
+  },
+  // ② 選択確定後の表示専用テキスト（非インタラクティブ）
+  selectedValue: {
+    fontSize: 16,
+    fontWeight: 500,
+    color: '#111827',
+    padding: '6px 0',
+    margin: 0,
+  },
+  // ② 変更ボタン（label行右端）
+  changeBtn: {
+    background: 'none',
+    border: 'none',
+    fontSize: 13,
+    color: '#2563eb',
+    cursor: 'pointer',
+    padding: '4px 8px',
+    minHeight: 44,
+    flexShrink: 0,
   },
   input: {
     width: '100%',
@@ -595,6 +654,10 @@ const s: Record<string, CSSProperties> = {
     fontSize: 12,
     fontWeight: 600,
     color: '#6b7280',
+  },
+  itemBtns: {
+    display: 'flex',
+    gap: 4,
   },
   removeBtn: {
     background: 'none',
@@ -654,40 +717,7 @@ const s: Record<string, CSSProperties> = {
   },
 }
 
-// ComboBox styles
 const cb: Record<string, CSSProperties> = {
-  // ① 表示モード（選択確定後のロック状態）
-  selectedRow: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: '10px 12px',
-    background: '#f9fafb',
-    border: '1px solid #e5e7eb',
-    borderRadius: 8,
-    minHeight: 44,
-  },
-  selectedLabel: {
-    fontSize: 16,
-    fontWeight: 500,
-    color: '#111827',
-    flex: 1,
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap',
-  },
-  changeBtn: {
-    flexShrink: 0,
-    background: 'none',
-    border: 'none',
-    fontSize: 13,
-    color: '#2563eb',
-    cursor: 'pointer',
-    padding: '4px 8px',
-    minHeight: 44,
-    marginLeft: 8,
-  },
-  // 候補ドロップダウン
   list: {
     position: 'absolute',
     top: '100%',
@@ -721,7 +751,6 @@ const cb: Record<string, CSSProperties> = {
     color: '#9ca3af',
     listStyle: 'none',
   },
-  // ③ 0件時の新規登録
   addNew: {
     padding: '12px 14px',
     fontSize: 14,

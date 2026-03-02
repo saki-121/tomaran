@@ -53,8 +53,9 @@ export default function DeliveryCard({ delivery }: { delivery: DeliveryCardRow }
           <p style={s.companyName}>{delivery.company?.name ?? '—'}</p>
         </div>
         <div style={s.cardRight}>
-          <p style={s.itemCount}>{delivery.delivery_items.length}点</p>
-          <p style={s.date}>{formatDate(delivery.delivery_date)}</p>
+          {/* ① null/undefined でクラッシュしないよう安全化 */}
+          <p style={s.itemCount}>{(delivery.delivery_items ?? []).length}点</p>
+          <p style={s.date}>{delivery.delivery_date ? formatDate(delivery.delivery_date) : '—'}</p>
           {/* ④ タップ可能である視覚ヒント */}
           <p style={s.tapHint}>詳細確認 ＞</p>
         </div>
