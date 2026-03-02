@@ -13,6 +13,8 @@ import type { SupabaseClient } from '@supabase/supabase-js'
 import type { Database } from '@/types/database'
 
 export type TypedClient = SupabaseClient<Database>
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type AnyClient = SupabaseClient<any>
 
 // ---------------------------------------------------------------------------
 // Error type
@@ -60,7 +62,7 @@ export function unwrap<T>(result: {
 
 export abstract class BaseRepository {
   constructor(
-    protected readonly db: TypedClient,
+    protected readonly db: AnyClient,
     protected readonly tenantId: string,
   ) {}
 }
