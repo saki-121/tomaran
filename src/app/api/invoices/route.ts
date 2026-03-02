@@ -99,7 +99,7 @@ export async function POST(request: NextRequest) {
   })
 
   // ── Create draft ──────────────────────────────────────────────────────────
-  const repo = new InvoicesRepository(db, tenantId)
+  const repo = new InvoicesRepository(db as any, tenantId)
 
   try {
     const invoice = await repo.createDraft({
