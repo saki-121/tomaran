@@ -12,9 +12,9 @@ import { InvoicesRepository }   from './invoices.repository'
 export async function createRepositories(tenantId: string) {
   const db = await createClient()
   return {
-    companies:  new CompaniesRepository(db, tenantId),
-    deliveries: new DeliveriesRepository(db, tenantId),
-    invoices:   new InvoicesRepository(db, tenantId),
+    companies:  new CompaniesRepository(db as any, tenantId),
+    deliveries: new DeliveriesRepository(db as any, tenantId),
+    invoices:   new InvoicesRepository(db as any, tenantId),
   }
 }
 
