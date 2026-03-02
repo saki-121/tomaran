@@ -57,7 +57,7 @@ export async function middleware(request: NextRequest) {
   // 4. 許可パス判定
   const { pathname } = request.nextUrl
   const isAllowed = allowedPaths.some(
-    p => pathname === p || pathname.startsWith(p + '/'),
+    p => pathname.startsWith(p)
   )
   if (isAllowed) {
     return sessionRes
