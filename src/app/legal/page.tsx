@@ -24,8 +24,12 @@ export default function LegalPage() {
             <dd>鹿児島県（詳細は請求に応じて開示します）</dd>
           </div>
           <div className="border-b border-gray-100 pb-6">
-            <dt className="mb-1 font-semibold text-gray-500">連絡先メール</dt>
-            <dd>support@tomaran.net</dd>
+            <dt className="mb-1 font-semibold text-gray-500">連絡先</dt>
+            <dd>
+              メール：support@tomaran.net<br />
+              電話：<a href="tel:07091599240" className="underline">070-9159-9240</a>
+              <span className="ml-1 text-xs text-gray-400">（平日 11:00〜15:00 受付）</span>
+            </dd>
           </div>
           <div className="border-b border-gray-100 pb-6">
             <dt className="mb-1 font-semibold text-gray-500">サービス名</dt>
