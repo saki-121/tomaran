@@ -58,22 +58,28 @@ function productToOptions(list: Product[]): ComboOption[] {
 }
 
 // ---------------------------------------------------------------------------
-// ComboBox — 検索可能セレクト（修正②）
+// ComboBox — 検索可能セレクト（② 修正）
+//   ・部分一致検索（includes）
+//   ・候補リスト z-index:50 でカード上に浮かせる
+//   ・0件時にドロップダウン内に「新規登録」を表示
 // ---------------------------------------------------------------------------
 
 function ComboBox({
-  options, value, placeholder, onChange, disabled,
+  options, value, placeholder, onChange, disabled, onAddNew,
 }: {
   options:     ComboOption[]
   value:       string
   placeholder: string
   onChange:    (id: string) => void
   disabled?:   boolean
+  onAddNew?:   (name: string) => void
 }) {
   const [query, setQuery] = useState('')
   const [open,  setOpen]  = useState(false)
 
   const selected = options.find(o => o.id === value)
+
+  // ② 部分一致検索
   const filtered = query
     ? options.filter(o => o.label.toLowerCase().includes(query.toLowerCase()))
     : options
@@ -82,6 +88,14 @@ function ComboBox({
     onChange(id)
     setOpen(false)
     setQuery('')
+  }
+
+  function handleAddNew() {
+    if (onAddNew) {
+      onAddNew(query)
+      setOpen(false)
+      setQuery('')
+    }
   }
 
   return (
@@ -97,10 +111,11 @@ function ComboBox({
         onChange={e => setQuery(e.target.value)}
         style={{
           ...s.input,
-          color:           open || !selected ? '#111827' : '#111827',
           backgroundColor: disabled ? '#f3f4f6' : '#fff',
         }}
       />
+
+      {/* ② 候補リスト：z-index:50 で前面に浮かせる */}
       {open && (
         <ul style={cb.list}>
           {filtered.length > 0 ? (
@@ -110,7 +125,15 @@ function ComboBox({
               </li>
             ))
           ) : (
-            <li style={cb.empty}>該当なし</li>
+            <>
+              <li style={cb.empty}>該当なし</li>
+              {/* ③ 0件時のみドロップダウン内に新規登録ボタン */}
+              {onAddNew && (
+                <li onPointerDown={handleAddNew} style={cb.addNew}>
+                  {query ? `「${query}」を新規登録` : '新規登録'}
+                </li>
+              )}
+            </>
           )}
         </ul>
       )}
@@ -247,6 +270,7 @@ export default function DeliveryForm({ initialCompanies, initialProducts }: Prop
     const validItems = items.filter(i => i.product_id && parseFloat(i.quantity) > 0)
     if (validItems.length === 0) { setError('商品を1件以上登録してください'); return }
 
+    // ① 登録ボタン：即 disabled + 「登録中…」表示
     setSubmitting(true)
     try {
       const res  = await postJSON('/api/deliveries', {
@@ -298,14 +322,8 @@ export default function DeliveryForm({ initialCompanies, initialProducts }: Prop
           value={companyId}
           placeholder="取引先を選択または入力"
           onChange={id => handleCompanyChange(id)}
+          onAddNew={name => { setNewCompanyName(name); setAddingCompany(true) }}
         />
-
-        {/* ③ 未選択かつ非展開時のみ表示 */}
-        {!companyId && !addingCompany && (
-          <button onClick={() => setAddingCompany(true)} style={s.addLink}>
-            ＋ 一覧にない場合は登録
-          </button>
-        )}
         {addingCompany && (
           <InlineAdd
             placeholder="取引先名を入力"
@@ -330,14 +348,8 @@ export default function DeliveryForm({ initialCompanies, initialProducts }: Prop
               value={siteId}
               placeholder="現場を選択または入力"
               onChange={setSiteId}
+              onAddNew={name => { setNewSiteName(name); setAddingSite(true) }}
             />
-          )}
-
-          {/* ③ 未選択かつ非展開時のみ表示 */}
-          {!siteId && !addingSite && (
-            <button onClick={() => setAddingSite(true)} style={s.addLink}>
-              ＋ 一覧にない場合は登録
-            </button>
           )}
           {addingSite && (
             <InlineAdd
@@ -376,17 +388,9 @@ export default function DeliveryForm({ initialCompanies, initialProducts }: Prop
                 value={item.product_id}
                 placeholder="商品を選択または入力"
                 onChange={id => updateItem(item._key, { product_id: id })}
+                onAddNew={name => updateItem(item._key, { newProductName: name, addingProduct: true })}
               />
 
-              {/* ③ 未選択かつ非展開時のみ表示 */}
-              {!item.product_id && !item.addingProduct && (
-                <button
-                  onClick={() => updateItem(item._key, { addingProduct: true })}
-                  style={s.addLink}
-                >
-                  ＋ 一覧にない場合は登録
-                </button>
-              )}
               {item.addingProduct && (
                 <InlineAdd
                   placeholder="商品名を入力"
@@ -420,7 +424,7 @@ export default function DeliveryForm({ initialCompanies, initialProducts }: Prop
         </button>
       </section>
 
-      {/* ── 登録ボタン（修正①） ──────────────────── */}
+      {/* ── 登録ボタン（① 即 disabled + 「登録中…」） ── */}
       <button
         onClick={handleSubmit}
         disabled={submitting}
@@ -540,16 +544,6 @@ const s: Record<string, CSSProperties> = {
     minHeight: 44,
     color: '#111827',
   },
-  addLink: {
-    background: 'none',
-    border: 'none',
-    fontSize: 13,
-    color: '#2563eb',
-    cursor: 'pointer',
-    padding: '4px 0',
-    textAlign: 'left',
-    minHeight: 44,
-  },
   hint: {
     fontSize: 14,
     color: '#9ca3af',
@@ -644,14 +638,14 @@ const cb: Record<string, CSSProperties> = {
     top: '100%',
     left: 0,
     right: 0,
-    zIndex: 10,
+    zIndex: 50,          // ② カード・隣接要素より前面
     background: '#fff',
     border: '1px solid #d1d5db',
     borderRadius: 8,
     marginTop: 4,
     maxHeight: 220,
     overflowY: 'auto',
-    boxShadow: '0 4px 12px rgba(0,0,0,0.12)',
+    boxShadow: '0 4px 16px rgba(0,0,0,0.14)',
     listStyle: 'none',
     padding: 0,
     margin: '4px 0 0',
@@ -670,6 +664,19 @@ const cb: Record<string, CSSProperties> = {
     padding: '12px 14px',
     fontSize: 14,
     color: '#9ca3af',
+    listStyle: 'none',
+  },
+  // ② 0件時の「新規登録」ボタン
+  addNew: {
+    padding: '12px 14px',
+    fontSize: 14,
+    fontWeight: 600,
+    color: '#2563eb',
+    cursor: 'pointer',
+    borderTop: '1px solid #e5e7eb',
+    minHeight: 44,
+    display: 'flex',
+    alignItems: 'center',
     listStyle: 'none',
   },
 }

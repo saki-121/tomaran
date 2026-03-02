@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import type { CSSProperties } from 'react'
 import DeliveryFilter from './_components/DeliveryFilter'
+import DeliveryCard    from './_components/DeliveryCard'
 
 // ---------------------------------------------------------------------------
 // Types
@@ -24,11 +25,6 @@ type DeliveryRow = {
 function getTodayJST(): string {
   const jstOffset = 9 * 60 * 60 * 1000
   return new Date(Date.now() + jstOffset).toISOString().split('T')[0]
-}
-
-function formatDate(iso: string): string {
-  const [, m, d] = iso.split('-')
-  return `${parseInt(m)}月${parseInt(d)}日`
 }
 
 // ---------------------------------------------------------------------------
@@ -166,27 +162,6 @@ export default async function DeliveriesPage({
 }
 
 // ---------------------------------------------------------------------------
-// DeliveryCard
-// ---------------------------------------------------------------------------
-
-function DeliveryCard({ delivery }: { delivery: DeliveryRow }) {
-  return (
-    <li>
-      <Link href={`/deliveries/${delivery.id}`} style={s.card}>
-        <div style={s.cardLeft}>
-          <p style={s.siteName}>{delivery.site?.name    ?? '—'}</p>
-          <p style={s.companyName}>{delivery.company?.name ?? '—'}</p>
-        </div>
-        <div style={s.cardRight}>
-          <p style={s.itemCount}>{delivery.delivery_items.length}点</p>
-          <p style={s.date}>{formatDate(delivery.delivery_date)}</p>
-        </div>
-      </Link>
-    </li>
-  )
-}
-
-// ---------------------------------------------------------------------------
 // Styles
 // ---------------------------------------------------------------------------
 
@@ -249,55 +224,6 @@ const s: Record<string, CSSProperties> = {
   arrow: {
     fontSize: 10,
     color: '#9ca3af',
-  },
-  card: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    gap: 12,
-    padding: '14px 16px',
-    minHeight: 64,
-    background: '#ffffff',
-    border: '1px solid #e5e7eb',
-    borderRadius: 12,
-    textDecoration: 'none',
-    WebkitTapHighlightColor: 'transparent',
-  },
-  cardLeft: {
-    minWidth: 0,
-    flex: 1,
-  },
-  siteName: {
-    fontSize: 15,
-    fontWeight: 600,
-    color: '#111827',
-    margin: 0,
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap',
-  },
-  companyName: {
-    fontSize: 13,
-    color: '#6b7280',
-    margin: '3px 0 0',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap',
-  },
-  cardRight: {
-    textAlign: 'right',
-    flexShrink: 0,
-  },
-  itemCount: {
-    fontSize: 14,
-    fontWeight: 500,
-    color: '#374151',
-    margin: 0,
-  },
-  date: {
-    fontSize: 12,
-    color: '#9ca3af',
-    margin: '2px 0 0',
   },
   fab: {
     position: 'fixed',
