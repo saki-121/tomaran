@@ -41,9 +41,19 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
             {label}
           </Link>
         ))}
-        <span style={{ marginLeft: 'auto', fontSize: 11, color: '#777', paddingRight: 4 }}>
-          pc推奨
-        </span>
+        <span style={{ marginLeft: 'auto' }} />
+        <Link href="/admin/cancel" style={{
+          color: '#6b6b6b',
+          textDecoration: 'none',
+          padding: '0 14px',
+          height: 48,
+          display: 'flex',
+          alignItems: 'center',
+          fontSize: 12,
+          borderLeft: '1px solid #333',
+        }}>
+          解約
+        </Link>
       </nav>
       <main style={{ padding: 24, maxWidth: 1100, margin: '0 auto' }}>
         {children}
