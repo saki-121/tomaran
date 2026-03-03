@@ -54,11 +54,18 @@ export default function GearMenu() {
           }}
         >
           <Link
+            href="/quotes/new"
+            onClick={() => setOpen(false)}
+            style={menuItemStyle}
+          >
+            📋 見積書作成
+          </Link>
+          <Link
             href="/quotes"
             onClick={() => setOpen(false)}
             style={menuItemStyle}
           >
-            📋 簡易見積書作成
+            📋 見積書一覧
           </Link>
           <Link
             href="/admin"

@@ -505,6 +505,47 @@ export type Database = {
         Relationships: []
       }
 
+      // ── quotes ─────────────────────────────────────────────────────────────
+      quotes: {
+        Row: {
+          id: string
+          tenant_id: string
+          recipient: string
+          subtotal: number
+          tax_amount: number
+          grand_total: number
+          items_json: Json
+          issued_date: string
+          created_by: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          tenant_id: string
+          recipient?: string
+          subtotal?: number
+          tax_amount?: number
+          grand_total?: number
+          items_json?: Json
+          issued_date?: string
+          created_by?: string | null
+          created_at?: string
+        }
+        Update: Partial<{
+          id: string
+          tenant_id: string
+          recipient: string
+          subtotal: number
+          tax_amount: number
+          grand_total: number
+          items_json: Json
+          issued_date: string
+          created_by: string | null
+          created_at: string
+        }>
+        Relationships: []
+      }
+
       // ── invoice_items ──────────────────────────────────────────────────────
       invoice_items: {
         Row: {
@@ -623,3 +664,4 @@ export type Delivery            = Tables<'deliveries'>
 export type DeliveryItem        = Tables<'delivery_items'>
 export type Invoice             = Tables<'invoices'>
 export type InvoiceItem         = Tables<'invoice_items'>
+export type Quote               = Tables<'quotes'>

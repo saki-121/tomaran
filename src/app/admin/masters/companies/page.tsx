@@ -121,6 +121,7 @@ export default function CompaniesPage() {
   const [importResult, setImportResult] = useState<{ created: number; updated: number; skipped: number; errors: string[] } | null>(null)
   const [pendingFile, setPendingFile] = useState<File | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const [showFormat, setShowFormat] = useState(false)
 
   const loadCompanies = () => {
     setLoading(true)
@@ -282,6 +283,12 @@ export default function CompaniesPage() {
         >
           📥 Excel取り込み
         </button>
+        <button
+          onClick={() => setShowFormat(f => !f)}
+          style={{ ...btnSecondary, background: 'none', color: '#555', border: '1px solid #ccc' }}
+        >
+          {showFormat ? '✕ 閉じる' : '❓ フォーマット'}
+        </button>
         <input ref={fileInputRef} type="file" accept=".xlsx,.xls" style={{ display: 'none' }} onChange={handleFileSelect} />
       </div>
 
@@ -309,6 +316,40 @@ export default function CompaniesPage() {
             </ul>
           )}
           <button onClick={() => setImportResult(null)} style={{ marginTop: 8, ...btnSmall('#888') }}>閉じる</button>
+        </div>
+      )}
+
+      {/* Import format guide */}
+      {showFormat && (
+        <div style={{ background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: 6, padding: '12px 16px', marginBottom: 16, fontSize: 12 }}>
+          <p style={{ margin: '0 0 8px', fontWeight: 600, fontSize: 13 }}>Excelフォーマット（.xlsx / .xls）</p>
+          <p style={{ margin: '0 0 8px', color: '#555' }}>1行目はヘッダー行として読み飛ばします。2行目からデータを入力してください。</p>
+          <table style={{ borderCollapse: 'collapse', width: '100%' }}>
+            <thead>
+              <tr style={{ background: '#e5e7eb' }}>
+                {['列', '項目', '必須', '例', '備考'].map(h => (
+                  <th key={h} style={{ padding: '5px 8px', textAlign: 'left', border: '1px solid #d1d5db', fontSize: 12, fontWeight: 600 }}>{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                { col: 'A', label: '会社名',   required: true,  example: '○○建設株式会社',      note: '同名は上書き更新' },
+                { col: 'B', label: '住所',     required: false, example: '東京都千代田区…',      note: '' },
+                { col: 'C', label: '電話番号', required: false, example: '03-1234-5678',        note: '' },
+                { col: 'D', label: '締め日',   required: false, example: '月末 / 5 / 10 … / 31', note: '省略時: 月末' },
+                { col: 'E', label: '支払条件', required: false, example: '翌月末 / 締め後30日', note: '省略時: 翌月末' },
+              ].map(row => (
+                <tr key={row.col} style={{ borderBottom: '1px solid #e5e7eb' }}>
+                  <td style={{ padding: '5px 8px', border: '1px solid #d1d5db', fontWeight: 600, textAlign: 'center' }}>{row.col}</td>
+                  <td style={{ padding: '5px 8px', border: '1px solid #d1d5db' }}>{row.label}</td>
+                  <td style={{ padding: '5px 8px', border: '1px solid #d1d5db', textAlign: 'center' }}>{row.required ? '✓' : '—'}</td>
+                  <td style={{ padding: '5px 8px', border: '1px solid #d1d5db', color: '#555' }}>{row.example}</td>
+                  <td style={{ padding: '5px 8px', border: '1px solid #d1d5db', color: '#888' }}>{row.note}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
 
