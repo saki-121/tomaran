@@ -432,9 +432,9 @@ export default async function Page() {
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
             {[
-              { n: '01', icon: '🔑', title: 'Googleアカウントでログイン', body: 'パスワード登録不要。持っているGoogleアカウントで即ログイン。' },
-              { n: '02', icon: '🏢', title: '会社名・マスタを設定する', body: '会社名と取引先をExcelから一括登録。商品マスタも同じく。' },
-              { n: '03', icon: '💳', title: 'クレジットカード登録 → 即開始', body: 'Stripeで安全に決済。登録完了後、すぐに全機能が使えます。' },
+              { n: '01', icon: '🔑', title: 'Googleアカウントで登録', body: 'パスワード不要。持っているGoogleアカウントで即登録。30秒で完了。' },
+              { n: '02', icon: '🏢', title: 'あなたの会社名を登録', body: '会社名を入力するだけ。取引先・商品マスタはあとからExcelで一括登録できます。' },
+              { n: '03', icon: '💳', title: '決済して、即開始！', body: 'クレジットカードを登録したら全機能が使えます。Stripeで安全に処理。' },
             ].map((step, idx) => (
               <div key={step.n} style={{ display: 'flex', gap: 0, alignItems: 'stretch' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: 48, flexShrink: 0 }}>
@@ -488,8 +488,11 @@ export default async function Page() {
         textAlign: 'center',
       }}>
         <p style={{ fontWeight: 900, fontSize: 20, color: Y, marginBottom: 24, marginTop: 0 }}>tomaran</p>
-        <p style={{ color: '#6b7280', fontSize: 13, marginBottom: 24, lineHeight: 1.7 }}>
-          サポートはLINEのみ。<br />
+        <p style={{ color: '#6b7280', fontSize: 13, marginBottom: 24, lineHeight: 1.9 }}>
+          サポートはLINEから。<br />
+          <span style={{ color: '#9ca3af' }}>
+            メールは返信が遅れる可能性があることをご了承ください。
+          </span><br />
           <a href="mailto:support@tomaran.net" style={{ color: '#9ca3af', textDecoration: 'underline' }}>
             support@tomaran.net
           </a>
