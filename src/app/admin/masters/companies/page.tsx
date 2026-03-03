@@ -123,7 +123,7 @@ export default function CompaniesPage() {
 
   const loadCompanies = () => {
     setLoading(true)
-    fetch('/api/masters/companies?all=1')
+    void fetch('/api/masters/companies?all=1')
       .then(r => r.json())
       .then(d => setCompanies(d.companies ?? []))
       .finally(() => setLoading(false))
@@ -209,13 +209,13 @@ export default function CompaniesPage() {
     setSiteSaving(false)
     if (!res.ok) { setSiteErr(d.error); return }
     cancelSite()
-    reloadSites(companyId)
+    void reloadSites(companyId)
   }
 
   const deactivateSite = async (siteId: string, siteName: string, companyId: string) => {
     if (!confirm(`「${siteName}」を無効化しますか？`)) return
     await fetch(`/api/masters/sites/${siteId}`, { method: 'DELETE' })
-    reloadSites(companyId)
+    void reloadSites(companyId)
   }
 
   // ── Excel import ────────────────────────────────────────────────────────────

@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useParams, useRouter } from 'next/navigation'
+import { useParams } from 'next/navigation'
 import Link from 'next/link'
 
 type InvoiceItem = {
@@ -41,7 +41,6 @@ function fmtNum(n: number | null | undefined) {
 
 export default function InvoiceDetailPage() {
   const { id } = useParams<{ id: string }>()
-  const router = useRouter()
 
   const [invoice, setInvoice]   = useState<Invoice | null>(null)
   const [items, setItems]       = useState<InvoiceItem[]>([])
