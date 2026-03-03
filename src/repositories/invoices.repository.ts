@@ -122,7 +122,7 @@ export class InvoicesRepository extends BaseRepository {
     }
 
     // 1. Insert invoice header
-    const invoice = unwrap(
+    const invoice = unwrap<Invoice>(
       await this.db
         .from('invoices')
         .insert({

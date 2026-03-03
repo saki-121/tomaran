@@ -15,8 +15,34 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { z } from 'zod'
 import { createClient } from '@/lib/supabase/server'
+import { getTenant } from '@/lib/get-tenant'
 import { InvoicesRepository, type CreateInvoiceLineItem } from '@/repositories/invoices.repository'
 import { RepositoryError } from '@/repositories/base.repository'
+
+// GET /api/invoices — 請求書一覧
+export async function GET(request: NextRequest) {
+  const db = await createClient()
+  const tenantResult = await getTenant(db)
+  if (tenantResult.error) return NextResponse.json({ error: tenantResult.error }, { status: 401 })
+  const tenantId = tenantResult.tenantId as string
+
+  const { searchParams } = new URL(request.url)
+  const status = searchParams.get('status')
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let query = (db as any)
+    .from('invoices')
+    .select('id, invoice_number, status, closing_date, period_from, period_to, total_amount, tax_amount, grand_total, company:companies(id, name)')
+    .eq('tenant_id', tenantId)
+    .order('closing_date', { ascending: false })
+    .limit(200)
+
+  if (status) query = query.eq('status', status)
+
+  const { data, error: dbErr } = await query
+  if (dbErr) return NextResponse.json({ error: dbErr.message }, { status: 500 })
+  return NextResponse.json({ invoices: data ?? [] })
+}
 
 const bodySchema = z.object({
   tenantId:       z.string().uuid(),

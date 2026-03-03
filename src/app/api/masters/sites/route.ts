@@ -13,15 +13,18 @@ export async function GET(req: Request) {
   if (!companyId) {
     return NextResponse.json({ error: 'company_id is required' }, { status: 400 })
   }
+  const includeInactive = searchParams.get('all') === '1'
 
-  const { data, error: dbErr } = await supabase
+  let query = supabase
     .from('sites')
-    .select('id, name')
+    .select('id, name, active_flag')
     .eq('tenant_id', tenantId)
     .eq('company_id', companyId)
-    .eq('active_flag', true)
     .order('name')
 
+  if (!includeInactive) query = query.eq('active_flag', true)
+
+  const { data, error: dbErr } = await query
   if (dbErr) return NextResponse.json({ error: dbErr.message }, { status: 500 })
   return NextResponse.json({ sites: data ?? [] })
 }
@@ -36,14 +39,15 @@ export async function POST(req: Request) {
   if (!name?.trim())  return NextResponse.json({ error: '名称は必須です' }, { status: 400 })
   if (!company_id)    return NextResponse.json({ error: '取引先は必須です' }, { status: 400 })
 
-  const { data, error: dbErr } = await supabase
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data, error: dbErr } = await (supabase as any)
     .from('sites')
     .insert({
       tenant_id:  tenantId,
       company_id,
       name:       name.trim(),
     })
-    .select('id, name')
+    .select('id, name, active_flag')
     .single()
 
   if (dbErr) return NextResponse.json({ error: dbErr.message }, { status: 500 })

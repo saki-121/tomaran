@@ -114,6 +114,11 @@ export default async function DeliveriesPage({
     <main style={s.main}>
       <h1 style={s.heading}>納品一覧</h1>
 
+      {/* ── 管理画面リンク ────────────────────────────────────────── */}
+      <Link href="/admin" style={s.adminBanner}>
+        管理画面へ
+      </Link>
+
       {/* ── フィルタ ─────────────────────────────────────────────── */}
       <DeliveryFilter
         companies={companies}
@@ -179,6 +184,20 @@ const s: Record<string, CSSProperties> = {
     fontWeight: 700,
     color: '#111827',
     margin: '0 0 16px',
+  },
+  adminBanner: {
+    display: 'block',
+    width: '100%',
+    padding: '20px 0',
+    marginBottom: 24,
+    background: '#2563eb',
+    color: '#ffffff',
+    fontSize: 22,
+    fontWeight: 700,
+    textAlign: 'center',
+    textDecoration: 'none',
+    borderRadius: 12,
+    boxShadow: '0 4px 14px rgba(37,99,235,0.35)',
   },
   section: {
     marginBottom: 24,

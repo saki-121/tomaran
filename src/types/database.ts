@@ -75,6 +75,27 @@ export interface InvoiceSnapshot {
 export type Database = {
   public: {
     Tables: {
+      // ── profiles ───────────────────────────────────────────────────────────
+      // Created outside migrations (auth.users mirror); lives in public schema.
+      profiles: {
+        Row: {
+          id: string       // = auth.uid
+          is_paid: boolean
+          created_at: string
+        }
+        Insert: {
+          id: string
+          is_paid?: boolean
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          is_paid?: boolean
+          created_at?: string
+        }
+        Relationships: []
+      }
+
       // ── tenants ────────────────────────────────────────────────────────────
       tenants: {
         Row: {
@@ -92,6 +113,7 @@ export type Database = {
           name?: string
           created_at?: string
         }
+        Relationships: []
       }
 
       // ── users ──────────────────────────────────────────────────────────────
@@ -111,6 +133,7 @@ export type Database = {
           display_name?: string
           created_at?: string
         }
+        Relationships: []
       }
 
       // ── user_tenants ───────────────────────────────────────────────────────
@@ -136,6 +159,22 @@ export type Database = {
           role?: 'owner' | 'admin' | 'member'
           created_at?: string
         }
+        Relationships: [
+          {
+            foreignKeyName: 'user_tenants_tenant_id_fkey'
+            columns: ['tenant_id']
+            isOneToOne: false
+            referencedRelation: 'tenants'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'user_tenants_user_id_fkey'
+            columns: ['user_id']
+            isOneToOne: false
+            referencedRelation: 'users'
+            referencedColumns: ['id']
+          },
+        ]
       }
 
       // ── companies ──────────────────────────────────────────────────────────
@@ -144,7 +183,9 @@ export type Database = {
           id: string
           tenant_id: string
           name: string
-          closing_day: number
+          address: string | null        // migration 005
+          phone: string | null          // migration 005
+          closing_day: number           // 1-31 or 99 (= 月末)
           payment_type: 'after_30_days' | 'next_month_end'
           invoice_number: string | null
           active_flag: boolean
@@ -152,8 +193,10 @@ export type Database = {
         }
         Insert: {
           id?: string
-          tenant_id: string // always supply explicitly; do not rely on trigger alone
+          tenant_id: string
           name: string
+          address?: string | null
+          phone?: string | null
           closing_day: number
           payment_type: 'after_30_days' | 'next_month_end'
           invoice_number?: string | null
@@ -164,12 +207,49 @@ export type Database = {
           id?: string
           tenant_id?: string
           name?: string
+          address?: string | null
+          phone?: string | null
           closing_day?: number
           payment_type?: 'after_30_days' | 'next_month_end'
           invoice_number?: string | null
           active_flag?: boolean
           created_at?: string
         }
+        Relationships: []
+      }
+
+      // ── own_company_profiles ────────────────────────────────────────────────
+      own_company_profiles: {
+        Row: {
+          id: string
+          tenant_id: string
+          company_name: string | null
+          address: string | null
+          phone: string | null
+          invoice_registration_number: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          tenant_id: string
+          company_name?: string | null
+          address?: string | null
+          phone?: string | null
+          invoice_registration_number?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          tenant_id?: string
+          company_name?: string | null
+          address?: string | null
+          phone?: string | null
+          invoice_registration_number?: string | null
+          updated_at?: string
+        }
+        Relationships: []
       }
 
       // ── sites ──────────────────────────────────────────────────────────────
@@ -198,6 +278,7 @@ export type Database = {
           active_flag?: boolean
           created_at?: string
         }
+        Relationships: []
       }
 
       // ── products ───────────────────────────────────────────────────────────
@@ -207,8 +288,9 @@ export type Database = {
           tenant_id: string
           name: string
           spec: string | null
-          unit_price: number
+          unit_price: number | null     // null = provisional (no price set)
           tax_rate: 0.1 | 0.08
+          status: 'active' | 'provisional'  // migration 005
           active_flag: boolean
           created_at: string
           updated_at: string
@@ -218,8 +300,9 @@ export type Database = {
           tenant_id: string
           name: string
           spec?: string | null
-          unit_price: number
+          unit_price?: number | null
           tax_rate: 0.1 | 0.08
+          status?: 'active' | 'provisional'
           active_flag?: boolean
           created_at?: string
           updated_at?: string
@@ -229,12 +312,14 @@ export type Database = {
           tenant_id?: string
           name?: string
           spec?: string | null
-          unit_price?: number
+          unit_price?: number | null
           tax_rate?: 0.1 | 0.08
+          status?: 'active' | 'provisional'
           active_flag?: boolean
           created_at?: string
           updated_at?: string
         }
+        Relationships: []
       }
 
       // ── bank_accounts ──────────────────────────────────────────────────────
@@ -272,6 +357,7 @@ export type Database = {
           is_default?: boolean
           created_at?: string
         }
+        Relationships: []
       }
 
       // ── deliveries ─────────────────────────────────────────────────────────
@@ -283,6 +369,8 @@ export type Database = {
           company_id: string
           site_id: string
           status: 'editable' | 'invoiced'
+          created_by: string | null    // migration 005: user id who created
+          role: 'field' | 'office' | 'admin' | null  // migration 005
           created_at: string
         }
         Insert: {
@@ -292,6 +380,8 @@ export type Database = {
           company_id: string
           site_id: string
           status?: 'editable' | 'invoiced'
+          created_by?: string | null
+          role?: 'field' | 'office' | 'admin' | null
           created_at?: string
         }
         Update: {
@@ -301,8 +391,11 @@ export type Database = {
           company_id?: string
           site_id?: string
           status?: 'editable' | 'invoiced'
+          created_by?: string | null
+          role?: 'field' | 'office' | 'admin' | null
           created_at?: string
         }
+        Relationships: []
       }
 
       // ── delivery_items ─────────────────────────────────────────────────────
@@ -313,8 +406,8 @@ export type Database = {
           delivery_id: string
           product_id: string
           quantity: number
-          /** Set by DB trigger — do not read client-supplied value */
-          snapshot_unit_price: number
+          /** Set by DB trigger; null if product is provisional */
+          snapshot_unit_price: number | null
           /** Set by DB trigger — do not read client-supplied value */
           snapshot_tax_rate: number
           created_at: string
@@ -325,8 +418,10 @@ export type Database = {
           delivery_id: string
           product_id: string
           quantity: number
-          // snapshot_unit_price and snapshot_tax_rate are intentionally omitted —
-          // the BEFORE INSERT trigger always overwrites them from the product master.
+          // The BEFORE INSERT trigger overwrites these from the product master.
+          // Pass 0 as a placeholder to satisfy DB NOT NULL constraints.
+          snapshot_unit_price?: number | null
+          snapshot_tax_rate?: number
           created_at?: string
         }
         Update: {
@@ -338,6 +433,7 @@ export type Database = {
           quantity?: number
           created_at?: string
         }
+        Relationships: []
       }
 
       // ── invoice_number_sequences ───────────────────────────────────────────
@@ -349,6 +445,7 @@ export type Database = {
         }
         Insert: never // SECURITY DEFINER function only
         Update: never // SECURITY DEFINER function only
+        Relationships: []
       }
 
       // ── invoices ───────────────────────────────────────────────────────────
@@ -356,12 +453,17 @@ export type Database = {
         Row: {
           id: string
           tenant_id: string
-          invoice_number: string | null // null until confirmed
+          invoice_number: string | null   // null until confirmed
           company_id: string
-          closing_date: string // ISO date
-          payment_due_date: string // ISO date
+          closing_date: string            // ISO date
+          payment_due_date: string        // ISO date
+          period_from: string | null      // migration 005: billing period start
+          period_to: string | null        // migration 005: billing period end
+          total_amount: number | null     // migration 005: subtotal (tax-exclusive)
+          tax_amount: number | null       // migration 005: tax total
+          grand_total: number | null      // migration 005: total incl. tax
           status: 'draft' | 'confirmed' | 'cancelled'
-          snapshot_json: InvoiceSnapshot | null // null until confirmed
+          snapshot_json: InvoiceSnapshot | null  // null until confirmed
           confirmed_at: string | null
           created_at: string
         }
@@ -372,6 +474,11 @@ export type Database = {
           company_id: string
           closing_date: string
           payment_due_date: string
+          period_from?: string | null
+          period_to?: string | null
+          total_amount?: number | null
+          tax_amount?: number | null
+          grand_total?: number | null
           status?: 'draft' | 'confirmed' | 'cancelled'
           snapshot_json?: InvoiceSnapshot | null
           confirmed_at?: string | null
@@ -385,11 +492,17 @@ export type Database = {
           company_id?: string
           closing_date?: string
           payment_due_date?: string
+          period_from?: string | null
+          period_to?: string | null
+          total_amount?: number | null
+          tax_amount?: number | null
+          grand_total?: number | null
           status?: 'draft' | 'confirmed' | 'cancelled'
           snapshot_json?: InvoiceSnapshot | null
           confirmed_at?: string | null
           created_at?: string
         }
+        Relationships: []
       }
 
       // ── invoice_items ──────────────────────────────────────────────────────
@@ -442,6 +555,7 @@ export type Database = {
           amount?: number
           created_at?: string
         }
+        Relationships: []
       }
     }
 
@@ -468,6 +582,15 @@ export type Database = {
         Args: { p_tenant_id: string }
         Returns: undefined
       }
+      generate_invoices_for_date: {
+        Args: { p_date?: string }
+        Returns: {
+          r_tenant_id: string
+          r_company_id: string
+          r_invoice_id: string | null
+          r_result: 'created' | 'skipped' | 'no_items'
+        }[]
+      }
     }
 
     Enums: Record<never, never>
@@ -488,14 +611,15 @@ export type Updates<T extends keyof Database['public']['Tables']> =
   Database['public']['Tables'][T]['Update']
 
 // Named aliases for the most-used row types
-export type Tenant       = Tables<'tenants'>
-export type User         = Tables<'users'>
-export type UserTenant   = Tables<'user_tenants'>
-export type Company      = Tables<'companies'>
-export type Site         = Tables<'sites'>
-export type Product      = Tables<'products'>
-export type BankAccount  = Tables<'bank_accounts'>
-export type Delivery     = Tables<'deliveries'>
-export type DeliveryItem = Tables<'delivery_items'>
-export type Invoice      = Tables<'invoices'>
-export type InvoiceItem  = Tables<'invoice_items'>
+export type Tenant              = Tables<'tenants'>
+export type User                = Tables<'users'>
+export type UserTenant          = Tables<'user_tenants'>
+export type Company             = Tables<'companies'>
+export type OwnCompanyProfile   = Tables<'own_company_profiles'>
+export type Site                = Tables<'sites'>
+export type Product             = Tables<'products'>
+export type BankAccount         = Tables<'bank_accounts'>
+export type Delivery            = Tables<'deliveries'>
+export type DeliveryItem        = Tables<'delivery_items'>
+export type Invoice             = Tables<'invoices'>
+export type InvoiceItem         = Tables<'invoice_items'>

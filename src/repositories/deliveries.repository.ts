@@ -127,7 +127,7 @@ export class DeliveriesRepository extends BaseRepository {
     }
 
     // 1. Create delivery header
-    const delivery = unwrap(
+    const delivery = unwrap<Delivery>(
       await this.db
         .from('deliveries')
         .insert({
