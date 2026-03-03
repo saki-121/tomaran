@@ -11,9 +11,10 @@ const nav = [
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
   return (
-    <div style={{ minHeight: '100vh', background: '#f5f5f5' }}>
+    <div style={{ minHeight: '100vh', background: '#0a0f1e' }}>
       <nav style={{
-        background: '#1a1a2e',
+        background: '#05080f',
+        borderBottom: '1px solid rgba(255,215,0,0.12)',
         color: '#fff',
         display: 'flex',
         alignItems: 'center',
@@ -24,20 +25,20 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         top: 0,
         zIndex: 100,
       }}>
-        <span style={{ fontWeight: 700, marginRight: 24, fontSize: 15, letterSpacing: 1 }}>
-          Admin
-        </span>
+        <Link href="/deliveries" style={{ fontWeight: 900, marginRight: 24, fontSize: 15, letterSpacing: 1, color: '#FFD700', textDecoration: 'none' }}>
+          tomaran
+        </Link>
         {nav.map(({ href, label }) => (
           <Link key={href} href={href} style={{
-            color: '#fff',
+            color: '#9ca3af',
             textDecoration: 'none',
-            padding: '0 16px',
+            padding: '0 14px',
             height: 48,
             display: 'flex',
             alignItems: 'center',
             fontSize: 14,
             fontWeight: 500,
-            borderRight: '1px solid #2d2d4e',
+            borderRight: '1px solid rgba(255,255,255,0.06)',
             cursor: 'pointer',
           }}>
             {label}
@@ -45,7 +46,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         ))}
         <span style={{ marginLeft: 'auto' }} />
         <Link href="/admin/cancel" style={{
-          color: '#fff',
+          color: '#ef4444',
           textDecoration: 'none',
           padding: '0 16px',
           height: 48,
@@ -53,7 +54,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           alignItems: 'center',
           fontSize: 13,
           fontWeight: 600,
-          borderLeft: '1px solid #2d2d4e',
+          borderLeft: '1px solid rgba(255,255,255,0.06)',
           cursor: 'pointer',
         }}>
           解約

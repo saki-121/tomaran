@@ -175,13 +175,13 @@ const s: Record<string, CSSProperties> = {
     margin: '0 auto',
     padding: '24px 16px 100px',
     fontFamily: 'system-ui, -apple-system, sans-serif',
-    backgroundColor: '#f9fafb',
+    backgroundColor: '#0a0f1e',
     minHeight: '100dvh',
   },
   heading: {
     fontSize: 20,
     fontWeight: 700,
-    color: '#111827',
+    color: '#fff',
     margin: '0 0 16px',
   },
   section: {
@@ -196,7 +196,7 @@ const s: Record<string, CSSProperties> = {
   },
   empty: {
     fontSize: 14,
-    color: '#9ca3af',
+    color: '#6b7280',
     textAlign: 'center',
     padding: '32px 0',
     margin: 0,
@@ -210,7 +210,7 @@ const s: Record<string, CSSProperties> = {
     gap: 8,
   },
   details: {
-    borderTop: '1px solid #e5e7eb',
+    borderTop: '1px solid rgba(255,255,255,0.08)',
     paddingTop: 4,
   },
   summary: {
@@ -220,14 +220,14 @@ const s: Record<string, CSSProperties> = {
     padding: '10px 0',
     fontSize: 13,
     fontWeight: 600,
-    color: '#6b7280',
+    color: '#9ca3af',
     cursor: 'pointer',
     listStyle: 'none',
     userSelect: 'none',
   },
   arrow: {
     fontSize: 10,
-    color: '#9ca3af',
+    color: '#6b7280',
   },
   fab: {
     position: 'fixed',
@@ -236,13 +236,13 @@ const s: Record<string, CSSProperties> = {
     width: 56,
     height: 56,
     borderRadius: '50%',
-    background: '#2563eb',
-    color: '#ffffff',
+    background: '#FFD700',
+    color: '#000',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     fontSize: 28,
     textDecoration: 'none',
-    boxShadow: '0 4px 14px rgba(37,99,235,0.45)',
+    boxShadow: '0 4px 14px rgba(255,215,0,0.4)',
   },
 }

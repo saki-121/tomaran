@@ -69,29 +69,29 @@ function paymentLabel(type: string) {
 
 const th: React.CSSProperties = {
   padding: '10px 12px', textAlign: 'left', fontSize: 13, fontWeight: 600,
-  borderBottom: '1px solid #ddd', whiteSpace: 'nowrap',
+  borderBottom: '1px solid rgba(255,255,255,0.08)', whiteSpace: 'nowrap', color: '#9ca3af',
 }
-const td: React.CSSProperties = { padding: '9px 12px', fontSize: 14, verticalAlign: 'middle' }
-const tdSub: React.CSSProperties = { padding: '6px 12px', fontSize: 13, verticalAlign: 'middle', background: '#fafafa' }
+const td: React.CSSProperties = { padding: '9px 12px', fontSize: 14, verticalAlign: 'middle', color: '#d1d5db' }
+const tdSub: React.CSSProperties = { padding: '6px 12px', fontSize: 13, verticalAlign: 'middle', background: '#0f1629', color: '#9ca3af' }
 
 const btnPrimary: React.CSSProperties = {
-  padding: '8px 18px', background: '#1a1a2e', color: '#fff', border: 'none',
-  borderRadius: 4, cursor: 'pointer', fontSize: 13,
+  padding: '8px 18px', background: '#FFD700', color: '#000', border: 'none',
+  borderRadius: 6, cursor: 'pointer', fontSize: 13, fontWeight: 700,
 }
 const btnSecondary: React.CSSProperties = {
-  padding: '8px 18px', background: '#888', color: '#fff', border: 'none',
-  borderRadius: 4, cursor: 'pointer', fontSize: 13,
+  padding: '8px 18px', background: '#1a2035', color: '#9ca3af', border: '1px solid rgba(255,255,255,0.08)',
+  borderRadius: 6, cursor: 'pointer', fontSize: 13,
 }
 const btnSmall = (bg: string): React.CSSProperties => ({
-  padding: '3px 9px', background: bg, color: '#fff', border: 'none',
+  padding: '3px 9px', background: bg, color: bg === '#FFD700' ? '#000' : '#fff', border: 'none',
   borderRadius: 4, cursor: 'pointer', fontSize: 12,
 })
 const badgeNew: React.CSSProperties = {
-  marginLeft: 6, fontSize: 10, fontWeight: 700, color: '#fff',
-  background: '#e63', padding: '1px 5px', borderRadius: 3, verticalAlign: 'middle',
+  marginLeft: 6, fontSize: 10, fontWeight: 700, color: '#000',
+  background: '#FFD700', padding: '1px 5px', borderRadius: 3, verticalAlign: 'middle',
 }
 const badgeReady: React.CSSProperties = {
-  marginLeft: 6, fontSize: 11, color: '#e00', background: '#fee',
+  marginLeft: 6, fontSize: 11, color: '#ef4444', background: 'rgba(239,68,68,0.1)',
   padding: '1px 5px', borderRadius: 3,
 }
 
@@ -249,21 +249,21 @@ export default function CompaniesPage() {
   // ── Company form ─────────────────────────────────────────────────────────────
   const coInp = (label: string, key: keyof CompanyForm) => (
     <div style={{ marginBottom: 10 }}>
-      <label style={{ display: 'block', fontSize: 12, fontWeight: 600, marginBottom: 2 }}>{label}</label>
+      <label style={{ display: 'block', fontSize: 12, fontWeight: 600, marginBottom: 2, color: '#9ca3af' }}>{label}</label>
       <input
         value={coForm[key]}
         onChange={e => setCoForm(f => ({ ...f, [key]: e.target.value }))}
-        style={{ width: '100%', padding: '6px 9px', border: '1px solid #ccc', borderRadius: 4, fontSize: 14, boxSizing: 'border-box' }}
+        style={{ width: '100%', padding: '6px 9px', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 4, fontSize: 14, boxSizing: 'border-box', background: '#1a2035', color: '#fff' }}
       />
     </div>
   )
   const coSel = (label: string, key: keyof CompanyForm, opts: { value: string; label: string }[]) => (
     <div style={{ marginBottom: 10 }}>
-      <label style={{ display: 'block', fontSize: 12, fontWeight: 600, marginBottom: 2 }}>{label}</label>
+      <label style={{ display: 'block', fontSize: 12, fontWeight: 600, marginBottom: 2, color: '#9ca3af' }}>{label}</label>
       <select
         value={coForm[key]}
         onChange={e => setCoForm(f => ({ ...f, [key]: e.target.value }))}
-        style={{ width: '100%', padding: '6px 9px', border: '1px solid #ccc', borderRadius: 4, fontSize: 14 }}
+        style={{ width: '100%', padding: '6px 9px', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 4, fontSize: 14, background: '#1a2035', color: '#fff' }}
       >
         {opts.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
       </select>
@@ -271,21 +271,21 @@ export default function CompaniesPage() {
   )
 
   return (
-    <div>
+    <div style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20, flexWrap: 'wrap' }}>
-        <h2 style={{ margin: 0 }}>取引先マスタ</h2>
+        <h2 style={{ margin: 0, color: '#fff' }}>取引先マスタ</h2>
         <button onClick={startNewCo} style={btnPrimary}>＋ 新規追加</button>
         <button
           onClick={() => fileInputRef.current?.click()}
           disabled={importing || !!pendingFile}
-          style={{ ...btnPrimary, background: '#2e7d32' }}
+          style={btnGreen}
         >
           📥 Excel取り込み
         </button>
         <button
           onClick={() => setShowFormat(f => !f)}
-          style={{ ...btnSecondary, background: 'none', color: '#555', border: '1px solid #ccc' }}
+          style={{ ...btnSecondary }}
         >
           {showFormat ? '✕ 閉じる' : '❓ フォーマット'}
         </button>
@@ -294,10 +294,10 @@ export default function CompaniesPage() {
 
       {/* Pending file confirmation */}
       {pendingFile && (
-        <div style={{ background: '#fff8e1', border: '1px solid #f59e0b', borderRadius: 6, padding: '12px 16px', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
-          <span style={{ fontSize: 13 }}>📄 <strong>{pendingFile.name}</strong> を取り込みますか？</span>
+        <div style={{ background: 'rgba(255,215,0,0.05)', border: '1px solid rgba(255,215,0,0.2)', borderRadius: 6, padding: '12px 16px', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
+          <span style={{ fontSize: 13, color: '#d1d5db' }}>📄 <strong>{pendingFile.name}</strong> を取り込みますか？</span>
           <div style={{ display: 'flex', gap: 8 }}>
-            <button onClick={() => void confirmImport()} disabled={importing} style={{ ...btnPrimary, background: '#2e7d32' }}>
+            <button onClick={() => void confirmImport()} disabled={importing} style={btnGreen}>
               {importing ? '取り込み中…' : '取り込む'}
             </button>
             <button onClick={cancelImport} disabled={importing} style={btnSecondary}>キャンセル</button>
@@ -307,28 +307,28 @@ export default function CompaniesPage() {
 
       {/* Import result */}
       {importResult && (
-        <div style={{ background: '#fff', border: '1px solid #ddd', borderRadius: 6, padding: '12px 16px', marginBottom: 16, fontSize: 13 }}>
+        <div style={{ background: '#111827', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 6, padding: '12px 16px', marginBottom: 16, fontSize: 13, color: '#d1d5db' }}>
           <strong>取り込み結果:</strong>
           {' '}新規 {importResult.created}件 / 更新 {importResult.updated}件 / スキップ {importResult.skipped}件
           {importResult.errors.length > 0 && (
-            <ul style={{ color: 'red', margin: '6px 0 0 0', paddingLeft: 20 }}>
+            <ul style={{ color: '#ef4444', margin: '6px 0 0 0', paddingLeft: 20 }}>
               {importResult.errors.map((e, i) => <li key={i}>{e}</li>)}
             </ul>
           )}
-          <button onClick={() => setImportResult(null)} style={{ marginTop: 8, ...btnSmall('#888') }}>閉じる</button>
+          <button onClick={() => setImportResult(null)} style={{ marginTop: 8, ...btnSmall('#6b7280') }}>閉じる</button>
         </div>
       )}
 
       {/* Import format guide */}
       {showFormat && (
-        <div style={{ background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: 6, padding: '12px 16px', marginBottom: 16, fontSize: 12 }}>
-          <p style={{ margin: '0 0 8px', fontWeight: 600, fontSize: 13 }}>Excelフォーマット（.xlsx / .xls）</p>
-          <p style={{ margin: '0 0 8px', color: '#555' }}>1行目はヘッダー行として読み飛ばします。2行目からデータを入力してください。</p>
+        <div style={{ background: '#111827', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 6, padding: '12px 16px', marginBottom: 16, fontSize: 12 }}>
+          <p style={{ margin: '0 0 8px', fontWeight: 600, fontSize: 13, color: '#fff' }}>Excelフォーマット（.xlsx / .xls）</p>
+          <p style={{ margin: '0 0 8px', color: '#9ca3af' }}>1行目はヘッダー行として読み飛ばします。2行目からデータを入力してください。</p>
           <table style={{ borderCollapse: 'collapse', width: '100%' }}>
             <thead>
-              <tr style={{ background: '#e5e7eb' }}>
+              <tr style={{ background: '#1a2035' }}>
                 {['列', '項目', '必須', '例', '備考'].map(h => (
-                  <th key={h} style={{ padding: '5px 8px', textAlign: 'left', border: '1px solid #d1d5db', fontSize: 12, fontWeight: 600 }}>{h}</th>
+                  <th key={h} style={{ padding: '5px 8px', textAlign: 'left', border: '1px solid rgba(255,255,255,0.08)', fontSize: 12, fontWeight: 600, color: '#9ca3af' }}>{h}</th>
                 ))}
               </tr>
             </thead>
@@ -340,12 +340,12 @@ export default function CompaniesPage() {
                 { col: 'D', label: '締め日',   required: false, example: '月末 / 5 / 10 … / 31', note: '省略時: 月末' },
                 { col: 'E', label: '支払条件', required: false, example: '翌月末 / 締め後30日', note: '省略時: 翌月末' },
               ].map(row => (
-                <tr key={row.col} style={{ borderBottom: '1px solid #e5e7eb' }}>
-                  <td style={{ padding: '5px 8px', border: '1px solid #d1d5db', fontWeight: 600, textAlign: 'center' }}>{row.col}</td>
-                  <td style={{ padding: '5px 8px', border: '1px solid #d1d5db' }}>{row.label}</td>
-                  <td style={{ padding: '5px 8px', border: '1px solid #d1d5db', textAlign: 'center' }}>{row.required ? '✓' : '—'}</td>
-                  <td style={{ padding: '5px 8px', border: '1px solid #d1d5db', color: '#555' }}>{row.example}</td>
-                  <td style={{ padding: '5px 8px', border: '1px solid #d1d5db', color: '#888' }}>{row.note}</td>
+                <tr key={row.col} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                  <td style={{ padding: '5px 8px', border: '1px solid rgba(255,255,255,0.08)', fontWeight: 600, textAlign: 'center', color: '#FFD700' }}>{row.col}</td>
+                  <td style={{ padding: '5px 8px', border: '1px solid rgba(255,255,255,0.08)', color: '#d1d5db' }}>{row.label}</td>
+                  <td style={{ padding: '5px 8px', border: '1px solid rgba(255,255,255,0.08)', textAlign: 'center', color: row.required ? '#34d399' : '#6b7280' }}>{row.required ? '✓' : '—'}</td>
+                  <td style={{ padding: '5px 8px', border: '1px solid rgba(255,255,255,0.08)', color: '#9ca3af' }}>{row.example}</td>
+                  <td style={{ padding: '5px 8px', border: '1px solid rgba(255,255,255,0.08)', color: '#6b7280' }}>{row.note}</td>
                 </tr>
               ))}
             </tbody>
@@ -355,8 +355,8 @@ export default function CompaniesPage() {
 
       {/* Company form (new/edit) */}
       {editingCo && (
-        <div style={{ background: '#fff', border: '1px solid #ddd', borderRadius: 8, padding: 20, marginBottom: 20, maxWidth: 520 }}>
-          <h3 style={{ marginTop: 0, marginBottom: 14 }}>{editingCo === 'new' ? '新規取引先' : '取引先を編集'}</h3>
+        <div style={{ background: '#111827', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 8, padding: 20, marginBottom: 20, maxWidth: 520 }}>
+          <h3 style={{ marginTop: 0, marginBottom: 14, color: '#fff' }}>{editingCo === 'new' ? '新規取引先' : '取引先を編集'}</h3>
           {coInp('会社名 *', 'name')}
           {coInp('住所', 'address')}
           {coInp('電話番号', 'phone')}
@@ -364,7 +364,7 @@ export default function CompaniesPage() {
             {coSel('締め日 *', 'closing_day', CLOSING_DAYS)}
             {coSel('支払条件 *', 'payment_type', PAYMENT_TYPES)}
           </div>
-          {coErr && <p style={{ color: 'red', fontSize: 13, margin: '6px 0' }}>{coErr}</p>}
+          {coErr && <p style={{ color: '#ef4444', fontSize: 13, margin: '6px 0' }}>{coErr}</p>}
           <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
             <button onClick={saveCo} disabled={coSaving} style={btnPrimary}>{coSaving ? '保存中…' : '保存'}</button>
             <button onClick={cancelCo} style={btnSecondary}>キャンセル</button>
@@ -373,10 +373,10 @@ export default function CompaniesPage() {
       )}
 
       {/* Table */}
-      {loading ? <p>読み込み中…</p> : (
-        <table style={{ width: '100%', borderCollapse: 'collapse', background: '#fff', borderRadius: 8, overflow: 'hidden', boxShadow: '0 1px 4px rgba(0,0,0,0.1)' }}>
+      {loading ? <p style={{ color: '#9ca3af' }}>読み込み中…</p> : (
+        <table style={{ width: '100%', borderCollapse: 'collapse', background: '#111827', borderRadius: 8, overflow: 'hidden' }}>
           <thead>
-            <tr style={{ background: '#f0f0f0' }}>
+            <tr style={{ background: '#1a2035' }}>
               {['', '会社名', '住所', '締め日', '支払条件', '状態', ''].map((h, i) => (
                 <th key={i} style={th}>{h}</th>
               ))}
@@ -384,7 +384,7 @@ export default function CompaniesPage() {
           </thead>
           <tbody>
             {companies.length === 0 && (
-              <tr><td colSpan={7} style={{ padding: 24, textAlign: 'center', color: '#888' }}>取引先がありません</td></tr>
+              <tr><td colSpan={7} style={{ padding: 24, textAlign: 'center', color: '#6b7280' }}>取引先がありません</td></tr>
             )}
             {companies.map(c => {
               const isExpanded = expanded.has(c.id)
@@ -399,9 +399,9 @@ export default function CompaniesPage() {
                   <tr
                     key={c.id}
                     onClick={() => toggleExpand(c.id)}
-                    style={{ borderBottom: '1px solid #eee', opacity: c.active_flag ? 1 : 0.5, cursor: 'pointer', background: isExpanded ? '#f7f7ff' : undefined }}
+                    style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', opacity: c.active_flag ? 1 : 0.5, cursor: 'pointer', background: isExpanded ? 'rgba(255,215,0,0.03)' : undefined }}
                   >
-                    <td style={{ ...td, width: 28, color: '#666', fontSize: 13 }}>{isExpanded ? '▼' : '▶'}</td>
+                    <td style={{ ...td, width: 28, color: '#FFD700', fontSize: 13 }}>{isExpanded ? '▼' : '▶'}</td>
                     <td style={td}>
                       {c.name}
                       {isNew(c.created_at) && <span style={badgeNew}>NEW</span>}
@@ -411,14 +411,14 @@ export default function CompaniesPage() {
                     <td style={td}>{closingLabel(c.closing_day)}</td>
                     <td style={td}>{paymentLabel(c.payment_type)}</td>
                     <td style={td}>
-                      <span style={{ fontSize: 12, padding: '2px 8px', borderRadius: 10, background: c.active_flag ? '#d4edda' : '#f8d7da', color: c.active_flag ? '#155724' : '#721c24' }}>
+                      <span style={{ fontSize: 12, padding: '2px 8px', borderRadius: 10, background: c.active_flag ? 'rgba(52,211,153,0.1)' : 'rgba(239,68,68,0.1)', color: c.active_flag ? '#34d399' : '#ef4444', fontWeight: 600 }}>
                         {c.active_flag ? '有効' : '無効'}
                       </span>
                     </td>
                     <td style={{ padding: '8px 12px', whiteSpace: 'nowrap' }}>
-                      <button onClick={e => startEditCo(c, e)} style={btnSmall('#555')}>編集</button>
+                      <button onClick={e => startEditCo(c, e)} style={btnSmall('#6b7280')}>編集</button>
                       {c.active_flag && (
-                        <button onClick={e => deactivateCo(c.id, c.name, e)} style={{ ...btnSmall('#c00'), marginLeft: 6 }}>無効化</button>
+                        <button onClick={e => deactivateCo(c.id, c.name, e)} style={{ ...btnSmall('#ef4444'), marginLeft: 6 }}>無効化</button>
                       )}
                     </td>
                   </tr>
@@ -428,13 +428,13 @@ export default function CompaniesPage() {
                     <>
                       {loadingSites && (
                         <tr key={`${c.id}-loading`}>
-                          <td colSpan={7} style={{ ...tdSub, paddingLeft: 40, color: '#888' }}>読み込み中…</td>
+                          <td colSpan={7} style={{ ...tdSub, paddingLeft: 40, color: '#6b7280' }}>読み込み中…</td>
                         </tr>
                       )}
                       {!loadingSites && companySites.map(s => {
                         const isEditingThis = editingThisSite === s.id
                         return (
-                          <tr key={s.id} style={{ borderBottom: '1px solid #f0f0f0', opacity: s.active_flag ? 1 : 0.5 }}>
+                          <tr key={s.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.03)', opacity: s.active_flag ? 1 : 0.5 }}>
                             <td style={tdSub} />
                             <td colSpan={4} style={{ ...tdSub, paddingLeft: 32 }}>
                               {isEditingThis ? (
@@ -442,28 +442,28 @@ export default function CompaniesPage() {
                                   <input
                                     value={siteForm.name}
                                     onChange={e => setSiteForm({ name: e.target.value })}
-                                    style={{ padding: '4px 8px', border: '1px solid #aaa', borderRadius: 4, fontSize: 13, width: 220 }}
+                                    style={{ padding: '4px 8px', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 4, fontSize: 13, width: 220, background: '#1a2035', color: '#fff' }}
                                     autoFocus
                                   />
-                                  <button onClick={() => saveSite(c.id)} disabled={siteSaving} style={btnSmall('#1a1a2e')}>{siteSaving ? '…' : '保存'}</button>
-                                  <button onClick={cancelSite} style={btnSmall('#888')}>取消</button>
-                                  {siteErr && <span style={{ color: 'red', fontSize: 12 }}>{siteErr}</span>}
+                                  <button onClick={() => saveSite(c.id)} disabled={siteSaving} style={btnSmall('#FFD700')}>{siteSaving ? '…' : '保存'}</button>
+                                  <button onClick={cancelSite} style={btnSmall('#6b7280')}>取消</button>
+                                  {siteErr && <span style={{ color: '#ef4444', fontSize: 12 }}>{siteErr}</span>}
                                 </div>
                               ) : (
-                                <span style={{ color: '#444' }}>└ {s.name}</span>
+                                <span style={{ color: '#9ca3af' }}>└ {s.name}</span>
                               )}
                             </td>
                             <td style={tdSub}>
-                              <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 8, background: s.active_flag ? '#d4edda' : '#f8d7da', color: s.active_flag ? '#155724' : '#721c24' }}>
+                              <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 8, background: s.active_flag ? 'rgba(52,211,153,0.1)' : 'rgba(239,68,68,0.1)', color: s.active_flag ? '#34d399' : '#ef4444', fontWeight: 600 }}>
                                 {s.active_flag ? '有効' : '無効'}
                               </span>
                             </td>
                             <td style={{ ...tdSub, whiteSpace: 'nowrap' }}>
                               {!isEditingThis && (
                                 <>
-                                  <button onClick={() => startEditSite(s)} style={btnSmall('#555')}>編集</button>
+                                  <button onClick={() => startEditSite(s)} style={btnSmall('#6b7280')}>編集</button>
                                   {s.active_flag && (
-                                    <button onClick={() => deactivateSite(s.id, s.name, c.id)} style={{ ...btnSmall('#c00'), marginLeft: 6 }}>無効化</button>
+                                    <button onClick={() => deactivateSite(s.id, s.name, c.id)} style={{ ...btnSmall('#ef4444'), marginLeft: 6 }}>無効化</button>
                                   )}
                                 </>
                               )}
@@ -474,7 +474,7 @@ export default function CompaniesPage() {
 
                       {/* Add new site row */}
                       {!loadingSites && (
-                        <tr key={`${c.id}-add`} style={{ borderBottom: '1px solid #eee', background: '#fafafa' }}>
+                        <tr key={`${c.id}-add`} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', background: '#0f1629' }}>
                           <td style={tdSub} />
                           <td colSpan={5} style={{ ...tdSub, paddingLeft: 32 }}>
                             {isAddingNewSite ? (
@@ -483,17 +483,17 @@ export default function CompaniesPage() {
                                   value={siteForm.name}
                                   onChange={e => setSiteForm({ name: e.target.value })}
                                   placeholder="現場名"
-                                  style={{ padding: '4px 8px', border: '1px solid #aaa', borderRadius: 4, fontSize: 13, width: 220 }}
+                                  style={{ padding: '4px 8px', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 4, fontSize: 13, width: 220, background: '#1a2035', color: '#fff' }}
                                   autoFocus
                                 />
-                                <button onClick={() => saveSite(c.id)} disabled={siteSaving} style={btnSmall('#2e7d32')}>{siteSaving ? '…' : '追加'}</button>
-                                <button onClick={cancelSite} style={btnSmall('#888')}>取消</button>
-                                {siteErr && <span style={{ color: 'red', fontSize: 12 }}>{siteErr}</span>}
+                                <button onClick={() => saveSite(c.id)} disabled={siteSaving} style={btnSmall('#34d399')}>{siteSaving ? '…' : '追加'}</button>
+                                <button onClick={cancelSite} style={btnSmall('#6b7280')}>取消</button>
+                                {siteErr && <span style={{ color: '#ef4444', fontSize: 12 }}>{siteErr}</span>}
                               </div>
                             ) : (
                               <button
                                 onClick={() => startNewSite(c.id)}
-                                style={{ background: 'none', border: '1px dashed #aaa', borderRadius: 4, padding: '3px 10px', fontSize: 12, cursor: 'pointer', color: '#555' }}
+                                style={{ background: 'none', border: '1px dashed rgba(255,255,255,0.15)', borderRadius: 4, padding: '3px 10px', fontSize: 12, cursor: 'pointer', color: '#9ca3af' }}
                               >
                                 ＋ 現場を追加
                               </button>
@@ -513,3 +513,5 @@ export default function CompaniesPage() {
     </div>
   )
 }
+
+const btnGreen: React.CSSProperties = { padding: '8px 18px', background: '#34d399', color: '#000', border: 'none', borderRadius: 6, cursor: 'pointer', fontSize: 13, fontWeight: 700 }

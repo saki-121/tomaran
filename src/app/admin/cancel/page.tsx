@@ -34,9 +34,9 @@ export default function CancelPage() {
   }
 
   return (
-    <div style={{ maxWidth: 520 }}>
-      <h2 style={{ marginBottom: 8, color: '#111827' }}>解約</h2>
-      <p style={{ fontSize: 14, color: '#6b7280', marginBottom: 28, lineHeight: 1.7 }}>
+    <div style={{ maxWidth: 520, fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+      <h2 style={{ marginBottom: 8, color: '#fff' }}>解約</h2>
+      <p style={{ fontSize: 14, color: '#9ca3af', marginBottom: 28, lineHeight: 1.7 }}>
         解約をご希望の場合は、以下のボタンから手続きを進めてください。
         手続きは Stripe のサブスクリプション管理ページで行います。
       </p>
@@ -45,9 +45,9 @@ export default function CancelPage() {
         onClick={() => setOpen(true)}
         style={{
           padding: '10px 24px',
-          background: '#fff',
-          color: '#dc2626',
-          border: '1px solid #fca5a5',
+          background: '#1a2035',
+          color: '#ef4444',
+          border: '1px solid rgba(239,68,68,0.3)',
           borderRadius: 6,
           fontSize: 14,
           fontWeight: 600,
@@ -61,16 +61,17 @@ export default function CancelPage() {
       {open && (
         <div style={{
           position: 'fixed', inset: 0,
-          background: 'rgba(0,0,0,0.45)',
+          background: 'rgba(0,0,0,0.7)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           zIndex: 200, padding: 16,
         }}>
           <div style={{
-            background: '#fff', borderRadius: 12,
+            background: '#111827', borderRadius: 12,
+            border: '1px solid rgba(255,255,255,0.08)',
             padding: '32px 28px', width: '100%', maxWidth: 480,
-            boxShadow: '0 4px 24px rgba(0,0,0,0.18)',
+            boxShadow: '0 4px 40px rgba(0,0,0,0.6)',
           }}>
-            <h3 style={{ margin: '0 0 6px', fontSize: 17, fontWeight: 700, color: '#111827' }}>
+            <h3 style={{ margin: '0 0 6px', fontSize: 17, fontWeight: 700, color: '#fff' }}>
               解約アンケート（任意）
             </h3>
             <p style={{ margin: '0 0 18px', fontSize: 12, color: '#9ca3af' }}>
@@ -79,7 +80,7 @@ export default function CancelPage() {
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 16 }}>
               {REASONS.map(r => (
-                <label key={r.id} style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 14, cursor: 'pointer', color: '#374151' }}>
+                <label key={r.id} style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 14, cursor: 'pointer', color: '#d1d5db' }}>
                   <input
                     type="checkbox"
                     checked={selected.includes(r.id)}
@@ -89,7 +90,7 @@ export default function CancelPage() {
                   {r.label}
                 </label>
               ))}
-              <label style={{ display: 'flex', alignItems: 'flex-start', gap: 10, fontSize: 14, cursor: 'pointer', color: '#374151' }}>
+              <label style={{ display: 'flex', alignItems: 'flex-start', gap: 10, fontSize: 14, cursor: 'pointer', color: '#d1d5db' }}>
                 <input
                   type="checkbox"
                   checked={selected.includes('other')}
@@ -106,17 +107,18 @@ export default function CancelPage() {
                   rows={2}
                   style={{
                     width: '100%', padding: '8px 10px',
-                    border: '1px solid #d1d5db', borderRadius: 4,
+                    border: '1px solid rgba(255,255,255,0.1)', borderRadius: 6,
                     fontSize: 13, resize: 'vertical', boxSizing: 'border-box',
+                    background: '#1a2035', color: '#d1d5db',
                   }}
                 />
               )}
             </div>
 
             <div style={{
-              background: '#fef2f2', border: '1px solid #fca5a5',
+              background: 'rgba(239,68,68,0.05)', border: '1px solid rgba(239,68,68,0.2)',
               borderRadius: 6, padding: '12px 14px',
-              marginBottom: 20, fontSize: 12, color: '#7f1d1d', lineHeight: 1.75,
+              marginBottom: 20, fontSize: 12, color: '#fca5a5', lineHeight: 1.75,
             }}>
               <p style={{ margin: '0 0 4px', fontWeight: 600 }}>解約前にご確認ください</p>
               <p style={{ margin: 0 }}>
@@ -127,13 +129,13 @@ export default function CancelPage() {
               </p>
             </div>
 
-            {err && <p style={{ color: '#dc2626', fontSize: 13, marginBottom: 12 }}>{err}</p>}
+            {err && <p style={{ color: '#ef4444', fontSize: 13, marginBottom: 12 }}>{err}</p>}
 
             <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
               <button
                 onClick={() => { setOpen(false); setErr(null) }}
                 disabled={loading}
-                style={{ padding: '9px 20px', background: '#f3f4f6', color: '#374151', border: 'none', borderRadius: 6, fontSize: 14, cursor: 'pointer' }}
+                style={{ padding: '9px 20px', background: '#1a2035', color: '#9ca3af', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 6, fontSize: 14, cursor: 'pointer' }}
               >
                 キャンセル
               </button>
@@ -142,7 +144,7 @@ export default function CancelPage() {
                 disabled={loading}
                 style={{
                   padding: '9px 20px',
-                  background: loading ? '#fca5a5' : '#dc2626',
+                  background: loading ? 'rgba(239,68,68,0.5)' : '#ef4444',
                   color: '#fff', border: 'none', borderRadius: 6,
                   fontSize: 14, fontWeight: 600,
                   cursor: loading ? 'not-allowed' : 'pointer',

@@ -149,34 +149,34 @@ export default function OwnMasterPage() {
   // ── Render helpers ──
   const profileField = (label: string, key: keyof Profile, placeholder = '') => (
     <div style={{ marginBottom: 16 }}>
-      <label style={{ display: 'block', fontWeight: 600, marginBottom: 4, fontSize: 13 }}>{label}</label>
+      <label style={{ display: 'block', fontWeight: 600, marginBottom: 4, fontSize: 13, color: '#9ca3af' }}>{label}</label>
       <input
         value={profile[key] ?? ''}
         onChange={e => setProfile(p => ({ ...p, [key]: e.target.value }))}
         placeholder={placeholder}
-        style={{ width: '100%', padding: '8px 10px', border: '1px solid #ccc', borderRadius: 4, fontSize: 14, boxSizing: 'border-box' }}
+        style={{ width: '100%', padding: '8px 10px', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 6, fontSize: 14, boxSizing: 'border-box', background: '#1a2035', color: '#fff' }}
       />
     </div>
   )
 
   const bankInp = (label: string, key: keyof Omit<BankForm, 'is_default'>) => (
     <div style={{ marginBottom: 12 }}>
-      <label style={{ display: 'block', fontSize: 12, fontWeight: 600, marginBottom: 3 }}>{label}</label>
+      <label style={{ display: 'block', fontSize: 12, fontWeight: 600, marginBottom: 3, color: '#9ca3af' }}>{label}</label>
       <input
         type="text"
         value={bankForm[key] as string}
         onChange={e => setBankForm(f => ({ ...f, [key]: e.target.value }))}
-        style={{ width: '100%', padding: '7px 10px', border: '1px solid #ccc', borderRadius: 4, fontSize: 14, boxSizing: 'border-box' }}
+        style={{ width: '100%', padding: '7px 10px', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 4, fontSize: 14, boxSizing: 'border-box', background: '#1a2035', color: '#fff' }}
       />
     </div>
   )
 
-  if (loadingProfile) return <p>読み込み中…</p>
+  if (loadingProfile) return <p style={{ color: '#9ca3af' }}>読み込み中…</p>
 
   return (
-    <div>
+    <div style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
       {/* ── 自社設定 ──────────────────────────────────────────────── */}
-      <h2 style={{ marginBottom: 24 }}>自社設定</h2>
+      <h2 style={{ marginBottom: 24, color: '#fff' }}>自社設定</h2>
       <form onSubmit={saveProfile} style={{ maxWidth: 560, marginBottom: 48 }}>
         {profileField('会社名', 'company_name', '例：株式会社〇〇')}
         {profileField('住所', 'address', '例：東京都〇〇区…')}
@@ -185,32 +185,32 @@ export default function OwnMasterPage() {
         <button
           type="submit"
           disabled={saving}
-          style={{ padding: '10px 28px', background: '#1a1a2e', color: '#fff', border: 'none', borderRadius: 4, cursor: 'pointer', fontSize: 14 }}
+          style={{ padding: '10px 28px', background: '#FFD700', color: '#000', border: 'none', borderRadius: 6, cursor: 'pointer', fontSize: 14, fontWeight: 700 }}
         >
           {saving ? '保存中…' : '保存'}
         </button>
-        {msg && <p style={{ marginTop: 12, color: msg.startsWith('エラー') ? 'red' : 'green', fontSize: 14 }}>{msg}</p>}
+        {msg && <p style={{ marginTop: 12, color: msg.startsWith('エラー') ? '#ef4444' : '#34d399', fontSize: 14 }}>{msg}</p>}
       </form>
 
-      <hr style={{ border: 'none', borderTop: '1px solid #e5e7eb', marginBottom: 32 }} />
+      <hr style={{ border: 'none', borderTop: '1px solid rgba(255,255,255,0.08)', marginBottom: 32 }} />
 
       {/* ── 銀行口座 ──────────────────────────────────────────────── */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
-        <h2 style={{ margin: 0 }}>銀行口座</h2>
-        <button onClick={startNewBank} style={btn('#1a1a2e')}>＋ 追加</button>
+        <h2 style={{ margin: 0, color: '#fff' }}>銀行口座</h2>
+        <button onClick={startNewBank} style={btnPrimary}>＋ 追加</button>
       </div>
 
       {bankEditing && (
-        <div style={{ background: '#fff', border: '1px solid #ddd', borderRadius: 8, padding: 20, marginBottom: 24, maxWidth: 480 }}>
-          <h3 style={{ marginTop: 0, marginBottom: 14 }}>{bankEditing === 'new' ? '新規口座' : '口座を編集'}</h3>
+        <div style={{ background: '#111827', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 8, padding: 20, marginBottom: 24, maxWidth: 480 }}>
+          <h3 style={{ marginTop: 0, marginBottom: 14, color: '#fff' }}>{bankEditing === 'new' ? '新規口座' : '口座を編集'}</h3>
           {bankInp('銀行名 *', 'bank_name')}
           {bankInp('支店名', 'branch_name')}
           <div style={{ marginBottom: 12 }}>
-            <label style={{ display: 'block', fontSize: 12, fontWeight: 600, marginBottom: 3 }}>口座種別</label>
+            <label style={{ display: 'block', fontSize: 12, fontWeight: 600, marginBottom: 3, color: '#9ca3af' }}>口座種別</label>
             <select
               value={bankForm.account_type}
               onChange={e => setBankForm(f => ({ ...f, account_type: e.target.value }))}
-              style={{ width: '100%', padding: '7px 10px', border: '1px solid #ccc', borderRadius: 4, fontSize: 14 }}
+              style={{ width: '100%', padding: '7px 10px', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 4, fontSize: 14, background: '#1a2035', color: '#fff' }}
             >
               <option value="普通">普通</option>
               <option value="当座">当座</option>
@@ -219,7 +219,7 @@ export default function OwnMasterPage() {
           {bankInp('口座番号', 'account_number')}
           {bankInp('口座名義', 'account_holder')}
           <div style={{ marginBottom: 14 }}>
-            <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, cursor: 'pointer' }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, cursor: 'pointer', color: '#d1d5db' }}>
               <input
                 type="checkbox"
                 checked={bankForm.is_default}
@@ -228,51 +228,51 @@ export default function OwnMasterPage() {
               デフォルトに設定（請求書に使用）
             </label>
           </div>
-          {bankErr && <p style={{ color: 'red', fontSize: 13, margin: '4px 0 8px' }}>{bankErr}</p>}
+          {bankErr && <p style={{ color: '#ef4444', fontSize: 13, margin: '4px 0 8px' }}>{bankErr}</p>}
           <div style={{ display: 'flex', gap: 8 }}>
-            <button onClick={() => void saveBank()} disabled={bankSaving} style={btn('#1a1a2e')}>{bankSaving ? '保存中…' : '保存'}</button>
-            <button onClick={cancelBank} style={btn('#888')}>キャンセル</button>
+            <button onClick={() => void saveBank()} disabled={bankSaving} style={btnPrimary}>{bankSaving ? '保存中…' : '保存'}</button>
+            <button onClick={cancelBank} style={btnSecondary}>キャンセル</button>
           </div>
         </div>
       )}
 
-      {loadingBank ? <p style={{ fontSize: 14, color: '#888' }}>読み込み中…</p> : (
+      {loadingBank ? <p style={{ fontSize: 14, color: '#9ca3af' }}>読み込み中…</p> : (
         <>
-          <p style={{ fontSize: 13, color: '#555', marginBottom: 8 }}>{accounts.length}件登録済み</p>
-          <table style={{ width: '100%', borderCollapse: 'collapse', background: '#fff', borderRadius: 8, overflow: 'hidden', boxShadow: '0 1px 4px rgba(0,0,0,0.1)', maxWidth: 800 }}>
+          <p style={{ fontSize: 13, color: '#9ca3af', marginBottom: 8 }}>{accounts.length}件登録済み</p>
+          <table style={{ width: '100%', borderCollapse: 'collapse', background: '#111827', borderRadius: 8, overflow: 'hidden', maxWidth: 800 }}>
             <thead>
-              <tr style={{ background: '#f0f0f0' }}>
+              <tr style={{ background: '#1a2035' }}>
                 {['銀行名', '支店', '種別', '口座番号', '名義', ''].map(h => (
-                  <th key={h} style={{ padding: '10px 12px', textAlign: 'left', fontSize: 13, fontWeight: 600, borderBottom: '1px solid #ddd' }}>{h}</th>
+                  <th key={h} style={{ padding: '10px 12px', textAlign: 'left', fontSize: 13, fontWeight: 600, borderBottom: '1px solid rgba(255,255,255,0.08)', color: '#9ca3af' }}>{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {accounts.map(a => (
-                <tr key={a.id} style={{ borderBottom: '1px solid #eee' }}>
-                  <td style={{ padding: '10px 12px', fontSize: 14 }}>
+                <tr key={a.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                  <td style={{ padding: '10px 12px', fontSize: 14, color: '#d1d5db' }}>
                     {a.bank_name}
                     {a.is_default && (
-                      <span style={{ marginLeft: 6, fontSize: 11, padding: '2px 7px', borderRadius: 10, background: '#d4edda', color: '#155724', fontWeight: 600 }}>
+                      <span style={{ marginLeft: 6, fontSize: 11, padding: '2px 7px', borderRadius: 10, background: 'rgba(52,211,153,0.1)', color: '#34d399', fontWeight: 600 }}>
                         デフォルト
                       </span>
                     )}
                   </td>
-                  <td style={{ padding: '10px 12px', fontSize: 14 }}>{a.branch_name ?? '—'}</td>
-                  <td style={{ padding: '10px 12px', fontSize: 14 }}>{a.account_type ?? '—'}</td>
-                  <td style={{ padding: '10px 12px', fontSize: 14 }}>{a.account_number ?? '—'}</td>
-                  <td style={{ padding: '10px 12px', fontSize: 14 }}>{a.account_holder ?? '—'}</td>
+                  <td style={{ padding: '10px 12px', fontSize: 14, color: '#d1d5db' }}>{a.branch_name ?? '—'}</td>
+                  <td style={{ padding: '10px 12px', fontSize: 14, color: '#d1d5db' }}>{a.account_type ?? '—'}</td>
+                  <td style={{ padding: '10px 12px', fontSize: 14, color: '#d1d5db' }}>{a.account_number ?? '—'}</td>
+                  <td style={{ padding: '10px 12px', fontSize: 14, color: '#d1d5db' }}>{a.account_holder ?? '—'}</td>
                   <td style={{ padding: '8px 12px', whiteSpace: 'nowrap' }}>
-                    <button onClick={() => startEditBank(a)} style={btnSm('#555')}>編集</button>
+                    <button onClick={() => startEditBank(a)} style={btnSmall('#6b7280')}>編集</button>
                     {!a.is_default && (
-                      <button onClick={() => void setDefaultBank(a)} style={{ ...btnSm('#2563eb'), marginLeft: 6 }}>デフォルト</button>
+                      <button onClick={() => void setDefaultBank(a)} style={{ ...btnSmall('#FFD700'), color: '#000', marginLeft: 6 }}>デフォルト</button>
                     )}
-                    <button onClick={() => void removeBank(a.id, a.bank_name)} style={{ ...btnSm('#c00'), marginLeft: 6 }}>削除</button>
+                    <button onClick={() => void removeBank(a.id, a.bank_name)} style={{ ...btnSmall('#ef4444'), marginLeft: 6 }}>削除</button>
                   </td>
                 </tr>
               ))}
               {accounts.length === 0 && (
-                <tr><td colSpan={6} style={{ padding: 24, textAlign: 'center', color: '#888' }}>口座が登録されていません</td></tr>
+                <tr><td colSpan={6} style={{ padding: 24, textAlign: 'center', color: '#6b7280' }}>口座が登録されていません</td></tr>
               )}
             </tbody>
           </table>
@@ -282,5 +282,6 @@ export default function OwnMasterPage() {
   )
 }
 
-const btn   = (bg: string): React.CSSProperties => ({ padding: '8px 18px', background: bg, color: '#fff', border: 'none', borderRadius: 4, cursor: 'pointer', fontSize: 13 })
-const btnSm = (bg: string): React.CSSProperties => ({ padding: '4px 10px', background: bg, color: '#fff', border: 'none', borderRadius: 4, cursor: 'pointer', fontSize: 12 })
+const btnPrimary: React.CSSProperties  = { padding: '8px 18px', background: '#FFD700', color: '#000', border: 'none', borderRadius: 6, cursor: 'pointer', fontSize: 13, fontWeight: 700 }
+const btnSecondary: React.CSSProperties = { padding: '8px 18px', background: '#1a2035', color: '#9ca3af', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 6, cursor: 'pointer', fontSize: 13 }
+const btnSmall = (bg: string): React.CSSProperties => ({ padding: '4px 10px', background: bg, color: '#fff', border: 'none', borderRadius: 4, cursor: 'pointer', fontSize: 12 })

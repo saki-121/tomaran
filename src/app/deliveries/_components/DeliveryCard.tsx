@@ -40,8 +40,8 @@ export default function DeliveryCard({ delivery }: { delivery: DeliveryCardRow }
           ...s.card,
           transform:  pressed ? 'scale(0.97)' : 'scale(1)',
           boxShadow:  pressed
-            ? 'inset 0 1px 2px rgba(0,0,0,0.06)'
-            : '0 1px 3px rgba(0,0,0,0.05)',
+            ? 'inset 0 1px 2px rgba(0,0,0,0.3)'
+            : '0 1px 3px rgba(0,0,0,0.3)',
         }}
         onPointerDown={()  => setPressed(true)}
         onPointerUp={()    => setPressed(false)}
@@ -76,8 +76,8 @@ const s: Record<string, CSSProperties> = {
     gap: 12,
     padding: '14px 16px',
     minHeight: 64,
-    background: '#ffffff',
-    border: '1px solid #e5e7eb',
+    background: '#111827',
+    border: '1px solid rgba(255,255,255,0.08)',
     borderRadius: 12,
     textDecoration: 'none',
     WebkitTapHighlightColor: 'transparent',
@@ -92,7 +92,7 @@ const s: Record<string, CSSProperties> = {
   siteName: {
     fontSize: 15,
     fontWeight: 600,
-    color: '#111827',
+    color: '#fff',
     margin: 0,
     overflow: 'hidden',
     textOverflow: 'ellipsis',
@@ -100,7 +100,7 @@ const s: Record<string, CSSProperties> = {
   },
   companyName: {
     fontSize: 13,
-    color: '#6b7280',
+    color: '#9ca3af',
     margin: '3px 0 0',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
@@ -113,18 +113,18 @@ const s: Record<string, CSSProperties> = {
   itemCount: {
     fontSize: 14,
     fontWeight: 500,
-    color: '#374151',
+    color: '#d1d5db',
     margin: 0,
   },
   date: {
     fontSize: 12,
-    color: '#9ca3af',
+    color: '#6b7280',
     margin: '2px 0 0',
   },
   tapHint: {
     fontSize: 11,
-    color: '#6b7280',
-    opacity: 0.6,
+    color: '#FFD700',
+    opacity: 0.7,
     margin: '4px 0 0',
     textAlign: 'right',
   },
