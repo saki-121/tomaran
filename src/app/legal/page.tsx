@@ -13,22 +13,21 @@ export default function LegalPage() {
         <dl className="space-y-6 text-sm">
           <div className="border-b border-gray-100 pb-6">
             <dt className="mb-1 font-semibold text-gray-500">販売業者</dt>
-            <dd>tomaran</dd>
+            <dd>請求があった場合は遅延なく開示いたします</dd>
           </div>
           <div className="border-b border-gray-100 pb-6">
             <dt className="mb-1 font-semibold text-gray-500">運営責任者</dt>
-            <dd>場集田早希</dd>
+            <dd>請求があった場合は遅延なく開示いたします</dd>
           </div>
           <div className="border-b border-gray-100 pb-6">
             <dt className="mb-1 font-semibold text-gray-500">所在地</dt>
-            <dd>鹿児島県（詳細は請求に応じて開示します）</dd>
+            <dd>請求があった場合は遅延なく開示いたします</dd>
           </div>
           <div className="border-b border-gray-100 pb-6">
             <dt className="mb-1 font-semibold text-gray-500">連絡先</dt>
             <dd>
               メール：support@tomaran.net<br />
-              電話：<a href="tel:07091599240" className="underline">070-9159-9240</a>
-              <span className="ml-1 text-xs text-gray-400">（平日 11:00〜15:00 受付）</span>
+              電話：請求があった場合は遅延なく開示いたします
             </dd>
           </div>
           <div className="border-b border-gray-100 pb-6">

@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
 import type { CSSProperties } from 'react'
+import ItemList from './_components/ItemList'
 
 // ---------------------------------------------------------------------------
 // Types — 価格列を一切含まない
@@ -127,17 +128,11 @@ export default async function DeliveryFieldDetailPage({
       {/* ── 商品一覧（数量のみ — 単価・合計は表示しない） ── */}
       <h2 style={s.sectionTitle}>商品</h2>
 
-      <div style={s.card}>
-        {delivery.delivery_items.map((item, idx) => (
-          <div key={item.id}>
-            {idx > 0 && <div style={s.divider} />}
-            <div style={s.itemRow}>
-              <span style={s.itemName}>{item.product?.name ?? '—'}</span>
-              <span style={s.itemQty}>{item.quantity}</span>
-            </div>
-          </div>
-        ))}
-      </div>
+      <ItemList
+        deliveryId={delivery.id}
+        status={delivery.status}
+        items={delivery.delivery_items}
+      />
 
     </main>
   )
@@ -201,11 +196,4 @@ const s: Record<string, CSSProperties> = {
     fontSize: 13, fontWeight: 600, color: '#6b7280',
     margin: '0 0 8px 4px', letterSpacing: '0.05em',
   },
-  divider: { borderTop: '1px solid #f3f4f6' },
-  itemRow: {
-    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-    padding: '14px 0', minHeight: 44,
-  },
-  itemName: { fontSize: 15, color: '#111827', flex: 1, marginRight: 12 },
-  itemQty: { fontSize: 15, fontWeight: 600, color: '#374151', flexShrink: 0 },
 }
