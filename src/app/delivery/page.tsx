@@ -126,8 +126,11 @@ export default async function DeliveryFieldPage({
           defaultValue={company_id ?? ''}
           onChange={e => {
             const url = new URL(window.location.href)
-            e.target.value ? url.searchParams.set('company_id', e.target.value)
-                           : url.searchParams.delete('company_id')
+            if (e.target.value) {
+              url.searchParams.set('company_id', e.target.value)
+            } else {
+              url.searchParams.delete('company_id')
+            }
             window.location.href = url.toString()
           }}
           style={s.select}

@@ -29,7 +29,7 @@ export async function POST(req: Request) {
 
       await supabase
         .from('profiles')
-        .update({ is_paid: true } as any)
+        .update({ is_paid: true })
         .eq('id', userId)
     }
   }
