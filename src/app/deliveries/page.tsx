@@ -112,12 +112,10 @@ export default async function DeliveriesPage({
 
   return (
     <main style={s.main}>
-      <h1 style={s.heading}>納品一覧</h1>
-
-      {/* ── 管理画面リンク ────────────────────────────────────────── */}
-      <Link href="/admin" style={s.adminBanner}>
-        管理画面へ
-      </Link>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+        <h1 style={{ ...s.heading, margin: 0 }}>納品一覧</h1>
+        <Link href="/admin" style={s.adminGear} title="管理画面">⚙️</Link>
+      </div>
 
       {/* ── フィルタ ─────────────────────────────────────────────── */}
       <DeliveryFilter
@@ -185,19 +183,12 @@ const s: Record<string, CSSProperties> = {
     color: '#111827',
     margin: '0 0 16px',
   },
-  adminBanner: {
-    display: 'block',
-    width: '100%',
-    padding: '20px 0',
-    marginBottom: 24,
-    background: '#2563eb',
-    color: '#ffffff',
+  adminGear: {
     fontSize: 22,
-    fontWeight: 700,
-    textAlign: 'center',
     textDecoration: 'none',
-    borderRadius: 12,
-    boxShadow: '0 4px 14px rgba(37,99,235,0.35)',
+    color: '#9ca3af',
+    lineHeight: 1,
+    padding: '4px',
   },
   section: {
     marginBottom: 24,

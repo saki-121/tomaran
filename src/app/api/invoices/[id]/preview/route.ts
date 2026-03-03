@@ -198,6 +198,15 @@ export async function GET(_req: NextRequest, { params }: Ctx) {
     rowNum++
   }
 
+  // 請求先住所
+  if (company?.address) {
+    const r = ws.getRow(rowNum)
+    r.getCell(1).value = company.address
+    r.commit()
+    merge(rowNum, 'A', 'C')
+    rowNum++
+  }
+
   if (own?.invoice_registration_number) {
     const r = ws.getRow(rowNum)
     r.getCell(4).value = `適格登録番号：${own.invoice_registration_number}`
@@ -226,6 +235,15 @@ export async function GET(_req: NextRequest, { params }: Ctx) {
   }
 
   rowNum++ // blank
+
+  // ── 請求文言 ──────────────────────────────────────────────────────────────
+  {
+    const r = ws.getRow(rowNum)
+    r.getCell(1).value = '下記の通りご請求させていただきます。'
+    r.commit()
+    merge(rowNum, 'A', 'F')
+    rowNum++
+  }
 
   // ── Totals box (always page 1) ────────────────────────────────────────────
   {
@@ -271,17 +289,39 @@ export async function GET(_req: NextRequest, { params }: Ctx) {
     const r = ws.getRow(rowNum)
     r.getCell(1).value = `支払期限：${fmtDate(inv.payment_due_date)}`
     r.getCell(1).style = { ...bold, ...border }
-    merge(rowNum, 'A', 'C')
-    r.getCell(4).value = bank
-      ? `${bank.bank_name} ${bank.branch_name} ${bank.account_type} ${bank.account_number} ${bank.account_holder}`
-      : ''
-    r.getCell(4).style = border
-    merge(rowNum, 'D', 'F')
+    merge(rowNum, 'A', 'F')
     r.commit()
     rowNum++
   }
 
   rowNum++ // blank
+
+  // ── 振込先 ────────────────────────────────────────────────────────────────
+  if (bank) {
+    {
+      const r = ws.getRow(rowNum)
+      r.getCell(1).value = '【振込先】'
+      r.getCell(1).style = { ...bold, ...gray }
+      r.commit()
+      merge(rowNum, 'A', 'C')
+      rowNum++
+    }
+    {
+      const r = ws.getRow(rowNum)
+      r.getCell(1).value = `${bank.bank_name} ${bank.branch_name}支店　${bank.account_type}`
+      r.commit()
+      merge(rowNum, 'A', 'C')
+      rowNum++
+    }
+    {
+      const r = ws.getRow(rowNum)
+      r.getCell(1).value = `口座番号：${bank.account_number}　名義：${bank.account_holder}`
+      r.commit()
+      merge(rowNum, 'A', 'C')
+      rowNum++
+    }
+    rowNum++ // blank after 振込先
+  }
 
   // ── Item header ───────────────────────────────────────────────────────────
   {

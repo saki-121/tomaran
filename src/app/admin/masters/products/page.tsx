@@ -28,8 +28,9 @@ export default function ProductsPage() {
   const [saving, setSaving]     = useState(false)
   const [err, setErr]           = useState<string | null>(null)
   const [loading, setLoading]   = useState(true)
-  const [importing, setImporting] = useState(false)
-  const [importMsg, setImportMsg] = useState<string | null>(null)
+  const [importing, setImporting]   = useState(false)
+  const [importMsg, setImportMsg]   = useState<string | null>(null)
+  const [pendingFile, setPendingFile] = useState<File | null>(null)
   const fileRef = useRef<HTMLInputElement>(null)
 
   const load = () => {
@@ -76,17 +77,26 @@ export default function ProductsPage() {
     load()
   }
 
-  const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
+    setPendingFile(file)
+    setImportMsg(null)
+    e.target.value = ''
+  }
+
+  const cancelImport = () => setPendingFile(null)
+
+  const confirmImport = async () => {
+    if (!pendingFile) return
     setImporting(true)
     setImportMsg(null)
     const fd = new FormData()
-    fd.append('file', file)
+    fd.append('file', pendingFile)
     const res = await fetch('/api/masters/products/import', { method: 'POST', body: fd })
     const d   = await res.json()
     setImporting(false)
-    e.target.value = ''
+    setPendingFile(null)
     if (!res.ok) { setImportMsg(`エラー: ${d.error}`); return }
     setImportMsg(`完了: 新規 ${d.created}件、更新 ${d.updated}件、スキップ ${d.skipped}件${d.errors?.length ? `\nエラー: ${d.errors.join(', ')}` : ''}`)
     load()
@@ -113,10 +123,10 @@ export default function ProductsPage() {
         <button onClick={startNew} style={btn('#1a1a2e')}>＋ 新規追加</button>
 
         {/* Excel Import */}
-        <button onClick={() => fileRef.current?.click()} disabled={importing} style={btn('#2e7d32')}>
-          {importing ? 'インポート中…' : '📥 Excel取り込み'}
+        <button onClick={() => fileRef.current?.click()} disabled={importing || !!pendingFile} style={btn('#2e7d32')}>
+          📥 Excel取り込み
         </button>
-        <input ref={fileRef} type="file" accept=".xlsx,.xls" onChange={handleImport} style={{ display: 'none' }} />
+        <input ref={fileRef} type="file" accept=".xlsx,.xls" onChange={handleFileSelect} style={{ display: 'none' }} />
         <a
           href="#"
           onClick={e => {
@@ -141,6 +151,18 @@ export default function ProductsPage() {
           ))}
         </div>
       </div>
+
+      {pendingFile && (
+        <div style={{ background: '#fff8e1', border: '1px solid #f59e0b', borderRadius: 6, padding: '12px 16px', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
+          <span style={{ fontSize: 13 }}>📄 <strong>{pendingFile.name}</strong> を取り込みますか？</span>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <button onClick={() => void confirmImport()} disabled={importing} style={btn('#2e7d32')}>
+              {importing ? '取り込み中…' : '取り込む'}
+            </button>
+            <button onClick={cancelImport} disabled={importing} style={btn('#888')}>キャンセル</button>
+          </div>
+        </div>
+      )}
 
       {importMsg && (
         <div style={{ background: importMsg.startsWith('エラー') ? '#fee' : '#efd', border: '1px solid', borderColor: importMsg.startsWith('エラー') ? '#c00' : '#6a0', borderRadius: 6, padding: '10px 14px', marginBottom: 16, fontSize: 13, whiteSpace: 'pre-wrap' }}>

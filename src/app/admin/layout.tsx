@@ -5,9 +5,8 @@ const nav = [
   { href: '/admin',                   label: '納品一覧' },
   { href: '/admin/invoices',          label: '請求書' },
   { href: '/admin/masters/companies', label: '取引先' },
-  { href: '/admin/masters/products',      label: '商品' },
-  { href: '/admin/masters/bank-accounts', label: '銀行口座' },
-  { href: '/admin/masters/own',           label: '自社設定' },
+  { href: '/admin/masters/products', label: '商品' },
+  { href: '/admin/masters/own',      label: '自社設定' },
 ]
 
 export default function AdminLayout({ children }: { children: ReactNode }) {

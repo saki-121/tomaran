@@ -82,9 +82,7 @@ export default function PrivacyPage() {
             <p>個人情報の取り扱いに関するお問い合わせは以下にご連絡ください。</p>
             <p className="mt-2">
               tomaran<br />
-              メール：support@tomaran.net<br />
-              電話：<a href="tel:07091599240" className="underline">070-9159-9240</a>
-              <span className="ml-1 text-xs text-gray-400">（平日 11:00〜15:00 受付）</span>
+              メール：support@tomaran.net
             </p>
           </section>
         </div>

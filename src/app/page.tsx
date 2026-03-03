@@ -77,13 +77,9 @@ export default async function Page() {
 <footer className="mt-16 border-t pt-6 text-sm text-gray-500">
 
   {/* contact */}
-  <p className="mb-1">
+  <p className="mb-2">
     お問い合わせ：
     <a href="mailto:support@tomaran.net" className="underline ml-1">support@tomaran.net</a>
-  </p>
-  <p className="mb-2 text-xs text-gray-400">
-    電話：<a href="tel:07091599240" className="underline">070-9159-9240</a>
-    （平日 11:00〜15:00 受付）
   </p>
 
   {/* links */}
