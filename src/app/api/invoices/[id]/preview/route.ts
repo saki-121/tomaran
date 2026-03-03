@@ -300,10 +300,10 @@ export async function GET(_req: NextRequest, { params }: Ctx) {
   if (bank) {
     {
       const r = ws.getRow(rowNum)
-      r.getCell(1).value = '【振込先】'
+      r.getCell(1).value = '【振込先】　振込手数料はお客様負担でお願いいたします'
       r.getCell(1).style = { ...bold, ...gray }
       r.commit()
-      merge(rowNum, 'A', 'C')
+      merge(rowNum, 'A', 'F')
       rowNum++
     }
     {
@@ -335,8 +335,8 @@ export async function GET(_req: NextRequest, { params }: Ctx) {
   }
 
   // ── Item rows grouped by site ─────────────────────────────────────────────
-  const ROWS_PER_PAGE = 35
-  let rowsOnPage = 0
+  const ROWS_PER_PAGE = 40
+  let rowsOnPage = rowNum - 1  // account for header/totals rows already on page 1
 
   const siteMap = new Map<string, ItemRow[]>()
   for (const item of items) {

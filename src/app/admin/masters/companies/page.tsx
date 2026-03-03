@@ -119,6 +119,7 @@ export default function CompaniesPage() {
   // Import state
   const [importing, setImporting]   = useState(false)
   const [importResult, setImportResult] = useState<{ created: number; updated: number; skipped: number; errors: string[] } | null>(null)
+  const [pendingFile, setPendingFile] = useState<File | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const loadCompanies = () => {
@@ -219,17 +220,26 @@ export default function CompaniesPage() {
   }
 
   // ── Excel import ────────────────────────────────────────────────────────────
-  const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
+    setPendingFile(file)
+    setImportResult(null)
+    e.target.value = ''
+  }
+
+  const cancelImport = () => setPendingFile(null)
+
+  const confirmImport = async () => {
+    if (!pendingFile) return
     setImporting(true)
     setImportResult(null)
     const fd = new FormData()
-    fd.append('file', file)
+    fd.append('file', pendingFile)
     const res = await fetch('/api/masters/companies/import', { method: 'POST', body: fd })
     const d = await res.json()
     setImporting(false)
-    if (e.target) e.target.value = ''
+    setPendingFile(null)
     if (!res.ok) { setImportResult({ created: 0, updated: 0, skipped: 0, errors: [d.error] }); return }
     setImportResult(d)
     loadCompanies()
@@ -267,13 +277,26 @@ export default function CompaniesPage() {
         <button onClick={startNewCo} style={btnPrimary}>＋ 新規追加</button>
         <button
           onClick={() => fileInputRef.current?.click()}
-          disabled={importing}
+          disabled={importing || !!pendingFile}
           style={{ ...btnPrimary, background: '#2e7d32' }}
         >
-          {importing ? '取り込み中…' : '📥 Excel取り込み'}
+          📥 Excel取り込み
         </button>
-        <input ref={fileInputRef} type="file" accept=".xlsx,.xls" style={{ display: 'none' }} onChange={handleImport} />
+        <input ref={fileInputRef} type="file" accept=".xlsx,.xls" style={{ display: 'none' }} onChange={handleFileSelect} />
       </div>
+
+      {/* Pending file confirmation */}
+      {pendingFile && (
+        <div style={{ background: '#fff8e1', border: '1px solid #f59e0b', borderRadius: 6, padding: '12px 16px', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
+          <span style={{ fontSize: 13 }}>📄 <strong>{pendingFile.name}</strong> を取り込みますか？</span>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <button onClick={() => void confirmImport()} disabled={importing} style={{ ...btnPrimary, background: '#2e7d32' }}>
+              {importing ? '取り込み中…' : '取り込む'}
+            </button>
+            <button onClick={cancelImport} disabled={importing} style={btnSecondary}>キャンセル</button>
+          </div>
+        </div>
+      )}
 
       {/* Import result */}
       {importResult && (

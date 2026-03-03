@@ -3,6 +3,7 @@ import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
 import type { CSSProperties } from 'react'
 import ItemList from './_components/ItemList'
+import DeliveryActions from './_components/DeliveryActions'
 
 // ---------------------------------------------------------------------------
 // Types — 価格列を一切含まない
@@ -132,6 +133,12 @@ export default async function DeliveryFieldDetailPage({
         deliveryId={delivery.id}
         status={delivery.status}
         items={delivery.delivery_items}
+      />
+
+      <DeliveryActions
+        deliveryId={delivery.id}
+        deliveryDate={delivery.delivery_date}
+        status={delivery.status}
       />
 
     </main>

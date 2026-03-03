@@ -4,6 +4,7 @@ import Link from 'next/link'
 import type { CSSProperties } from 'react'
 import DeliveryFilter from './_components/DeliveryFilter'
 import DeliveryCard    from './_components/DeliveryCard'
+import GearMenu        from './_components/GearMenu'
 
 // ---------------------------------------------------------------------------
 // Types
@@ -114,7 +115,7 @@ export default async function DeliveriesPage({
     <main style={s.main}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
         <h1 style={{ ...s.heading, margin: 0 }}>納品一覧</h1>
-        <Link href="/admin" style={s.adminGear} title="管理画面">⚙️</Link>
+        <GearMenu />
       </div>
 
       {/* ── フィルタ ─────────────────────────────────────────────── */}
@@ -182,13 +183,6 @@ const s: Record<string, CSSProperties> = {
     fontWeight: 700,
     color: '#111827',
     margin: '0 0 16px',
-  },
-  adminGear: {
-    fontSize: 22,
-    textDecoration: 'none',
-    color: '#9ca3af',
-    lineHeight: 1,
-    padding: '4px',
   },
   section: {
     marginBottom: 24,

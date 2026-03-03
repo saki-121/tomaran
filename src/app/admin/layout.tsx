@@ -29,28 +29,32 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         </span>
         {nav.map(({ href, label }) => (
           <Link key={href} href={href} style={{
-            color: '#ccc',
+            color: '#fff',
             textDecoration: 'none',
-            padding: '0 14px',
+            padding: '0 16px',
             height: 48,
             display: 'flex',
             alignItems: 'center',
             fontSize: 14,
-            borderRight: '1px solid #333',
+            fontWeight: 500,
+            borderRight: '1px solid #2d2d4e',
+            cursor: 'pointer',
           }}>
             {label}
           </Link>
         ))}
         <span style={{ marginLeft: 'auto' }} />
         <Link href="/admin/cancel" style={{
-          color: '#6b6b6b',
+          color: '#fff',
           textDecoration: 'none',
-          padding: '0 14px',
+          padding: '0 16px',
           height: 48,
           display: 'flex',
           alignItems: 'center',
-          fontSize: 12,
-          borderLeft: '1px solid #333',
+          fontSize: 13,
+          fontWeight: 600,
+          borderLeft: '1px solid #2d2d4e',
+          cursor: 'pointer',
         }}>
           解約
         </Link>
