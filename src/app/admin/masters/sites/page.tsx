@@ -17,7 +17,7 @@ export default function SitesPage() {
 
   // Load companies
   useEffect(() => {
-    fetch('/api/masters/companies')
+    void fetch('/api/masters/companies')
       .then(r => r.json())
       .then(d => {
         setCompanies(d.companies ?? [])
@@ -29,7 +29,7 @@ export default function SitesPage() {
   const loadSites = (cid: string) => {
     if (!cid) return
     setLoading(true)
-    fetch(`/api/masters/sites?company_id=${cid}&all=1`)
+    void fetch(`/api/masters/sites?company_id=${cid}&all=1`)
       .then(r => r.json())
       .then(d => setSites(d.sites ?? []))
       .finally(() => setLoading(false))
@@ -40,7 +40,7 @@ export default function SitesPage() {
     if (!companyId) return
     setLoading(true)
     // Use all=1 param (not yet on sites route, falls back to active only)
-    fetch(`/api/masters/sites?company_id=${companyId}`)
+    void fetch(`/api/masters/sites?company_id=${companyId}`)
       .then(r => r.json())
       .then(d => setSites(d.sites ?? []))
       .finally(() => setLoading(false))

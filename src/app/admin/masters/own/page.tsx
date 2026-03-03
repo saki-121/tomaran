@@ -18,7 +18,7 @@ export default function OwnMasterPage() {
   const [msg, setMsg]          = useState<string | null>(null)
 
   useEffect(() => {
-    fetch('/api/masters/own')
+    void fetch('/api/masters/own')
       .then(r => r.json())
       .then(d => { if (d.profile) setProfile(d.profile) })
       .finally(() => setLoading(false))

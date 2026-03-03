@@ -34,7 +34,7 @@ export default function ProductsPage() {
 
   const load = () => {
     setLoading(true)
-    fetch('/api/masters/products?all=1')
+    void fetch('/api/masters/products?all=1')
       .then(r => r.json())
       .then(d => setProducts(d.products ?? []))
       .finally(() => setLoading(false))
