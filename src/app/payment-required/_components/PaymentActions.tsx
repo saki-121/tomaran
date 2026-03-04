@@ -7,10 +7,19 @@ export default function PaymentActions({ isCanceled = false }: { isCanceled?: bo
 
   async function handleCheckout() {
     setLoading(true)
-    const res = await fetch('/api/create-checkout-session', { method: 'POST' })
-    const { url } = await res.json()
-    if (url) window.location.href = url
-    else setLoading(false)
+    try {
+      const res = await fetch('/api/create-checkout-session', { method: 'POST' })
+      const data = await res.json() as { url?: string; error?: string }
+      if (data.url) {
+        window.location.href = data.url
+      } else {
+        console.error('[checkout] no url returned:', data.error)
+        setLoading(false)
+      }
+    } catch (err) {
+      console.error('[checkout] fetch error:', err)
+      setLoading(false)
+    }
   }
 
   return (
