@@ -32,7 +32,14 @@ const rows: { label: string; value: React.ReactNode }[] = [
   },
   {
     label: '支払い時期',
-    value: 'サブスクリプション登録時に初回決済。以降、毎月同日に自動更新。',
+    value: (
+      <>
+        決済日に初回請求が発生します。以降は<strong>決済日の翌月同日</strong>に自動更新されます。<br />
+        <span style={{ color: '#9ca3af', fontSize: 13 }}>
+          例：3月5日に決済した場合、次回は4月5日に自動更新されます。
+        </span>
+      </>
+    ),
   },
   { label: 'サービス提供時期', value: '決済完了後、即時利用可能。' },
   {

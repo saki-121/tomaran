@@ -20,17 +20,17 @@ export default function PaymentActions({ isCanceled = false }: { isCanceled?: bo
         disabled={loading}
         style={{
           width: '100%',
-          padding: '13px 0',
-          background: loading ? '#93c5fd' : '#2563eb',
-          color: '#fff',
+          padding: '15px 0',
+          background: loading ? 'rgba(255,215,0,0.5)' : '#FFD700',
+          color: '#000',
           border: 'none',
-          borderRadius: 6,
-          fontSize: 15,
-          fontWeight: 600,
+          borderRadius: 8,
+          fontSize: 16,
+          fontWeight: 700,
           cursor: loading ? 'not-allowed' : 'pointer',
         }}
       >
-        {loading ? '処理中…' : isCanceled ? '再購入する' : 'サブスクリプションを購入する'}
+        {loading ? '処理中…' : isCanceled ? '再購入する →' : '決済に進む →'}
       </button>
     </div>
   )

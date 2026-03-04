@@ -3,6 +3,11 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 
+const BG    = '#0a0f1e'
+const CARD  = '#111827'
+const CARD2 = '#1a2035'
+const Y     = '#FFD700'
+
 export default function OnboardingPage() {
   const router = useRouter()
   const [name, setName]       = useState('')
@@ -21,17 +26,70 @@ export default function OnboardingPage() {
     const d = await res.json()
     setLoading(false)
     if (!res.ok) { setError(d.error ?? 'エラーが発生しました'); return }
-    router.push('/deliveries')
+    router.push('/payment-required')
   }
 
   return (
-    <div style={{ minHeight: '100dvh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f5f5f5', fontFamily: 'system-ui, sans-serif' }}>
-      <div style={{ background: '#fff', border: '1px solid #ddd', borderRadius: 10, padding: '36px 32px', width: '100%', maxWidth: 400, boxShadow: '0 2px 12px rgba(0,0,0,0.08)' }}>
-        <h1 style={{ margin: '0 0 6px', fontSize: 22, fontWeight: 700, color: '#1a1a2e' }}>会社を作成</h1>
-        <p style={{ margin: '0 0 24px', fontSize: 13, color: '#666' }}>ご利用を始めるには会社名を登録してください。</p>
+    <div style={{
+      minHeight: '100dvh',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      background: BG,
+      fontFamily: 'system-ui, -apple-system, sans-serif',
+      padding: '16px',
+    }}>
+      {/* ロゴ */}
+      <p style={{ fontWeight: 900, fontSize: 22, color: Y, letterSpacing: 1, marginBottom: 32 }}>
+        tomaran
+      </p>
 
-        <label style={{ display: 'block', fontSize: 12, fontWeight: 600, marginBottom: 4, color: '#333' }}>
-          会社名 <span style={{ color: 'red' }}>*</span>
+      {/* ステップ表示 */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 32 }}>
+        {[
+          { n: '1', label: 'Google登録', done: true },
+          { n: '2', label: '会社名登録', active: true },
+          { n: '3', label: '決済して開始', done: false },
+        ].map((step, i) => (
+          <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            {i > 0 && <span style={{ color: 'rgba(255,255,255,0.2)', fontSize: 12 }}>→</span>}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <span style={{
+                width: 24, height: 24, borderRadius: '50%',
+                background: step.done ? Y : step.active ? Y : 'rgba(255,255,255,0.1)',
+                color: step.done || step.active ? '#000' : '#6b7280',
+                fontSize: 11, fontWeight: 700,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+                {step.done && i === 0 ? '✓' : step.n}
+              </span>
+              <span style={{ fontSize: 12, color: step.active ? '#fff' : step.done ? '#9ca3af' : '#6b7280', fontWeight: step.active ? 700 : 400 }}>
+                {step.label}
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* カード */}
+      <div style={{
+        width: '100%', maxWidth: 400,
+        background: CARD,
+        borderRadius: 12,
+        padding: '36px 32px',
+        border: '1px solid rgba(255,215,0,0.15)',
+      }}>
+        <h1 style={{ margin: '0 0 6px', fontSize: 20, fontWeight: 700, color: '#fff' }}>
+          あなたの会社名を登録
+        </h1>
+        <p style={{ margin: '0 0 24px', fontSize: 13, color: '#9ca3af', lineHeight: 1.7 }}>
+          会社名を登録するとサービスの利用を開始できます。<br />
+          あとから変更可能です。
+        </p>
+
+        <label style={{ display: 'block', fontSize: 12, fontWeight: 600, marginBottom: 6, color: '#9ca3af' }}>
+          会社名 <span style={{ color: '#ef4444' }}>*</span>
         </label>
         <input
           type="text"
@@ -40,19 +98,36 @@ export default function OnboardingPage() {
           onChange={e => setName(e.target.value)}
           onKeyDown={e => { if (e.key === 'Enter') void createCompany() }}
           disabled={loading}
-          style={{ width: '100%', padding: '9px 12px', border: '1px solid #ccc', borderRadius: 5, fontSize: 15, boxSizing: 'border-box', marginBottom: 12 }}
+          style={{
+            width: '100%', padding: '11px 14px',
+            border: '1px solid rgba(255,255,255,0.1)',
+            borderRadius: 8, fontSize: 15,
+            boxSizing: 'border-box', marginBottom: 12,
+            background: CARD2, color: '#fff',
+          }}
         />
 
-        {error && <p style={{ color: 'red', fontSize: 13, margin: '0 0 10px' }}>{error}</p>}
+        {error && <p style={{ color: '#ef4444', fontSize: 13, margin: '0 0 10px' }}>{error}</p>}
 
         <button
           onClick={() => void createCompany()}
           disabled={loading}
-          style={{ width: '100%', padding: '11px 0', background: '#1a1a2e', color: '#fff', border: 'none', borderRadius: 5, fontSize: 15, fontWeight: 600, cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.7 : 1 }}
+          style={{
+            width: '100%', padding: '13px 0',
+            background: loading ? 'rgba(255,215,0,0.5)' : Y,
+            color: '#000', border: 'none', borderRadius: 8,
+            fontSize: 15, fontWeight: 700,
+            cursor: loading ? 'not-allowed' : 'pointer',
+          }}
         >
-          {loading ? '作成中…' : '作成して開始'}
+          {loading ? '登録中…' : '登録して次へ →'}
         </button>
       </div>
+
+      <p style={{ marginTop: 24, fontSize: 12, color: '#6b7280', textAlign: 'center', lineHeight: 1.7 }}>
+        登録後、決済ページに移動します。<br />
+        月額 14,800円（税込）のサブスクリプションです。
+      </p>
     </div>
   )
 }

@@ -1,19 +1,64 @@
 import Link from 'next/link'
 
+const BG   = '#0a0f1e'
+const CARD = '#111827'
+const Y    = '#FFD700'
+
 export default function PaymentSuccessPage() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
-      <div className="w-full max-w-[480px] rounded-2xl bg-white p-8 text-center shadow-sm ring-1 ring-gray-200">
-        <div className="mb-4 text-4xl">✓</div>
-        <h1 className="mb-2 text-xl font-bold text-gray-900">決済完了しました</h1>
-        <p className="mb-8 text-sm text-gray-500">
-          サービスをご利用いただけます。
+    <div style={{
+      minHeight: '100dvh',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      background: BG,
+      fontFamily: 'system-ui, -apple-system, sans-serif',
+      padding: '16px',
+    }}>
+      <p style={{ fontWeight: 900, fontSize: 22, color: Y, letterSpacing: 1, marginBottom: 40 }}>
+        tomaran
+      </p>
+
+      <div style={{
+        width: '100%', maxWidth: 440,
+        background: CARD,
+        borderRadius: 12,
+        padding: '48px 32px',
+        textAlign: 'center',
+        border: '1px solid rgba(255,215,0,0.15)',
+      }}>
+        <div style={{
+          width: 64, height: 64, borderRadius: '50%',
+          background: '#34d399', color: '#000',
+          fontSize: 32, fontWeight: 700,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          margin: '0 auto 20px',
+        }}>
+          ✓
+        </div>
+        <h1 style={{ margin: '0 0 8px', fontSize: 22, fontWeight: 700, color: '#fff' }}>
+          決済完了しました！
+        </h1>
+        <p style={{ margin: '0 0 32px', fontSize: 14, color: '#9ca3af', lineHeight: 1.75 }}>
+          ありがとうございます。<br />
+          全機能をご利用いただけます。
         </p>
         <Link
           href="/deliveries"
-          className="inline-block w-full rounded-lg bg-blue-600 px-4 py-3 text-sm font-semibold text-white hover:bg-blue-700 active:bg-blue-800"
+          style={{
+            display: 'block',
+            width: '100%',
+            padding: '14px 0',
+            background: Y,
+            color: '#000',
+            borderRadius: 8,
+            fontSize: 15,
+            fontWeight: 700,
+            textDecoration: 'none',
+          }}
         >
-          納品一覧へ
+          納品一覧へ →
         </Link>
       </div>
     </div>
