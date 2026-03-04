@@ -321,9 +321,9 @@ export default function CompaniesPage() {
 
       {/* Import format guide */}
       {showFormat && (
-        <div style={{ background: '#111827', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 6, padding: '12px 16px', marginBottom: 16, fontSize: 12 }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
-            <p style={{ margin: 0, fontWeight: 600, fontSize: 13, color: '#fff' }}>Excelフォーマット（.xlsx / .xls）</p>
+        <div style={{ background: '#111827', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 6, padding: '12px 16px', marginBottom: 16 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+            <p style={{ margin: 0, fontWeight: 600, fontSize: 13, color: '#fff' }}>取込Excelのレイアウト</p>
             <a
               href="/api/masters/companies/template"
               download
@@ -332,33 +332,55 @@ export default function CompaniesPage() {
               📥 テンプレートをDL
             </a>
           </div>
-          <p style={{ margin: '0 0 8px', color: '#9ca3af' }}>1行目はヘッダー行として読み飛ばします。2行目からデータを入力してください。</p>
-          <table style={{ borderCollapse: 'collapse', width: '100%' }}>
-            <thead>
-              <tr style={{ background: '#1a2035' }}>
-                {['列', '項目', '必須', '例', '備考'].map(h => (
-                  <th key={h} style={{ padding: '5px 8px', textAlign: 'left', border: '1px solid rgba(255,255,255,0.08)', fontSize: 12, fontWeight: 600, color: '#9ca3af' }}>{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {[
-                { col: 'A', label: '会社名',   required: true,  example: '○○建設株式会社',      note: '同名は上書き更新' },
-                { col: 'B', label: '住所',     required: false, example: '東京都千代田区…',      note: '' },
-                { col: 'C', label: '電話番号', required: false, example: '03-1234-5678',        note: '' },
-                { col: 'D', label: '締め日',   required: false, example: '月末 / 5 / 10 … / 31', note: '省略時: 月末' },
-                { col: 'E', label: '支払条件', required: false, example: '翌月末 / 締め後30日', note: '省略時: 翌月末' },
-              ].map(row => (
-                <tr key={row.col} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                  <td style={{ padding: '5px 8px', border: '1px solid rgba(255,255,255,0.08)', fontWeight: 600, textAlign: 'center', color: '#FFD700' }}>{row.col}</td>
-                  <td style={{ padding: '5px 8px', border: '1px solid rgba(255,255,255,0.08)', color: '#d1d5db' }}>{row.label}</td>
-                  <td style={{ padding: '5px 8px', border: '1px solid rgba(255,255,255,0.08)', textAlign: 'center', color: row.required ? '#34d399' : '#6b7280' }}>{row.required ? '✓' : '—'}</td>
-                  <td style={{ padding: '5px 8px', border: '1px solid rgba(255,255,255,0.08)', color: '#9ca3af' }}>{row.example}</td>
-                  <td style={{ padding: '5px 8px', border: '1px solid rgba(255,255,255,0.08)', color: '#6b7280' }}>{row.note}</td>
+
+          {/* Excel-like preview */}
+          <div style={{ overflowX: 'auto', marginBottom: 10 }}>
+            <table style={{ borderCollapse: 'collapse', fontSize: 12, whiteSpace: 'nowrap' }}>
+              <thead>
+                <tr>
+                  <th style={xlRowNum}></th>
+                  {['A　会社名 *', 'B　住所', 'C　電話番号', 'D　締め日', 'E　支払条件'].map(h => (
+                    <th key={h} style={xlColHead}>{h}</th>
+                  ))}
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {/* Row 1: header (yellow) */}
+                <tr>
+                  <td style={xlRowNum}>1</td>
+                  {['会社名', '住所', '電話番号', '締め日', '支払条件'].map((v, i) => (
+                    <td key={i} style={{ ...xlCell, background: 'rgba(255,215,0,0.18)', color: '#FFD700', fontWeight: 700 }}>{v}</td>
+                  ))}
+                </tr>
+                {/* Row 2 */}
+                <tr>
+                  <td style={xlRowNum}>2</td>
+                  <td style={xlCell}>○○建設株式会社</td>
+                  <td style={xlCell}>東京都千代田区1-1</td>
+                  <td style={xlCell}>03-1234-5678</td>
+                  <td style={xlCell}>月末</td>
+                  <td style={xlCell}>翌月末</td>
+                </tr>
+                {/* Row 3 */}
+                <tr>
+                  <td style={xlRowNum}>3</td>
+                  <td style={xlCell}>△△工業有限会社</td>
+                  <td style={{ ...xlCell, color: '#6b7280' }}>（省略可）</td>
+                  <td style={xlCell}>06-9876-5432</td>
+                  <td style={xlCell}>20</td>
+                  <td style={xlCell}>締め後30日</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p style={{ margin: '0 0 4px', fontSize: 11, color: '#9ca3af' }}>
+            1行目はヘッダー行です。2行目からデータを入力してください。
+          </p>
+          <p style={{ margin: 0, fontSize: 11, color: '#ef4444' }}>
+            ⚠️ A列の会社名が完全一致する場合は既存データを上書き更新します。
+            「○○建設」と「○○建設株式会社」は<strong>別会社</strong>として登録されます。
+          </p>
         </div>
       )}
 
@@ -524,3 +546,8 @@ export default function CompaniesPage() {
 }
 
 const btnGreen: React.CSSProperties = { padding: '8px 18px', background: '#34d399', color: '#000', border: 'none', borderRadius: 6, cursor: 'pointer', fontSize: 13, fontWeight: 700 }
+
+// Excel preview styles
+const xlRowNum: React.CSSProperties = { padding: '4px 8px', textAlign: 'center', border: '1px solid rgba(255,255,255,0.1)', color: '#6b7280', fontSize: 11, background: '#0f1629', width: 28, minWidth: 28 }
+const xlColHead: React.CSSProperties = { padding: '4px 10px', textAlign: 'left', border: '1px solid rgba(255,255,255,0.1)', color: '#9ca3af', fontSize: 11, background: '#0f1629', fontWeight: 600, whiteSpace: 'nowrap' }
+const xlCell: React.CSSProperties = { padding: '5px 10px', border: '1px solid rgba(255,255,255,0.1)', color: '#d1d5db', fontSize: 12, background: '#111827' }

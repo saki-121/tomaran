@@ -6,21 +6,32 @@ const CARD2 = '#1a2035'
 const Y = '#FFD700'
 
 const rows: { label: string; value: React.ReactNode }[] = [
-  { label: '販売業者', value: '請求があった場合は遅延なく開示いたします' },
-  { label: '運営責任者', value: '請求があった場合は遅延なく開示いたします' },
-  { label: '所在地', value: '請求があった場合は遅延なく開示いたします' },
+  {
+    label: '販売業者',
+    value: <>請求があった場合は遅延なく開示いたします<sup style={{ color: '#9ca3af', fontSize: 11 }}>（※1）</sup></>,
+  },
+  { label: '運営責任者', value: '場集田　早希' },
+  {
+    label: '所在地',
+    value: <>請求があった場合は遅延なく開示いたします<sup style={{ color: '#9ca3af', fontSize: 11 }}>（※1）</sup></>,
+  },
   {
     label: '連絡先',
     value: (
       <>
         メール：<a href="mailto:support@tomaran.net" style={{ color: Y, textDecoration: 'underline' }}>support@tomaran.net</a>
-        <br />電話：請求があった場合は遅延なく開示いたします
+        <br />電話：請求があった場合は遅延なく開示いたします<sup style={{ color: '#9ca3af', fontSize: 11 }}>（※1）</sup>
+        <br /><span style={{ color: '#9ca3af', fontSize: 13 }}>電話開示後の受付時間（平日10:00〜17:00）</span>
         <br /><span style={{ color: '#6b7280', fontSize: 13 }}>※ 日常のサポートはLINEで対応しています</span>
       </>
     ),
   },
   { label: 'サービス名', value: 'tomaran（とまらん）' },
   { label: '販売価格', value: '月額 14,800円（税込）' },
+  {
+    label: '対価以外に必要となる費用',
+    value: 'サイト閲覧時、コンテンツダウンロード時等の通信料',
+  },
   {
     label: '支払い方法',
     value: (
@@ -43,13 +54,17 @@ const rows: { label: string; value: React.ReactNode }[] = [
   },
   { label: 'サービス提供時期', value: '決済完了後、即時利用可能。' },
   {
+    label: '動作環境',
+    value: 'インターネット接続環境およびWebブラウザ（Chrome, Safari等）が必要です。',
+  },
+  {
     label: '返金・キャンセルポリシー',
     value: (
       <>
         月額サブスクリプションのため、原則として決済済みの料金の返金は承っておりません。
         ただし、システム障害など当社側の事由による場合はこの限りではありません。
         <br /><br />
-        解約後も当該月の末日までサービスをご利用いただけます。
+        解約後は即時ご利用いただけなくなります。日割り計算は行っておりません。
       </>
     ),
   },
@@ -57,9 +72,8 @@ const rows: { label: string; value: React.ReactNode }[] = [
     label: '解約方法',
     value: (
       <>
-        ダッシュボード内の「アカウント設定」→「サブスクリプションを解約する」より
-        いつでも解約可能です。<br />
-        解約はお問い合わせ不要で即時反映されます。
+        管理画面右上の「<strong style={{ color: '#ef4444' }}>解約</strong>」よりいつでも解約可能です。<br />
+        お問い合わせ不要で即時反映されます。
         <br /><span style={{ color: '#9ca3af', fontSize: 13 }}>電話での解約手続きは受け付けておりません。</span>
       </>
     ),
@@ -119,7 +133,7 @@ export default function LegalPage() {
           {rows.map(row => (
             <div key={row.label} style={{
               display: 'grid',
-              gridTemplateColumns: 'minmax(140px, 180px) 1fr',
+              gridTemplateColumns: 'minmax(140px, 200px) 1fr',
               background: CARD, border: '1px solid rgba(255,255,255,0.05)',
               borderRadius: 8, overflow: 'hidden',
             }}>
@@ -140,9 +154,26 @@ export default function LegalPage() {
           ))}
         </div>
 
+        {/* ※1 注釈 */}
         <div style={{
           background: CARD2, border: '1px solid rgba(255,255,255,0.06)',
           borderRadius: 8, padding: '20px 24px', marginTop: 32,
+        }}>
+          <p style={{ color: '#9ca3af', fontWeight: 700, fontSize: 13, marginBottom: 8, marginTop: 0 }}>
+            （※1）表示の省略について
+          </p>
+          <p style={{ color: '#6b7280', fontSize: 13, lineHeight: 1.75, margin: 0 }}>
+            特定商取引法に基づき、氏名・住所・電話番号等の詳細は、ご請求いただいた場合に遅延なくメール（
+            <a href="mailto:support@tomaran.net" style={{ color: Y, textDecoration: 'underline' }}>
+              support@tomaran.net
+            </a>
+            ）で回答いたします。ご希望の場合は上記メールアドレスまでご連絡ください。
+          </p>
+        </div>
+
+        <div style={{
+          background: CARD2, border: '1px solid rgba(255,255,255,0.06)',
+          borderRadius: 8, padding: '20px 24px', marginTop: 12,
         }}>
           <p style={{ color: '#6b7280', fontSize: 13, lineHeight: 1.75, margin: 0 }}>
             ※ 本表記は特定商取引法第11条に基づくものです。内容に疑義がある場合は
