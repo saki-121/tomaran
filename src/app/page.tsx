@@ -1,6 +1,22 @@
+import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+
+export const metadata: Metadata = {
+  title: 'tomaran（とまらん）| 中小工事資材屋の業務管理クラウド',
+  description:
+    '「現場でスマホ入力 → 事務がボタン一つで請求書」。電話確認も手書き伝票も不要。中小の工事資材屋に特化した月額14,800円のクラウド業務管理システム。取引先・商品マスタはExcelで一括登録。今日から使えます。',
+  alternates: {
+    canonical: 'https://tomaran.net',
+  },
+  openGraph: {
+    url: 'https://tomaran.net',
+    title: 'tomaran（とまらん）| 中小工事資材屋の業務管理クラウド',
+    description:
+      '現場でスマホ入力 → 事務がボタン一つで請求書。月額14,800円、縛りなし。工事資材屋に特化した業務管理SaaS。',
+  },
+}
 
 const Y = '#FFD700'   // construction yellow
 const BG = '#0a0f1e'  // dark navy
@@ -489,10 +505,7 @@ export default async function Page() {
       }}>
         <p style={{ fontWeight: 900, fontSize: 20, color: Y, marginBottom: 24, marginTop: 0 }}>tomaran</p>
         <p style={{ color: '#6b7280', fontSize: 13, marginBottom: 24, lineHeight: 1.9 }}>
-          サポートはLINEから。<br />
-          <span style={{ color: '#9ca3af' }}>
-            メールは返信が遅れる可能性があることをご了承ください。
-          </span><br />
+          導入ご検討の相談はメールにて。<br />
           <a href="mailto:support@tomaran.net" style={{ color: '#9ca3af', textDecoration: 'underline' }}>
             support@tomaran.net
           </a>

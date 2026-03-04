@@ -106,7 +106,7 @@ export default async function PaymentRequiredPage() {
         <PaymentActions isCanceled={isCanceled} />
 
         <p style={{ marginTop: 16, fontSize: 11, color: '#6b7280', textAlign: 'center', lineHeight: 1.7 }}>
-          解約はダッシュボードからいつでも可能。<br />
+          解約は管理画面からいつでも可能。<br />
           決済はStripeにより安全に処理されます。
         </p>
       </div>
