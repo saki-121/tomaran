@@ -28,16 +28,17 @@ export default async function PaymentSuccessPage({
         const session = await stripe.checkout.sessions.retrieve(session_id)
         console.log('[payment-success] session payment_status:', session.payment_status, 'user:', user.id)
         if (session.payment_status === 'paid') {
+          console.log('[payment-success] SERVICE_ROLE_KEY set:', !!process.env.SUPABASE_SERVICE_ROLE_KEY)
           const admin = createAdminClient()
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const { error: updateError } = await (admin as any)
+          const { error: updateError, count } = await (admin as any)
             .from('profiles')
-            .update({ is_paid: true })
+            .update({ is_paid: true }, { count: 'exact' })
             .eq('id', user.id)
           if (updateError) {
             console.error('[payment-success] profiles update failed:', updateError)
           } else {
-            console.log('[payment-success] is_paid updated to true for user:', user.id)
+            console.log('[payment-success] updated rows:', count, 'user:', user.id)
           }
         }
       }
