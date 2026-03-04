@@ -30,7 +30,7 @@ export async function POST(req: Request) {
       await supabase
         .from('profiles')
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        .update({ is_paid: true, subscription_status: 'active', stripe_customer_id: session.customer } as any)
+        .update({ is_paid: true } as any)
         .eq('id', userId)
     }
   }

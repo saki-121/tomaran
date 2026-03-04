@@ -32,11 +32,7 @@ export default async function PaymentSuccessPage({
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const { error: updateError } = await (admin as any)
             .from('profiles')
-            .update({
-              is_paid: true,
-              subscription_status: 'active',
-              stripe_customer_id: session.customer,
-            })
+            .update({ is_paid: true })
             .eq('id', user.id)
           if (updateError) {
             console.error('[payment-success] profiles update failed:', updateError)
