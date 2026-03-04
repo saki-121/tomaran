@@ -31,6 +31,7 @@ export default function ProductsPage() {
   const [importing, setImporting]   = useState(false)
   const [importMsg, setImportMsg]   = useState<string | null>(null)
   const [pendingFile, setPendingFile] = useState<File | null>(null)
+  const [showFormat, setShowFormat] = useState(false)
   const fileRef = useRef<HTMLInputElement>(null)
 
   const load = () => {
@@ -127,16 +128,12 @@ export default function ProductsPage() {
           📥 Excel取り込み
         </button>
         <input ref={fileRef} type="file" accept=".xlsx,.xls" onChange={handleFileSelect} style={{ display: 'none' }} />
-        <a
-          href="#"
-          onClick={e => {
-            e.preventDefault()
-            alert('A列:品名　B列:単価（省略可）\n1行目はヘッダ行（スキップされます）')
-          }}
-          style={{ fontSize: 12, color: '#9ca3af' }}
+        <button
+          onClick={() => setShowFormat(f => !f)}
+          style={{ ...btnSecondary, padding: '5px 12px', fontSize: 12 }}
         >
-          フォーマット確認
-        </a>
+          {showFormat ? '✕ 閉じる' : '❓ フォーマット'}
+        </button>
 
         {/* Filter */}
         <div style={{ marginLeft: 'auto', display: 'flex', gap: 6 }}>
@@ -168,6 +165,37 @@ export default function ProductsPage() {
       {importMsg && (
         <div style={{ background: importMsg.startsWith('エラー') ? 'rgba(239,68,68,0.1)' : 'rgba(52,211,153,0.1)', border: '1px solid', borderColor: importMsg.startsWith('エラー') ? 'rgba(239,68,68,0.3)' : 'rgba(52,211,153,0.3)', borderRadius: 6, padding: '10px 14px', marginBottom: 16, fontSize: 13, whiteSpace: 'pre-wrap', color: importMsg.startsWith('エラー') ? '#ef4444' : '#34d399' }}>
           {importMsg}
+        </div>
+      )}
+
+      {/* Import format guide */}
+      {showFormat && (
+        <div style={{ background: '#111827', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 6, padding: '12px 16px', marginBottom: 16, fontSize: 12 }}>
+          <p style={{ margin: '0 0 8px', fontWeight: 600, fontSize: 13, color: '#fff' }}>Excelフォーマット（.xlsx / .xls）</p>
+          <p style={{ margin: '0 0 8px', color: '#9ca3af' }}>1行目はヘッダー行として読み飛ばします。2行目からデータを入力してください。</p>
+          <table style={{ borderCollapse: 'collapse', width: '100%' }}>
+            <thead>
+              <tr style={{ background: '#1a2035' }}>
+                {['列', '項目', '必須', '例', '備考'].map(h => (
+                  <th key={h} style={{ padding: '5px 8px', textAlign: 'left', border: '1px solid rgba(255,255,255,0.08)', fontSize: 12, fontWeight: 600, color: '#9ca3af' }}>{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                { col: 'A', label: '品名（規格込み）', required: true,  example: '鉄筋D10',  note: '同名は上書き更新' },
+                { col: 'B', label: '単価',             required: false, example: '1500',     note: '省略可（仮登録になります）' },
+              ].map(row => (
+                <tr key={row.col} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                  <td style={{ padding: '5px 8px', border: '1px solid rgba(255,255,255,0.08)', fontWeight: 600, textAlign: 'center', color: '#FFD700' }}>{row.col}</td>
+                  <td style={{ padding: '5px 8px', border: '1px solid rgba(255,255,255,0.08)', color: '#d1d5db' }}>{row.label}</td>
+                  <td style={{ padding: '5px 8px', border: '1px solid rgba(255,255,255,0.08)', textAlign: 'center', color: row.required ? '#34d399' : '#6b7280' }}>{row.required ? '✓' : '—'}</td>
+                  <td style={{ padding: '5px 8px', border: '1px solid rgba(255,255,255,0.08)', color: '#9ca3af' }}>{row.example}</td>
+                  <td style={{ padding: '5px 8px', border: '1px solid rgba(255,255,255,0.08)', color: '#6b7280' }}>{row.note}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
 

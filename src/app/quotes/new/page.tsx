@@ -115,13 +115,14 @@ export default function QuotesNewPage() {
           }
         `}</style>
 
+        {/* プレビューバー（印刷対象外） */}
         <div
           className="no-print"
           style={{
             position: 'sticky',
             top: 0,
-            background: '#fff',
-            borderBottom: '1px solid #e5e7eb',
+            background: '#111827',
+            borderBottom: '1px solid rgba(255,215,0,0.12)',
             padding: '12px 16px',
             display: 'flex',
             justifyContent: 'space-between',
@@ -143,6 +144,7 @@ export default function QuotesNewPage() {
           </button>
         </div>
 
+        {/* 印刷プレビュー本体（白背景のまま） */}
         <div
           ref={printRef}
           style={{
@@ -150,6 +152,8 @@ export default function QuotesNewPage() {
             margin: '0 auto',
             padding: '32px 24px',
             fontFamily: 'sans-serif',
+            background: '#fff',
+            color: '#000',
           }}
         >
           <h1 style={{ textAlign: 'center', fontSize: 24, marginBottom: 4 }}>御見積書</h1>
@@ -227,8 +231,8 @@ export default function QuotesNewPage() {
         style={{
           position: 'sticky',
           top: 0,
-          background: '#fff',
-          borderBottom: '1px solid #e5e7eb',
+          background: '#111827',
+          borderBottom: '1px solid rgba(255,215,0,0.12)',
           padding: '12px 16px',
           display: 'flex',
           alignItems: 'center',
@@ -237,10 +241,10 @@ export default function QuotesNewPage() {
           marginBottom: 16,
         }}
       >
-        <Link href="/quotes" style={{ color: '#2563eb', textDecoration: 'none', fontSize: 15 }}>
+        <Link href="/quotes" style={{ color: '#FFD700', textDecoration: 'none', fontSize: 15 }}>
           ← 戻る
         </Link>
-        <span style={{ fontWeight: 700, fontSize: 16, flex: 1, textAlign: 'center' }}>見積書作成</span>
+        <span style={{ fontWeight: 700, fontSize: 16, flex: 1, textAlign: 'center', color: '#fff' }}>見積書作成</span>
         <span style={{ width: 48 }} />
       </div>
 
@@ -256,7 +260,7 @@ export default function QuotesNewPage() {
               placeholder="例: ○○建設"
               style={inputStyle}
             />
-            <span style={{ fontSize: 14, color: '#374151', whiteSpace: 'nowrap' }}>御中</span>
+            <span style={{ fontSize: 14, color: '#9ca3af', whiteSpace: 'nowrap' }}>御中</span>
           </div>
         </div>
 
@@ -282,14 +286,14 @@ export default function QuotesNewPage() {
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 padding: '10px 12px',
-                background: '#f9fafb',
+                background: '#111827',
                 borderRadius: 6,
-                border: '1px solid #e5e7eb',
+                border: '1px solid rgba(255,255,255,0.08)',
                 gap: 8,
               }}
             >
-              <span style={{ flex: 1, fontSize: 14, color: '#111827' }}>{productLabel(p)}</span>
-              <span style={{ fontSize: 13, color: p.unit_price !== null ? '#374151' : '#9ca3af', whiteSpace: 'nowrap' }}>
+              <span style={{ flex: 1, fontSize: 14, color: '#d1d5db' }}>{productLabel(p)}</span>
+              <span style={{ fontSize: 13, color: p.unit_price !== null ? '#9ca3af' : '#6b7280', whiteSpace: 'nowrap' }}>
                 {p.unit_price !== null ? `¥${p.unit_price.toLocaleString('ja-JP')}` : '単価未設定'}
               </span>
               <button
@@ -298,8 +302,8 @@ export default function QuotesNewPage() {
                   minWidth: 44,
                   minHeight: 44,
                   fontSize: 20,
-                  background: '#2563eb',
-                  color: '#fff',
+                  background: '#FFD700',
+                  color: '#000',
                   border: 'none',
                   borderRadius: 6,
                   cursor: 'pointer',
@@ -307,6 +311,7 @@ export default function QuotesNewPage() {
                   alignItems: 'center',
                   justifyContent: 'center',
                   flexShrink: 0,
+                  fontWeight: 700,
                 }}
                 aria-label={`${productLabel(p)}を追加`}
               >
@@ -336,13 +341,13 @@ export default function QuotesNewPage() {
                     alignItems: 'center',
                     gap: 8,
                     padding: '10px 12px',
-                    background: '#fff',
+                    background: '#1a2035',
                     borderRadius: 6,
-                    border: '1px solid #d1d5db',
+                    border: '1px solid rgba(255,255,255,0.1)',
                   }}
                 >
-                  <span style={{ flex: 1, fontSize: 13, color: '#111827' }}>{productLabel(item.product)}</span>
-                  <label style={{ fontSize: 12, color: '#6b7280', whiteSpace: 'nowrap' }}>
+                  <span style={{ flex: 1, fontSize: 13, color: '#d1d5db' }}>{productLabel(item.product)}</span>
+                  <label style={{ fontSize: 12, color: '#9ca3af', whiteSpace: 'nowrap' }}>
                     数量:
                     <input
                       type="number"
@@ -353,14 +358,16 @@ export default function QuotesNewPage() {
                         width: 64,
                         marginLeft: 4,
                         padding: '4px 6px',
-                        border: '1px solid #d1d5db',
+                        border: '1px solid rgba(255,255,255,0.1)',
                         borderRadius: 4,
                         fontSize: 13,
                         textAlign: 'right',
+                        background: '#0a0f1e',
+                        color: '#fff',
                       }}
                     />
                   </label>
-                  <span style={{ fontSize: 13, color: '#374151', whiteSpace: 'nowrap', minWidth: 64, textAlign: 'right' }}>
+                  <span style={{ fontSize: 13, color: '#d1d5db', whiteSpace: 'nowrap', minWidth: 64, textAlign: 'right' }}>
                     ¥{((item.product.unit_price ?? 0) * item.quantity).toLocaleString('ja-JP')}
                   </span>
                   <button
@@ -369,7 +376,7 @@ export default function QuotesNewPage() {
                       minWidth: 36,
                       minHeight: 36,
                       background: 'none',
-                      border: '1px solid #e5e7eb',
+                      border: '1px solid rgba(255,255,255,0.1)',
                       borderRadius: 4,
                       cursor: 'pointer',
                       color: '#9ca3af',
@@ -387,14 +394,14 @@ export default function QuotesNewPage() {
             </ul>
 
             {/* 合計ブロック */}
-            <div style={{ borderTop: '1px solid #e5e7eb', paddingTop: 12, marginTop: 8, textAlign: 'right' }}>
-              <p style={{ fontSize: 18, fontWeight: 700, margin: '0 0 4px', color: '#111827' }}>
+            <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: 12, marginTop: 8, textAlign: 'right' }}>
+              <p style={{ fontSize: 18, fontWeight: 700, margin: '0 0 4px', color: '#fff' }}>
                 合計（税抜き）　¥{subtotal.toLocaleString('ja-JP')}
               </p>
-              <p style={{ fontSize: 13, color: '#6b7280', margin: '0 0 2px' }}>
+              <p style={{ fontSize: 13, color: '#9ca3af', margin: '0 0 2px' }}>
                 消費税（10%）　¥{tax.toLocaleString('ja-JP')}
               </p>
-              <p style={{ fontSize: 13, color: '#6b7280', margin: 0 }}>
+              <p style={{ fontSize: 13, color: '#9ca3af', margin: 0 }}>
                 税込合計　¥{grandTotal.toLocaleString('ja-JP')}
               </p>
             </div>
@@ -410,8 +417,8 @@ export default function QuotesNewPage() {
             padding: '14px',
             fontSize: 16,
             fontWeight: 700,
-            background: lineItems.length > 0 ? '#2563eb' : '#e5e7eb',
-            color: lineItems.length > 0 ? '#fff' : '#9ca3af',
+            background: lineItems.length > 0 ? '#FFD700' : 'rgba(255,255,255,0.08)',
+            color: lineItems.length > 0 ? '#000' : '#6b7280',
             border: 'none',
             borderRadius: 8,
             cursor: lineItems.length > 0 ? 'pointer' : 'not-allowed',
@@ -430,7 +437,6 @@ const mainStyle: React.CSSProperties = {
   maxWidth: 448,
   margin: '0 auto',
   fontFamily: 'system-ui, -apple-system, sans-serif',
-  backgroundColor: '#f9fafb',
   minHeight: '100dvh',
 }
 
@@ -438,7 +444,7 @@ const labelStyle: React.CSSProperties = {
   display: 'block',
   fontSize: 12,
   fontWeight: 600,
-  color: '#6b7280',
+  color: '#9ca3af',
   marginBottom: 4,
   letterSpacing: '0.05em',
 }
@@ -447,9 +453,10 @@ const inputStyle: React.CSSProperties = {
   width: '100%',
   padding: '10px 12px',
   fontSize: 15,
-  border: '1px solid #d1d5db',
+  border: '1px solid rgba(255,255,255,0.1)',
   borderRadius: 6,
-  background: '#fff',
+  background: '#1a2035',
+  color: '#fff',
   boxSizing: 'border-box',
 }
 
@@ -472,8 +479,8 @@ const btnPrimaryStyle: React.CSSProperties = {
   padding: '10px 18px',
   fontSize: 15,
   fontWeight: 700,
-  background: '#2563eb',
-  color: '#fff',
+  background: '#FFD700',
+  color: '#000',
   border: 'none',
   borderRadius: 8,
   cursor: 'pointer',
@@ -484,8 +491,8 @@ const btnSecondaryStyle: React.CSSProperties = {
   padding: '10px 14px',
   fontSize: 15,
   background: 'none',
-  color: '#2563eb',
-  border: '1px solid #d1d5db',
+  color: '#FFD700',
+  border: '1px solid rgba(255,215,0,0.3)',
   borderRadius: 8,
   cursor: 'pointer',
   minHeight: 44,

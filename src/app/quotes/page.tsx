@@ -40,10 +40,10 @@ export default function QuotesPage() {
     <main style={mainStyle}>
       {/* ヘッダー */}
       <div style={headerStyle}>
-        <Link href="/deliveries" style={{ color: '#2563eb', textDecoration: 'none', fontSize: 15 }}>
+        <Link href="/deliveries" style={{ color: '#FFD700', textDecoration: 'none', fontSize: 15 }}>
           ← 戻る
         </Link>
-        <span style={{ fontWeight: 700, fontSize: 16, flex: 1, textAlign: 'center' }}>見積書一覧</span>
+        <span style={{ fontWeight: 700, fontSize: 16, flex: 1, textAlign: 'center', color: '#fff' }}>見積書一覧</span>
         <span style={{ width: 48 }} />
       </div>
 
@@ -70,8 +70,8 @@ export default function QuotesPage() {
               <li
                 key={q.id}
                 style={{
-                  background: '#fff',
-                  border: '1px solid #e5e7eb',
+                  background: '#111827',
+                  border: '1px solid rgba(255,255,255,0.08)',
                   borderRadius: 8,
                   padding: '14px 16px',
                   marginBottom: 6,
@@ -79,15 +79,15 @@ export default function QuotesPage() {
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 4 }}>
                   <span style={{ fontSize: 13, color: '#6b7280' }}>{formatDate(q.issued_date)}</span>
-                  <span style={{ fontSize: 15, fontWeight: 700, color: '#111827' }}>
+                  <span style={{ fontSize: 15, fontWeight: 700, color: '#fff' }}>
                     {q.recipient ? `${q.recipient}御中` : '宛先未設定'}
                   </span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 16 }}>
-                  <span style={{ fontSize: 13, color: '#6b7280' }}>
+                  <span style={{ fontSize: 13, color: '#9ca3af' }}>
                     税抜: ¥{q.subtotal.toLocaleString('ja-JP')}
                   </span>
-                  <span style={{ fontSize: 13, color: '#374151', fontWeight: 600 }}>
+                  <span style={{ fontSize: 13, color: '#d1d5db', fontWeight: 600 }}>
                     税込: ¥{q.grand_total.toLocaleString('ja-JP')}
                   </span>
                 </div>
@@ -112,11 +112,11 @@ export default function QuotesPage() {
             padding: '14px 28px',
             fontSize: 16,
             fontWeight: 700,
-            background: '#2563eb',
-            color: '#fff',
+            background: '#FFD700',
+            color: '#000',
             borderRadius: 32,
             textDecoration: 'none',
-            boxShadow: '0 4px 16px rgba(37,99,235,0.35)',
+            boxShadow: '0 4px 16px rgba(255,215,0,0.3)',
             whiteSpace: 'nowrap',
           }}
         >
@@ -131,15 +131,14 @@ const mainStyle: React.CSSProperties = {
   maxWidth: 448,
   margin: '0 auto',
   fontFamily: 'system-ui, -apple-system, sans-serif',
-  backgroundColor: '#f9fafb',
   minHeight: '100dvh',
 }
 
 const headerStyle: React.CSSProperties = {
   position: 'sticky',
   top: 0,
-  background: '#fff',
-  borderBottom: '1px solid #e5e7eb',
+  background: '#111827',
+  borderBottom: '1px solid rgba(255,215,0,0.12)',
   padding: '12px 16px',
   display: 'flex',
   alignItems: 'center',
@@ -152,8 +151,9 @@ const inputStyle: React.CSSProperties = {
   width: '100%',
   padding: '10px 12px',
   fontSize: 15,
-  border: '1px solid #d1d5db',
+  border: '1px solid rgba(255,255,255,0.1)',
   borderRadius: 6,
-  background: '#fff',
+  background: '#1a2035',
+  color: '#fff',
   boxSizing: 'border-box',
 }
