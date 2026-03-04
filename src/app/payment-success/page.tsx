@@ -1,10 +1,47 @@
 import Link from 'next/link'
+import Stripe from 'stripe'
+import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 
 const BG   = '#0a0f1e'
 const CARD = '#111827'
 const Y    = '#FFD700'
 
-export default function PaymentSuccessPage() {
+export default async function PaymentSuccessPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ session_id?: string }>
+}) {
+  const { session_id } = await searchParams
+
+  // session_id がある場合、Stripe で確認して is_paid を即時更新
+  // （Webhook が遅延した場合のフォールバック）
+  if (session_id) {
+    try {
+      const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
+      const supabase = await createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+
+      if (user) {
+        const session = await stripe.checkout.sessions.retrieve(session_id)
+        if (session.payment_status === 'paid') {
+          const admin = createAdminClient()
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          await (admin as any)
+            .from('profiles')
+            .update({
+              is_paid: true,
+              subscription_status: 'active',
+              stripe_customer_id: session.customer,
+            })
+            .eq('id', user.id)
+        }
+      }
+    } catch {
+      // Stripe エラーは無視（Webhook がバックグラウンドで処理する）
+    }
+  }
+
   return (
     <div style={{
       minHeight: '100dvh',

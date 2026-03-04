@@ -56,21 +56,36 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url)
   }
 
-  // ── 未払いガード（保護ルートのみ）───────────────────────────────────────
-  if (user && !isPublic(pathname) && !isSemiProtected(pathname)) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { data: profile } = await (supabase as any)
-      .from('profiles')
-      .select('is_paid')
-      .eq('id', user.id)
-      .maybeSingle()
+  if (user && !isPublic(pathname)) {
+    // ── 会社登録ガード：テナント未登録ならオンボーディングへ ─────────────
+    if (!pathname.startsWith('/onboarding')) {
+      const { count } = await supabase
+        .from('user_tenants')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', user.id)
 
-    // profile が存在して未払いの場合のみリダイレクト
-    // （profile なし = 新規ユーザー → onboarding フローに任せる）
-    if (profile && !profile.is_paid) {
-      const url = request.nextUrl.clone()
-      url.pathname = '/payment-required'
-      return NextResponse.redirect(url)
+      if (!count) {
+        const url = request.nextUrl.clone()
+        url.pathname = '/onboarding'
+        return NextResponse.redirect(url)
+      }
+    }
+
+    // ── 未払いガード（保護ルートのみ）───────────────────────────────────
+    if (!isSemiProtected(pathname)) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data: profile } = await (supabase as any)
+        .from('profiles')
+        .select('is_paid')
+        .eq('id', user.id)
+        .maybeSingle()
+
+      // profile が存在して未払いの場合のみリダイレクト
+      if (profile && !profile.is_paid) {
+        const url = request.nextUrl.clone()
+        url.pathname = '/payment-required'
+        return NextResponse.redirect(url)
+      }
     }
   }
 

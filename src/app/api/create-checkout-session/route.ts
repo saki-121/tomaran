@@ -30,7 +30,7 @@ export async function POST() {
       metadata: {
         user_id: user.id,
       },
-      success_url: `${siteUrl}/payment-success`,
+      success_url: `${siteUrl}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${siteUrl}/payment-required`,
     })
   } catch (err) {
