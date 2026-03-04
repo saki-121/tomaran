@@ -47,6 +47,12 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <style>{`
           a, button { transition: opacity 0.12s, transform 0.1s; }
           a:active, button:active { opacity: 0.6 !important; transform: scale(0.96) !important; }
+          @keyframes shimmer {
+            0%   { opacity: 0.4; }
+            50%  { opacity: 0.8; }
+            100% { opacity: 0.4; }
+          }
+          .sk { animation: shimmer 1.4s ease-in-out infinite; }
         `}</style>
         {children}
       </body>

@@ -4,7 +4,6 @@ import Link from 'next/link'
 import type { CSSProperties } from 'react'
 import DeliveryFilter from './_components/DeliveryFilter'
 import DeliveryCard    from './_components/DeliveryCard'
-import GearMenu        from './_components/GearMenu'
 
 // ---------------------------------------------------------------------------
 // Types
@@ -113,11 +112,6 @@ export default async function DeliveriesPage({
 
   return (
     <main style={s.main}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
-        <h1 style={{ ...s.heading, margin: 0 }}>納品一覧</h1>
-        <GearMenu />
-      </div>
-
       {/* ── フィルタ ─────────────────────────────────────────────── */}
       <DeliveryFilter
         companies={companies}

@@ -38,15 +38,6 @@ export default function QuotesPage() {
 
   return (
     <main style={mainStyle}>
-      {/* ヘッダー */}
-      <div style={headerStyle}>
-        <Link href="/deliveries" style={{ color: '#FFD700', textDecoration: 'none', fontSize: 15 }}>
-          ← 戻る
-        </Link>
-        <span style={{ fontWeight: 700, fontSize: 16, flex: 1, textAlign: 'center', color: '#fff' }}>見積書一覧</span>
-        <span style={{ width: 48 }} />
-      </div>
-
       <div style={{ padding: '12px 16px 120px' }}>
         {/* 検索 */}
         <input
@@ -130,19 +121,6 @@ const mainStyle: React.CSSProperties = {
   margin: '0 auto',
   fontFamily: 'system-ui, -apple-system, sans-serif',
   minHeight: '100dvh',
-}
-
-const headerStyle: React.CSSProperties = {
-  position: 'sticky',
-  top: 0,
-  background: '#111827',
-  borderBottom: '1px solid rgba(255,215,0,0.12)',
-  padding: '12px 16px',
-  display: 'flex',
-  alignItems: 'center',
-  gap: 12,
-  zIndex: 10,
-  marginBottom: 0,
 }
 
 const inputStyle: React.CSSProperties = {
