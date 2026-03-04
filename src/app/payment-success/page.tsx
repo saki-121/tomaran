@@ -22,12 +22,15 @@ export default async function PaymentSuccessPage({
       const supabase = await createClient()
       const { data: { user } } = await supabase.auth.getUser()
 
-      if (user) {
+      if (!user) {
+        console.error('[payment-success] user not found in session')
+      } else {
         const session = await stripe.checkout.sessions.retrieve(session_id)
+        console.log('[payment-success] session payment_status:', session.payment_status, 'user:', user.id)
         if (session.payment_status === 'paid') {
           const admin = createAdminClient()
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          await (admin as any)
+          const { error: updateError } = await (admin as any)
             .from('profiles')
             .update({
               is_paid: true,
@@ -35,11 +38,18 @@ export default async function PaymentSuccessPage({
               stripe_customer_id: session.customer,
             })
             .eq('id', user.id)
+          if (updateError) {
+            console.error('[payment-success] profiles update failed:', updateError)
+          } else {
+            console.log('[payment-success] is_paid updated to true for user:', user.id)
+          }
         }
       }
-    } catch {
-      // Stripe エラーは無視（Webhook がバックグラウンドで処理する）
+    } catch (err) {
+      console.error('[payment-success] error:', err)
     }
+  } else {
+    console.error('[payment-success] session_id missing from URL')
   }
 
   return (
