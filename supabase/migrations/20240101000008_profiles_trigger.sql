@@ -53,7 +53,7 @@ BEGIN
   END IF;
 
   UPDATE public.profiles
-  SET is_paid = true, subscription_status = 'active'
+  SET is_paid = true
   WHERE id = target_user_id;
 END;
 $$;
