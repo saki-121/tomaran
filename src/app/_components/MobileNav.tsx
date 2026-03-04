@@ -12,7 +12,7 @@ export default function MobileNav() {
   ]
 
   return (
-    <nav style={{
+    <nav className="no-print" style={{
       background: '#05080f',
       borderBottom: '1px solid rgba(255,215,0,0.12)',
       display: 'flex',

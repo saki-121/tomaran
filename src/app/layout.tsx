@@ -53,6 +53,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             100% { opacity: 0.4; }
           }
           .sk { animation: shimmer 1.4s ease-in-out infinite; }
+          @media print { .no-print { display: none !important; } }
         `}</style>
         {children}
       </body>

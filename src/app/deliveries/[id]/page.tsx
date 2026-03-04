@@ -3,6 +3,7 @@ import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
 import { createRepositories } from '@/repositories'
 import type { CSSProperties } from 'react'
+import DeliveryItemList from './_components/DeliveryItemList'
 
 // ---------------------------------------------------------------------------
 // Helper
@@ -74,20 +75,20 @@ export default async function DeliveryDetailPage({
         </div>
       </div>
 
-      {/* ── 商品一覧（数量のみ） ─────────────────── */}
-      <h2 style={s.sectionTitle}>商品</h2>
+      {/* ── 商品一覧 ─────────────────────────────── */}
+      <h2 style={s.sectionTitle}>
+        商品{isEditable && <span style={{ fontSize: 11, fontWeight: 400, color: '#6b7280', marginLeft: 6 }}>編集・削除できます</span>}
+      </h2>
 
-      <div style={s.card}>
-        {delivery.delivery_items.map((item, idx) => (
-          <div key={item.id}>
-            {idx > 0 && <div style={s.divider} />}
-            <div style={s.itemRow}>
-              <span style={s.itemName}>{item.product?.name ?? '—'}</span>
-              <span style={s.itemQty}>{item.quantity}</span>
-            </div>
-          </div>
-        ))}
-      </div>
+      <DeliveryItemList
+        deliveryId={id}
+        initialItems={delivery.delivery_items.map(item => ({
+          id: item.id,
+          quantity: item.quantity,
+          product: item.product ? { name: item.product.name, spec: item.product.spec ?? null } : null,
+        }))}
+        isEditable={isEditable}
+      />
 
     </main>
   )
@@ -198,27 +199,5 @@ const s: Record<string, CSSProperties> = {
     color: '#9ca3af',
     margin: '0 0 8px 4px',
     letterSpacing: '0.05em',
-  },
-  divider: {
-    borderTop: '1px solid rgba(255,255,255,0.05)',
-  },
-  itemRow: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: '14px 0',
-    minHeight: 44,
-  },
-  itemName: {
-    fontSize: 15,
-    color: '#d1d5db',
-    flex: 1,
-    marginRight: 12,
-  },
-  itemQty: {
-    fontSize: 15,
-    fontWeight: 600,
-    color: '#9ca3af',
-    flexShrink: 0,
   },
 }
