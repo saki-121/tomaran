@@ -26,7 +26,7 @@ export default function OnboardingPage() {
     const d = await res.json()
     setLoading(false)
     if (!res.ok) { setError(d.error ?? 'エラーが発生しました'); return }
-    router.push('/payment-required')
+    router.push('/deliveries')
   }
 
   return (
@@ -49,8 +49,8 @@ export default function OnboardingPage() {
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 32 }}>
         {[
           { n: '1', label: 'Google登録', done: true },
-          { n: '2', label: '会社名登録', active: true },
-          { n: '3', label: '決済して開始', done: false },
+          { n: '2', label: '決済完了', done: true },
+          { n: '3', label: '会社名登録', active: true },
         ].map((step, i) => (
           <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             {i > 0 && <span style={{ color: 'rgba(255,255,255,0.2)', fontSize: 12 }}>→</span>}
@@ -62,7 +62,7 @@ export default function OnboardingPage() {
                 fontSize: 11, fontWeight: 700,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
               }}>
-                {step.done && i === 0 ? '✓' : step.n}
+                {step.done ? '✓' : step.n}
               </span>
               <span style={{ fontSize: 12, color: step.active ? '#fff' : step.done ? '#9ca3af' : '#6b7280', fontWeight: step.active ? 700 : 400 }}>
                 {step.label}
@@ -84,7 +84,7 @@ export default function OnboardingPage() {
           あなたの会社名を登録
         </h1>
         <p style={{ margin: '0 0 24px', fontSize: 13, color: '#9ca3af', lineHeight: 1.7 }}>
-          会社名を登録するとサービスの利用を開始できます。<br />
+          登録後すぐに全機能が使えます。<br />
           あとから変更可能です。
         </p>
 
@@ -120,13 +120,12 @@ export default function OnboardingPage() {
             cursor: loading ? 'not-allowed' : 'pointer',
           }}
         >
-          {loading ? '登録中…' : '登録して次へ →'}
+          {loading ? '登録中…' : '登録して開始 →'}
         </button>
       </div>
 
       <p style={{ marginTop: 24, fontSize: 12, color: '#6b7280', textAlign: 'center', lineHeight: 1.7 }}>
-        登録後、決済ページに移動します。<br />
-        月額 14,800円（税込）のサブスクリプションです。
+        登録後、納品管理画面に移動します。
       </p>
     </div>
   )

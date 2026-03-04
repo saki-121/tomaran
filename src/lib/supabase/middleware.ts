@@ -1,4 +1,4 @@
-// Supabase session refresh + auth/payment guard middleware helper.
+// Supabase session refresh + auth/payment/onboarding guard middleware helper.
 
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
@@ -8,16 +8,9 @@ import type { Database } from '@/types/database'
 const PUBLIC_PREFIXES = ['/login', '/auth', '/api', '/_next', '/legal', '/privacy']
 const PUBLIC_EXACT    = ['/']
 
-// ログイン必須だが支払い不要なパス
-const SEMI_PROTECTED_PREFIXES = ['/payment', '/onboarding']
-
 function isPublic(pathname: string) {
   return PUBLIC_EXACT.includes(pathname) ||
     PUBLIC_PREFIXES.some(p => pathname.startsWith(p))
-}
-
-function isSemiProtected(pathname: string) {
-  return SEMI_PROTECTED_PREFIXES.some(p => pathname.startsWith(p))
 }
 
 export async function updateSession(request: NextRequest) {
@@ -56,8 +49,27 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url)
   }
 
+  // /payment* は決済フロー（全ガードをスキップ）
+  if (user && pathname.startsWith('/payment')) {
+    return supabaseResponse
+  }
+
   if (user && !isPublic(pathname)) {
-    // ── 会社登録ガード：テナント未登録ならオンボーディングへ ─────────────
+    // ── 未払いガード ────────────────────────────────────────────────────────
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: profile } = await (supabase as any)
+      .from('profiles')
+      .select('is_paid')
+      .eq('id', user.id)
+      .maybeSingle()
+
+    if (profile && !profile.is_paid) {
+      const url = request.nextUrl.clone()
+      url.pathname = '/payment-required'
+      return NextResponse.redirect(url)
+    }
+
+    // ── 会社登録ガード（/onboarding 自体はスキップ）────────────────────────
     if (!pathname.startsWith('/onboarding')) {
       const { count } = await supabase
         .from('user_tenants')
@@ -67,23 +79,6 @@ export async function updateSession(request: NextRequest) {
       if (!count) {
         const url = request.nextUrl.clone()
         url.pathname = '/onboarding'
-        return NextResponse.redirect(url)
-      }
-    }
-
-    // ── 未払いガード（保護ルートのみ）───────────────────────────────────
-    if (!isSemiProtected(pathname)) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { data: profile } = await (supabase as any)
-        .from('profiles')
-        .select('is_paid')
-        .eq('id', user.id)
-        .maybeSingle()
-
-      // profile が存在して未払いの場合のみリダイレクト
-      if (profile && !profile.is_paid) {
-        const url = request.nextUrl.clone()
-        url.pathname = '/payment-required'
         return NextResponse.redirect(url)
       }
     }
