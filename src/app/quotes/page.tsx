@@ -97,32 +97,30 @@ export default function QuotesPage() {
         )}
       </div>
 
-      {/* 新規作成ボタン */}
-      <div style={{
-        position: 'fixed',
-        bottom: 24,
-        left: '50%',
-        transform: 'translateX(-50%)',
-        zIndex: 20,
-      }}>
-        <Link
-          href="/quotes/new"
-          style={{
-            display: 'inline-block',
-            padding: '14px 28px',
-            fontSize: 16,
-            fontWeight: 700,
-            background: '#FFD700',
-            color: '#000',
-            borderRadius: 32,
-            textDecoration: 'none',
-            boxShadow: '0 4px 16px rgba(255,215,0,0.3)',
-            whiteSpace: 'nowrap',
-          }}
-        >
-          ＋ 新規作成 →
-        </Link>
-      </div>
+      {/* 新規作成 FAB */}
+      <Link
+        href="/quotes/new"
+        aria-label="見積書を作成"
+        style={{
+          position: 'fixed',
+          bottom: 24,
+          right: 16,
+          width: 56,
+          height: 56,
+          borderRadius: '50%',
+          background: '#FFD700',
+          color: '#000',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: 28,
+          textDecoration: 'none',
+          boxShadow: '0 4px 14px rgba(255,215,0,0.4)',
+          zIndex: 20,
+        }}
+      >
+        ＋
+      </Link>
     </main>
   )
 }

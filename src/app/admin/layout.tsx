@@ -45,6 +45,37 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           </Link>
         ))}
         <span style={{ marginLeft: 'auto' }} />
+        {/* スマホ画面リンク */}
+        <Link href="/deliveries" style={{
+          color: '#34d399',
+          textDecoration: 'none',
+          padding: '0 14px',
+          height: 48,
+          display: 'flex',
+          alignItems: 'center',
+          fontSize: 13,
+          fontWeight: 600,
+          borderLeft: '1px solid rgba(255,255,255,0.06)',
+          gap: 4,
+          whiteSpace: 'nowrap',
+        }}>
+          📱 納品入力
+        </Link>
+        <Link href="/quotes" style={{
+          color: '#34d399',
+          textDecoration: 'none',
+          padding: '0 14px',
+          height: 48,
+          display: 'flex',
+          alignItems: 'center',
+          fontSize: 13,
+          fontWeight: 600,
+          borderLeft: '1px solid rgba(255,255,255,0.06)',
+          gap: 4,
+          whiteSpace: 'nowrap',
+        }}>
+          📄 見積書
+        </Link>
         <Link href="/admin/cancel" style={{
           color: '#ef4444',
           textDecoration: 'none',

@@ -287,7 +287,7 @@ export default function CompaniesPage() {
           onClick={() => setShowFormat(f => !f)}
           style={{ ...btnSecondary }}
         >
-          {showFormat ? '✕ 閉じる' : '❓ フォーマット'}
+          {showFormat ? '✕ 閉じる' : '💡 取込Excelサンプルを見る'}
         </button>
         <input ref={fileInputRef} type="file" accept=".xlsx,.xls" style={{ display: 'none' }} onChange={handleFileSelect} />
       </div>
@@ -322,7 +322,16 @@ export default function CompaniesPage() {
       {/* Import format guide */}
       {showFormat && (
         <div style={{ background: '#111827', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 6, padding: '12px 16px', marginBottom: 16, fontSize: 12 }}>
-          <p style={{ margin: '0 0 8px', fontWeight: 600, fontSize: 13, color: '#fff' }}>Excelフォーマット（.xlsx / .xls）</p>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+            <p style={{ margin: 0, fontWeight: 600, fontSize: 13, color: '#fff' }}>Excelフォーマット（.xlsx / .xls）</p>
+            <a
+              href="/api/masters/companies/template"
+              download
+              style={{ fontSize: 12, color: '#34d399', textDecoration: 'none', fontWeight: 600, whiteSpace: 'nowrap', marginLeft: 12 }}
+            >
+              📥 テンプレートをDL
+            </a>
+          </div>
           <p style={{ margin: '0 0 8px', color: '#9ca3af' }}>1行目はヘッダー行として読み飛ばします。2行目からデータを入力してください。</p>
           <table style={{ borderCollapse: 'collapse', width: '100%' }}>
             <thead>
