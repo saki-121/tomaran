@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { createRepositories } from '@/repositories'
 import type { CSSProperties } from 'react'
 import DeliveryItemList from './_components/DeliveryItemList'
+import DeliveryDeleteButton from './_components/DeliveryDeleteButton'
 
 // ---------------------------------------------------------------------------
 // Helper
@@ -88,6 +89,13 @@ export default async function DeliveryDetailPage({
           📄 納品書発行
         </Link>
       </div>
+
+      {/* ── 削除ボタン ─────────────────────────────── */}
+      {isEditable && (
+        <div style={{ marginBottom: 16 }}>
+          <DeliveryDeleteButton deliveryId={id} />
+        </div>
+      )}
 
       {/* ── 商品一覧 ─────────────────────────────── */}
       <h2 style={s.sectionTitle}>
