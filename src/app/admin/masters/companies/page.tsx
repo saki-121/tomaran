@@ -156,7 +156,11 @@ export default function CompaniesPage() {
             query = query.or(`name.ilike.%${searchQuery.trim()}%,address.ilike.%${searchQuery.trim()}%,phone.ilike.%${searchQuery.trim()}%`)
           }
           
-          const { data } = await query
+          const { data, error } = await query
+          if (error) {
+            console.error('Companies query error:', error)
+            return
+          }
           setCompanies(data ?? [])
         })
       } catch (_error) {

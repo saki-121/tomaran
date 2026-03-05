@@ -53,7 +53,12 @@ export async function POST(req: Request) {
     }
 
     // Upload to Supabase Storage
-    const fileName = `logo_${tenantId}_${Date.now()}.${file.type.split('/')[1]}`
+    const fileExtension = file.type.split('/')[1]
+    if (!fileExtension) {
+      return NextResponse.json({ error: '対応している画像形式は JPEG, PNG, GIF, WebP です（最大5MB）' }, { status: 400 })
+    }
+    
+    const fileName = `logo_${tenantId}_${Date.now()}.${fileExtension}`
     const { error: uploadError } = await supabase.storage
       .from('company-logos')
       .upload(fileName, file, {

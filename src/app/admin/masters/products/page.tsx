@@ -66,7 +66,11 @@ export default function ProductsPage() {
           query = query.or(`name.ilike.%${searchQuery.trim()}%,spec.ilike.%${searchQuery.trim()}%`)
         }
         
-        const { data } = await query
+        const { data, error } = await query
+        if (error) {
+          console.error('Products query error:', error)
+          return
+        }
         setProducts(data ?? [])
       })
     } catch (error) {
