@@ -165,8 +165,8 @@ const s: Record<string, CSSProperties> = {
   statusBadge: {
     fontSize: 12,
     fontWeight: 600,
-    color: isEditable ? '#34d399' : '#9ca3af',
-    background: isEditable ? 'rgba(52,211,153,0.1)' : 'rgba(255,255,255,0.05)',
+    color: '#34d399',
+    background: 'rgba(52,211,153,0.1)',
     padding: '3px 10px',
     borderRadius: 20,
   },

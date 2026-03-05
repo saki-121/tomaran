@@ -154,7 +154,7 @@ export default function QuoteEditPage({ params }: { params: Promise<{ id: string
           </div>
           <div style={s.summaryRow}>
             <span style={s.summaryLabel}>税込金額:</span>
-            <span style={s.summaryValue} style={{ fontWeight: 700 }}>
+            <span style={{ ...s.summaryValue, fontWeight: 700 }}>
               ¥{quote.grand_total.toLocaleString('ja-JP')}
             </span>
           </div>

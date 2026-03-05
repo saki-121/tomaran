@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import type { CSSProperties } from 'react'
 
 type QuoteItem = {
@@ -54,10 +55,12 @@ export default function QuotePrint({ quote }: { quote: Quote }) {
       <div style={s.header}>
         <div style={s.headerLeft}>
           {quote.own_company?.logo_url && (
-            <img 
+            <Image 
               src={quote.own_company.logo_url} 
               alt="会社ロゴ" 
               style={s.logo}
+              width={120}
+              height={60}
             />
           )}
           <div style={s.companyInfo}>
@@ -119,7 +122,7 @@ export default function QuotePrint({ quote }: { quote: Quote }) {
         </div>
         <div style={s.summaryRow}>
           <span style={s.summaryLabel}>合計:</span>
-          <span style={s.summaryValue} style={{ fontWeight: 700 }}>
+          <span style={{ ...s.summaryValue, fontWeight: 700 }}>
             {formatPrice(quote.grand_total)}
           </span>
         </div>
