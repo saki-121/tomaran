@@ -51,16 +51,6 @@ export default async function DeliveryPrintPage({
   if (delivery.tenant_id !== tenantId) notFound()
 
   const items = delivery.delivery_items ?? []
-  let grandSubtotal = 0
-  let grandTax = 0
-  for (const item of items) {
-    const unitPrice = item.snapshot_unit_price ?? 0
-    const subtotal = item.quantity * unitPrice
-    const tax = Math.ceil(subtotal * (item.snapshot_tax_rate ?? 0))
-    grandSubtotal += subtotal
-    grandTax += tax
-  }
-  const grandTotal = grandSubtotal + grandTax
   const today = new Date().toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' })
 
   function productLabel(item: typeof items[0]): string {
@@ -101,41 +91,23 @@ export default async function DeliveryPrintPage({
           <thead>
             <tr style={{ background: '#f3f4f6' }}>
               <th style={{ padding: '8px 10px', textAlign: 'left', fontSize: 13, fontWeight: 600, color: '#374151', borderBottom: '2px solid #e5e7eb' }}>品名</th>
-              <th style={{ padding: '8px 10px', width: 60, textAlign: 'center', fontSize: 13, fontWeight: 600, color: '#374151', borderBottom: '2px solid #e5e7eb' }}>数量</th>
-              <th style={{ padding: '8px 10px', width: 90, textAlign: 'right', fontSize: 13, fontWeight: 600, color: '#374151', borderBottom: '2px solid #e5e7eb' }}>単価</th>
-              <th style={{ padding: '8px 10px', width: 100, textAlign: 'right', fontSize: 13, fontWeight: 600, color: '#374151', borderBottom: '2px solid #e5e7eb' }}>金額</th>
+              <th style={{ padding: '8px 10px', width: 80, textAlign: 'center', fontSize: 13, fontWeight: 600, color: '#374151', borderBottom: '2px solid #e5e7eb' }}>数量</th>
             </tr>
           </thead>
           <tbody>
             {items.map(item => {
-              const unitPrice = item.snapshot_unit_price ?? 0
-              const amount = item.quantity * unitPrice
               return (
                 <tr key={item.id} style={{ borderBottom: '1px solid #e5e7eb' }}>
                   <td style={{ padding: '8px 10px', fontSize: 14, color: '#111827' }}>{productLabel(item)}</td>
                   <td style={{ padding: '8px 10px', fontSize: 14, color: '#111827', textAlign: 'center' }}>{item.quantity}</td>
-                  <td style={{ padding: '8px 10px', fontSize: 14, color: '#111827', textAlign: 'right' }}>
-                    ¥{unitPrice.toLocaleString('ja-JP')}
-                  </td>
-                  <td style={{ padding: '8px 10px', fontSize: 14, color: '#111827', textAlign: 'right' }}>
-                    ¥{amount.toLocaleString('ja-JP')}
-                  </td>
                 </tr>
               )
             })}
           </tbody>
         </table>
 
-        <div style={{ textAlign: 'right', borderTop: '1px solid #e5e7eb', paddingTop: 16 }}>
-          <p style={{ fontSize: 20, fontWeight: 700, margin: '0 0 6px' }}>
-            合計（税抜き）　¥{grandSubtotal.toLocaleString('ja-JP')}
-          </p>
-          <p style={{ fontSize: 13, color: '#6b7280', margin: '0 0 2px' }}>
-            消費税　¥{grandTax.toLocaleString('ja-JP')}
-          </p>
-          <p style={{ fontSize: 13, color: '#6b7280', margin: 0 }}>
-            税込合計　¥{grandTotal.toLocaleString('ja-JP')}
-          </p>
+        <div style={{ marginTop: 32, textAlign: 'center', color: '#6b7280', fontSize: 12 }}>
+          <p>以上、御納品申し上げます。</p>
         </div>
       </div>
     </>
