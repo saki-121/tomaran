@@ -40,6 +40,7 @@ export default function QuotesNewPage() {
     name: '',
     unit_price: null
   })
+  const [priceType, setPriceType] = useState<'later' | 'amount'>('later')
   const printRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -87,7 +88,8 @@ export default function QuotesNewPage() {
     
     const newTextProduct: TextProduct = {
       ...textProduct,
-      id: `text_${Date.now()}`
+      id: `text_${Date.now()}`,
+      unit_price: priceType === 'later' ? '後日お返事します' : textProduct.unit_price
     }
     
     setLineItems(prev => [...prev, { textProduct: newTextProduct, quantity: 1 }])
@@ -96,6 +98,7 @@ export default function QuotesNewPage() {
       name: '',
       unit_price: null
     })
+    setPriceType('later')
     setShowTextProduct(false)
   }
 
@@ -351,21 +354,45 @@ export default function QuotesNewPage() {
 
             <div style={{ marginBottom: 16 }}>
               <label style={{ display: 'block', fontSize: 12, color: '#9ca3af', marginBottom: 4 }}>単価</label>
-              <input
-                type="text"
-                value={textProduct.unit_price || ''}
-                onChange={e => setTextProduct(p => ({ ...p, unit_price: e.target.value || null }))}
-                placeholder="後日お返事します または 金額"
-                style={{
-                  width: '100%',
-                  padding: '8px 12px',
-                  border: '1px solid rgba(255,255,255,0.1)',
-                  borderRadius: 4,
-                  background: '#0a0f1e',
-                  color: '#fff',
-                  fontSize: 14,
-                }}
-              />
+              
+              {/* 単価タイプ選択 */}
+              <div style={{ marginBottom: 8 }}>
+                <select
+                  value={priceType}
+                  onChange={e => setPriceType(e.target.value as 'later' | 'amount')}
+                  style={{
+                    width: '100%',
+                    padding: '8px 12px',
+                    border: '1px solid rgba(255,255,255,0.1)',
+                    borderRadius: 4,
+                    background: '#0a0f1e',
+                    color: '#fff',
+                    fontSize: 14,
+                  }}
+                >
+                  <option value="later">後日連絡</option>
+                  <option value="amount">金額入力</option>
+                </select>
+              </div>
+
+              {/* 金額入力フィールド */}
+              {priceType === 'amount' && (
+                <input
+                  type="number"
+                  value={textProduct.unit_price || ''}
+                  onChange={e => setTextProduct(p => ({ ...p, unit_price: e.target.value || null }))}
+                  placeholder="金額を入力"
+                  style={{
+                    width: '100%',
+                    padding: '8px 12px',
+                    border: '1px solid rgba(255,255,255,0.1)',
+                    borderRadius: 4,
+                    background: '#0a0f1e',
+                    color: '#fff',
+                    fontSize: 14,
+                  }}
+                />
+              )}
             </div>
 
             <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
@@ -463,56 +490,6 @@ export default function QuotesNewPage() {
           />
         </div>
 
-        {/* 商品リスト */}
-        <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 24px', display: 'flex', flexDirection: 'column', gap: 4 }}>
-          {filteredProducts.map(p => (
-            <li
-              key={p.id}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                padding: '10px 12px',
-                background: '#111827',
-                borderRadius: 6,
-                border: '1px solid rgba(255,255,255,0.08)',
-                gap: 8,
-              }}
-            >
-              <span style={{ flex: 1, fontSize: 14, color: '#d1d5db' }}>{productLabel(p)}</span>
-              <span style={{ fontSize: 13, color: p.unit_price !== null ? '#9ca3af' : '#6b7280', whiteSpace: 'nowrap' }}>
-                {p.unit_price !== null ? `¥${p.unit_price.toLocaleString('ja-JP')}` : '単価未設定'}
-              </span>
-              <button
-                onClick={() => addProduct(p)}
-                style={{
-                  minWidth: 44,
-                  minHeight: 44,
-                  fontSize: 20,
-                  background: '#FFD700',
-                  color: '#000',
-                  border: 'none',
-                  borderRadius: 6,
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexShrink: 0,
-                  fontWeight: 700,
-                }}
-                aria-label={`${productLabel(p)}を追加`}
-              >
-                ＋
-              </button>
-            </li>
-          ))}
-          {filteredProducts.length === 0 && (
-            <li style={{ fontSize: 14, color: '#9ca3af', textAlign: 'center', padding: '24px 0' }}>
-              該当する商品がありません
-            </li>
-          )}
-        </ul>
-
         {/* 見積内容 */}
         {lineItems.length > 0 && (
           <div style={{ marginBottom: 24 }}>
@@ -596,6 +573,56 @@ export default function QuotesNewPage() {
             </div>
           </div>
         )}
+
+        {/* 商品リスト */}
+        <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 24px', display: 'flex', flexDirection: 'column', gap: 4 }}>
+          {filteredProducts.map(p => (
+            <li
+              key={p.id}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                padding: '10px 12px',
+                background: '#111827',
+                borderRadius: 6,
+                border: '1px solid rgba(255,255,255,0.08)',
+                gap: 8,
+              }}
+            >
+              <span style={{ flex: 1, fontSize: 14, color: '#d1d5db' }}>{productLabel(p)}</span>
+              <span style={{ fontSize: 13, color: p.unit_price !== null ? '#9ca3af' : '#6b7280', whiteSpace: 'nowrap' }}>
+                {p.unit_price !== null ? `¥${p.unit_price.toLocaleString('ja-JP')}` : '単価未設定'}
+              </span>
+              <button
+                onClick={() => addProduct(p)}
+                style={{
+                  minWidth: 44,
+                  minHeight: 44,
+                  fontSize: 20,
+                  background: '#FFD700',
+                  color: '#000',
+                  border: 'none',
+                  borderRadius: 6,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0,
+                  fontWeight: 700,
+                }}
+                aria-label={`${productLabel(p)}を追加`}
+              >
+                ＋
+              </button>
+            </li>
+          ))}
+          {filteredProducts.length === 0 && (
+            <li style={{ fontSize: 14, color: '#9ca3af', textAlign: 'center', padding: '24px 0' }}>
+              該当する商品がありません
+            </li>
+          )}
+        </ul>
 
         {/* 見積書を作るボタン */}
         <button

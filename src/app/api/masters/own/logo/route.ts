@@ -22,12 +22,29 @@ export async function POST(req: Request) {
     // Validate file type (allow common image formats)
     const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
     if (!allowedTypes.includes(file.type)) {
-      return NextResponse.json({ error: '対応している画像形式は JPEG, PNG, GIF, WebP です' }, { status: 400 })
+      return NextResponse.json({ error: '対応している画像形式は JPEG, PNG, GIF, WebP です（最大5MB）' }, { status: 400 })
     }
 
     // Validate file size (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
       return NextResponse.json({ error: 'ファイルサイズは5MB以下にしてください' }, { status: 400 })
+    }
+
+    // Check if storage bucket exists, create if not
+    const { data: buckets } = await supabase.storage.listBuckets()
+    const bucketExists = buckets?.some(b => b.name === 'company-logos')
+    
+    if (!bucketExists) {
+      const { error: bucketError } = await supabase.storage.createBucket('company-logos', {
+        public: true,
+        allowedMimeTypes: allowedTypes,
+        fileSizeLimit: 5 * 1024 * 1024 // 5MB
+      })
+      
+      if (bucketError) {
+        console.error('Bucket creation error:', bucketError)
+        return NextResponse.json({ error: 'ストレージの初期化に失敗しました' }, { status: 500 })
+      }
     }
 
     // Upload to Supabase Storage

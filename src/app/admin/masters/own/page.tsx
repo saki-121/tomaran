@@ -266,6 +266,9 @@ export default function OwnMasterPage() {
         <div style={{ marginBottom: 24 }}>
           <label style={{ display: 'block', fontWeight: 600, marginBottom: 8, fontSize: 13, color: '#9ca3af' }}>
             会社ロゴ
+            <span style={{ fontSize: 11, color: '#6b7280', marginLeft: 8, fontWeight: 400 }}>
+              （最大5MB, JPEG/PNG/GIF/WebP）
+            </span>
           </label>
           <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 12 }}>
             {logoUrl ? (
@@ -322,7 +325,7 @@ export default function OwnMasterPage() {
             
             <input
               type="file"
-              accept="image/*"
+              accept="image/jpeg,image/png,image/gif,image/webp"
               onChange={handleLogoUpload}
               disabled={uploadingLogo}
               style={{
