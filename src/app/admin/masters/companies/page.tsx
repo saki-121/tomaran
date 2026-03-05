@@ -1,6 +1,8 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
+import { createClient } from '@/lib/supabase/client'
+import { withQueryTracking } from '@/lib/performance'
 
 type Company = {
   id: string
@@ -124,22 +126,57 @@ export default function CompaniesPage() {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [showFormat, setShowFormat] = useState(false)
 
-  const loadCompanies = () => {
-    setLoading(true)
-    void fetch('/api/masters/companies?all=1')
-      .then(r => r.json())
-      .then(d => setCompanies(d.companies ?? []))
-      .finally(() => setLoading(false))
-  }
+  const loadCompanies = useCallback(() => {
+    void (async () => {
+      setLoading(true)
+      try {
+        const supabase = await createClient()
+        const { data: { user } } = await supabase.auth.getUser()
+        if (!user) return
 
-  useEffect(loadCompanies, [])
+        // Get tenant_id
+        const { data: userTenant } = await supabase
+          .from('user_tenants')
+          .select('tenant_id')
+          .eq('user_id', user.id)
+          .single()
+        
+        if (!userTenant) return
+        const tenantId = userTenant.tenant_id
 
-  // Filter companies by search query
+        await withQueryTracking('companies-load', async () => {
+          let query = supabase
+            .from('companies')
+            .select('*')
+            .eq('tenant_id', tenantId)
+            .order('created_at', { ascending: false })
+          
+          // Apply server-side search if query exists
+          if (searchQuery.trim()) {
+            query = query.ilike('name', `%${searchQuery.trim()}%`)
+          }
+          
+          const { data } = await query
+          setCompanies(data ?? [])
+        })
+      } catch (_error) {
+        console.error('Failed to load companies')
+      } finally {
+        setLoading(false)
+      }
+    })()
+  }, [searchQuery])
+
+  useEffect(() => {
+    void loadCompanies()
+  }, [searchQuery, loadCompanies]) // Reload when search query changes
+
+  // Filter companies by search query (now only for address/phone search)
   const filteredCompanies = companies.filter(c => {
     if (!searchQuery.trim()) return true
     const query = searchQuery.toLowerCase().trim()
-    return c.name.toLowerCase().includes(query) ||
-           (c.address && c.address.toLowerCase().includes(query)) ||
+    // Name search is handled server-side, but address/phone still client-side
+    return (c.address && c.address.toLowerCase().includes(query)) ||
            (c.phone && c.phone.toLowerCase().includes(query))
   })
 
@@ -261,7 +298,7 @@ export default function CompaniesPage() {
       setPendingFile(null)
       if (!res.ok) { setImportResult({ created: 0, updated: 0, skipped: 0, errors: [d.error] }); return }
       setImportResult(d)
-      loadCompanies()
+      void loadCompanies()
     } catch (_error) {
       setImporting(false)
       setImportResult({ created: 0, updated: 0, skipped: 0, errors: ['❌ 取り込みに失敗しました。ファイル形式を確認してください。'] })
@@ -294,10 +331,22 @@ export default function CompaniesPage() {
 
   return (
     <div style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
-      {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20, flexWrap: 'wrap' }}>
         <h2 style={{ margin: 0, color: '#fff' }}>取引先マスタ</h2>
         <button onClick={startNewCo} style={btnPrimary}>＋ 新規追加</button>
+
+        {/* LINEお問い合わせリンク */}
+        <div style={s.lineSupport}>
+          <span style={s.lineText}>🤔 ご不明な点はLINEから</span>
+          <a 
+            href="https://lin.ee/2WeE9qB" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            style={s.lineButton}
+          >
+            💬 LINEで問い合わせ
+          </a>
+        </div>
 
         {/* Search */}
         <input
@@ -592,6 +641,34 @@ export default function CompaniesPage() {
   )
 }
 const btnGreen: React.CSSProperties = { padding: '8px 18px', background: '#34d399', color: '#000', border: 'none', borderRadius: 6, cursor: 'pointer', fontSize: 13, fontWeight: 700 }
+
+const s: Record<string, React.CSSProperties> = {
+  lineSupport: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 8,
+    padding: '6px 12px',
+    background: 'rgba(0, 200, 0, 0.1)',
+    border: '1px solid rgba(0, 200, 0, 0.3)',
+    borderRadius: 6,
+    marginLeft: 'auto',
+  },
+  lineText: {
+    fontSize: 12,
+    color: '#9ca3af',
+    fontWeight: 500,
+  },
+  lineButton: {
+    padding: '4px 8px',
+    fontSize: 11,
+    fontWeight: 600,
+    background: '#00C300',
+    color: '#fff',
+    textDecoration: 'none',
+    borderRadius: 4,
+    whiteSpace: 'nowrap',
+  },
+}
 
 // Excel preview styles
 const xlRowNum: React.CSSProperties = { padding: '4px 8px', textAlign: 'center', border: '1px solid rgba(255,255,255,0.1)', color: '#6b7280', fontSize: 11, background: '#0f1629', width: 28, minWidth: 28 }

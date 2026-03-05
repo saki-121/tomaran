@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import type { CSSProperties } from 'react'
+import { withQueryTracking } from '@/lib/performance'
 
 // ---------------------------------------------------------------------------
 // Types — 価格列を含む
@@ -124,13 +125,17 @@ export default async function AdminDeliveryPage({
   const { company_id, status } = await searchParams
 
   const [{ deliveries, error }, { data: companiesData }] = await Promise.all([
-    fetchAdminDeliveries(tenantId, { company_id, status }),
-    supabase
-      .from('companies')
-      .select('id, name')
-      .eq('tenant_id', tenantId)
-      .eq('active_flag', true)
-      .order('name'),
+    withQueryTracking('admin-deliveries-load', () => 
+      fetchAdminDeliveries(tenantId, { company_id, status })
+    ),
+    withQueryTracking('admin-companies-load', () =>
+      supabase
+        .from('companies')
+        .select('id, name')
+        .eq('tenant_id', tenantId)
+        .eq('active_flag', true)
+        .order('name')
+    )
   ])
 
   if (error) console.error('[/admin] fetch error:', error)

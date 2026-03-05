@@ -13,6 +13,11 @@ type Profile = {
   invoice_registration_number: string | null
 }
 
+type OwnCompanyData = {
+  profile: Profile | null
+  logo_url: string | null
+}
+
 type BankAccount = {
   id: string
   bank_name: string
@@ -57,9 +62,11 @@ const emptyProfile: Profile = { company_name: '', address: '', phone: '', invoic
 export default function OwnMasterPage() {
   // ── 自社設定 ──
   const [profile, setProfile] = useState<Profile>(emptyProfile)
+  const [logoUrl, setLogoUrl] = useState<string | null>(null)
   const [loadingProfile, setLoadingProfile] = useState(true)
   const [saving, setSaving]   = useState(false)
   const [msg, setMsg]         = useState<string | null>(null)
+  const [uploadingLogo, setUploadingLogo] = useState(false)
 
   // ── 銀行口座 ──
   const [accounts, setAccounts]     = useState<BankAccount[]>([])
@@ -73,7 +80,10 @@ export default function OwnMasterPage() {
   useEffect(() => {
     void fetch('/api/masters/own')
       .then(r => r.json())
-      .then(d => { if (d.profile) setProfile(d.profile) })
+      .then((d: OwnCompanyData) => {
+        if (d.profile) setProfile(d.profile)
+        if (d.logo_url) setLogoUrl(d.logo_url)
+      })
       .finally(() => setLoadingProfile(false))
   }, [])
 
@@ -87,6 +97,65 @@ export default function OwnMasterPage() {
   useEffect(loadBanks, [])
 
   // ── 自社設定 save ──
+  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    setUploadingLogo(true)
+    setMsg(null)
+
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
+
+      const res = await fetch('/api/masters/own/logo', {
+        method: 'POST',
+        body: formData
+      })
+
+      const data = await res.json()
+      if (!res.ok) {
+        setMsg(`エラー: ${data.error}`)
+        return
+      }
+
+      setLogoUrl(data.logo_url)
+      setMsg('ロゴを更新しました')
+    } catch (error) {
+      console.error('Logo upload error:', error)
+      setMsg('アップロードに失敗しました')
+    } finally {
+      setUploadingLogo(false)
+    }
+  }
+
+  const handleLogoDelete = async () => {
+    if (!confirm('ロゴを削除しますか？')) return
+
+    setUploadingLogo(true)
+    setMsg(null)
+
+    try {
+      const res = await fetch('/api/masters/own/logo', {
+        method: 'DELETE'
+      })
+
+      const data = await res.json()
+      if (!res.ok) {
+        setMsg(`エラー: ${data.error}`)
+        return
+      }
+
+      setLogoUrl(null)
+      setMsg('ロゴを削除しました')
+    } catch (error) {
+      console.error('Logo delete error:', error)
+      setMsg('削除に失敗しました')
+    } finally {
+      setUploadingLogo(false)
+    }
+  }
+
   const saveProfile = async (e: React.FormEvent) => {
     e.preventDefault()
     setSaving(true)
@@ -176,8 +245,119 @@ export default function OwnMasterPage() {
   return (
     <div style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
       {/* ── 自社設定 ──────────────────────────────────────────────── */}
-      <h2 style={{ marginBottom: 24, color: '#fff' }}>自社設定</h2>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 24, flexWrap: 'wrap' }}>
+        <h2 style={{ margin: 0, color: '#fff' }}>自社設定</h2>
+        
+        {/* LINEお問い合わせリンク */}
+        <div style={s.lineSupport}>
+          <span style={s.lineText}>🤔 ご不明な点はLINEから</span>
+          <a 
+            href="https://lin.ee/2WeE9qB" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            style={s.lineButton}
+          >
+            💬 LINEで問い合わせ
+          </a>
+        </div>
+      </div>
       <form onSubmit={saveProfile} style={{ maxWidth: 560, marginBottom: 48 }}>
+        {/* ロゴアップロード */}
+        <div style={{ marginBottom: 24 }}>
+          <label style={{ display: 'block', fontWeight: 600, marginBottom: 8, fontSize: 13, color: '#9ca3af' }}>
+            会社ロゴ
+          </label>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 12 }}>
+            {logoUrl ? (
+              <div style={{ position: 'relative' }}>
+                <img 
+                  src={logoUrl} 
+                  alt="会社ロゴ" 
+                  style={{ 
+                    maxHeight: 80, 
+                    maxWidth: 200, 
+                    border: '1px solid rgba(255,255,255,0.1)', 
+                    borderRadius: 6 
+                  }} 
+                />
+                <button
+                  type="button"
+                  onClick={handleLogoDelete}
+                  disabled={uploadingLogo}
+                  style={{
+                    position: 'absolute',
+                    top: -8,
+                    right: -8,
+                    width: 24,
+                    height: 24,
+                    background: '#ef4444',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: '50%',
+                    cursor: 'pointer',
+                    fontSize: 12,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  ×
+                </button>
+              </div>
+            ) : (
+              <div style={{
+                width: 200,
+                height: 80,
+                border: '2px dashed rgba(255,255,255,0.2)',
+                borderRadius: 6,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#6b7280',
+                fontSize: 12,
+              }}>
+                ロゴ未設定
+              </div>
+            )}
+            
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleLogoUpload}
+              disabled={uploadingLogo}
+              style={{
+                display: 'none'
+              }}
+              id="logo-upload"
+            />
+            <label
+              htmlFor="logo-upload"
+              style={{
+                padding: '8px 16px',
+                background: uploadingLogo ? 'rgba(255,255,255,0.1)' : '#FFD700',
+                color: uploadingLogo ? '#6b7280' : '#000',
+                border: 'none',
+                borderRadius: 6,
+                cursor: uploadingLogo ? 'not-allowed' : 'pointer',
+                fontSize: 14,
+                fontWeight: 600,
+              }}
+            >
+              {uploadingLogo ? 'アップロード中...' : 'ロゴを選択'}
+            </label>
+          </div>
+          {msg && (
+            <p style={{
+              fontSize: 12,
+              color: msg.includes('エラー') ? '#ef4444' : '#34d399',
+              marginTop: 8,
+              textAlign: 'center',
+            }}>
+              {msg}
+            </p>
+          )}
+        </div>
+
         {profileField('会社名', 'company_name', '例：株式会社〇〇')}
         {profileField('住所', 'address', '例：東京都〇〇区…')}
         {profileField('電話番号', 'phone', '例：03-0000-0000')}
@@ -187,9 +367,8 @@ export default function OwnMasterPage() {
           disabled={saving}
           style={{ padding: '10px 28px', background: '#FFD700', color: '#000', border: 'none', borderRadius: 6, cursor: 'pointer', fontSize: 14, fontWeight: 700 }}
         >
-          {saving ? '保存中…' : '保存'}
+          {saving ? '保存中...' : '保存'}
         </button>
-        {msg && <p style={{ marginTop: 12, color: msg.startsWith('エラー') ? '#ef4444' : '#34d399', fontSize: 14 }}>{msg}</p>}
       </form>
 
       <hr style={{ border: 'none', borderTop: '1px solid rgba(255,255,255,0.08)', marginBottom: 32 }} />
@@ -285,3 +464,31 @@ export default function OwnMasterPage() {
 const btnPrimary: React.CSSProperties  = { padding: '8px 18px', background: '#FFD700', color: '#000', border: 'none', borderRadius: 6, cursor: 'pointer', fontSize: 13, fontWeight: 700 }
 const btnSecondary: React.CSSProperties = { padding: '8px 18px', background: '#1a2035', color: '#9ca3af', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 6, cursor: 'pointer', fontSize: 13 }
 const btnSmall = (bg: string): React.CSSProperties => ({ padding: '4px 10px', background: bg, color: '#fff', border: 'none', borderRadius: 4, cursor: 'pointer', fontSize: 12 })
+
+const s: Record<string, React.CSSProperties> = {
+  lineSupport: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 8,
+    padding: '6px 12px',
+    background: 'rgba(0, 200, 0, 0.1)',
+    border: '1px solid rgba(0, 200, 0, 0.3)',
+    borderRadius: 6,
+    marginLeft: 'auto',
+  },
+  lineText: {
+    fontSize: 12,
+    color: '#9ca3af',
+    fontWeight: 500,
+  },
+  lineButton: {
+    padding: '4px 8px',
+    fontSize: 11,
+    fontWeight: 600,
+    background: '#00C300',
+    color: '#fff',
+    textDecoration: 'none',
+    borderRadius: 4,
+    whiteSpace: 'nowrap',
+  },
+}

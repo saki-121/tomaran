@@ -4,64 +4,76 @@
 import { createClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
 import { getTenant } from '@/lib/get-tenant'
+import { createRepositories } from '@/repositories'
+import { createApiPerformanceTracker } from '@/lib/performance'
 
-type Ctx = { params: Promise<{ id: string }> }
+export async function PATCH(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const tracker = createApiPerformanceTracker('/api/deliveries/[id]/PATCH')
+  const startTime = tracker.start()
+  
+  try {
+    const { id } = await params
+    const supabase = await createClient()
+    const result = await getTenant(supabase)
+    if (result.error) {
+      tracker.end(startTime, 401)
+      return NextResponse.json({ error: result.error }, { status: 401 })
+    }
+    const tenantId = result.tenantId as string
 
-export async function PATCH(req: Request, { params }: Ctx) {
-  const { id } = await params
-  const supabase = await createClient()
-  const result = await getTenant(supabase)
-  if (result.error) return NextResponse.json({ error: result.error }, { status: 401 })
-  const tenantId = result.tenantId as string
+    const { delivery_date, company_id, site_id } = await req.json()
 
-  const { data: delivery, error: deliveryErr } = await supabase
-    .from('deliveries')
-    .select('status')
-    .eq('id', id)
-    .eq('tenant_id', tenantId)
-    .single()
+    if (!delivery_date || !company_id || !site_id) {
+      tracker.end(startTime, 400)
+      return NextResponse.json({ error: '日付・取引先・現場は必須です' }, { status: 400 })
+    }
 
-  if (deliveryErr || !delivery) return NextResponse.json({ error: 'Not found' }, { status: 404 })
-  if (delivery.status !== 'editable') return NextResponse.json({ error: '請求済みの納品は編集できません' }, { status: 409 })
+    const { deliveries } = await createRepositories(tenantId)
 
-  const { delivery_date } = await req.json()
-  if (!delivery_date || !/^\d{4}-\d{2}-\d{2}$/.test(delivery_date)) {
-    return NextResponse.json({ error: '日付の形式が正しくありません' }, { status: 400 })
+    const delivery = await deliveries.update(id, {
+      delivery_date,
+      company_id,
+      site_id,
+    })
+    
+    tracker.end(startTime, 200)
+    return NextResponse.json({ delivery })
+  } catch (e: unknown) {
+    const message = e instanceof Error ? e.message : '更新に失敗しました'
+    tracker.end(startTime, 500)
+    return NextResponse.json({ error: message }, { status: 500 })
   }
-
-  const { error: dbErr } = await supabase
-    .from('deliveries')
-    .update({ delivery_date })
-    .eq('id', id)
-    .eq('tenant_id', tenantId)
-
-  if (dbErr) return NextResponse.json({ error: dbErr.message }, { status: 500 })
-  return NextResponse.json({ ok: true })
 }
 
-export async function DELETE(_req: Request, { params }: Ctx) {
-  const { id } = await params
-  const supabase = await createClient()
-  const result = await getTenant(supabase)
-  if (result.error) return NextResponse.json({ error: result.error }, { status: 401 })
-  const tenantId = result.tenantId as string
+export async function DELETE(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const tracker = createApiPerformanceTracker('/api/deliveries/[id]/DELETE')
+  const startTime = tracker.start()
+  
+  try {
+    const { id } = await params
+    const supabase = await createClient()
+    const result = await getTenant(supabase)
+    if (result.error) {
+      tracker.end(startTime, 401)
+      return NextResponse.json({ error: result.error }, { status: 401 })
+    }
+    const tenantId = result.tenantId as string
 
-  const { data: delivery, error: deliveryErr } = await supabase
-    .from('deliveries')
-    .select('status')
-    .eq('id', id)
-    .eq('tenant_id', tenantId)
-    .single()
+    const { deliveries } = await createRepositories(tenantId)
 
-  if (deliveryErr || !delivery) return NextResponse.json({ error: 'Not found' }, { status: 404 })
-  if (delivery.status !== 'editable') return NextResponse.json({ error: '請求済みの納品は削除できません' }, { status: 409 })
-
-  const { error: dbErr } = await supabase
-    .from('deliveries')
-    .delete()
-    .eq('id', id)
-    .eq('tenant_id', tenantId)
-
-  if (dbErr) return NextResponse.json({ error: dbErr.message }, { status: 500 })
-  return NextResponse.json({ ok: true })
+    await deliveries.delete(id)
+    
+    tracker.end(startTime, 200)
+    return NextResponse.json({ success: true })
+  } catch (e: unknown) {
+    const message = e instanceof Error ? e.message : '削除に失敗しました'
+    tracker.end(startTime, 500)
+    return NextResponse.json({ error: message }, { status: 500 })
+  }
 }

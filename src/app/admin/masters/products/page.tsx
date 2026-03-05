@@ -1,6 +1,8 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
+import { createClient } from '@/lib/supabase/client'
+import { withQueryTracking } from '@/lib/performance'
 
 type Product = {
   id: string
@@ -24,7 +26,7 @@ export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([])
   const [filter, setFilter]     = useState<'all' | 'active' | 'provisional'>('all')
   const [searchQuery, setSearchQuery] = useState('')
-  const [editing, setEditing]   = useState<string | null>(null)
+  const [editing, setEditing]   = useState<string | 'new' | null>(null)
   const [form, setForm]         = useState<FormData>(emptyForm)
   const [saving, setSaving]     = useState(false)
   const [err, setErr]           = useState<string | null>(null)
@@ -35,28 +37,55 @@ export default function ProductsPage() {
   const [showFormat, setShowFormat] = useState(false)
   const fileRef = useRef<HTMLInputElement>(null)
 
-  const load = () => {
+  const load = useCallback(async () => {
     setLoading(true)
-    void fetch('/api/masters/products?all=1')
-      .then(r => r.json())
-      .then(d => setProducts(d.products ?? []))
-      .finally(() => setLoading(false))
-  }
+    try {
+      const supabase = await createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
 
-  useEffect(load, [])
+      // Get tenant_id
+      const { data: userTenant } = await supabase
+        .from('user_tenants')
+        .select('tenant_id')
+        .eq('user_id', user.id)
+        .single()
+      
+      if (!userTenant) return
+      const tenantId = userTenant.tenant_id
+
+      await withQueryTracking('products-load', async () => {
+        let query = supabase
+          .from('products')
+          .select('*')
+          .eq('tenant_id', tenantId)
+          .order('created_at', { ascending: false })
+        
+        // Apply server-side search if query exists
+        if (searchQuery.trim()) {
+          query = query.ilike('name', `%${searchQuery.trim()}%`)
+        }
+        
+        const { data } = await query
+        setProducts(data ?? [])
+      })
+    } catch (error) {
+      console.error('Failed to load products:', error)
+    } finally {
+      setLoading(false)
+    }
+  }, [searchQuery])
+
+  useEffect(() => {
+    void load()
+  }, [searchQuery, load]) // Reload when search query changes
 
   const filtered = products.filter(p => {
-    // Filter by status
+    // Filter by status (client-side for status filtering)
     if (filter === 'active')      return p.status === 'active'
     if (filter === 'provisional') return p.status === 'provisional'
     
-    // Filter by search query (partial match)
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase().trim()
-      return p.name.toLowerCase().includes(query) || 
-             (p.spec && p.spec.toLowerCase().includes(query))
-    }
-    
+    // Search is now handled server-side, so no client-side search needed
     return true
   })
 
@@ -67,25 +96,45 @@ export default function ProductsPage() {
   const save = async () => {
     if (!form.name.trim()) { setErr('名称は必須です'); return }
     setSaving(true); setErr(null)
-    const url    = editing === 'new' ? '/api/masters/products' : `/api/masters/products/${editing}`
-    const method = editing === 'new' ? 'POST' : 'PUT'
-    const body   = {
-      name:       form.name.trim(),
-      unit_price: form.unit_price === '' ? null : Number(form.unit_price),
-      status:     form.status,
+    try {
+      const supabase = await createClient()
+      if (editing === 'new') {
+        void supabase.from('products').insert({
+          tenant_id: tenantId,
+          name: form.name.trim(),
+          spec: form.spec.trim() || null,
+          unit_price: form.unit_price ? Number(form.unit_price) : null,
+          tax_rate: Number(form.tax_rate),
+          status: 'provisional',
+          active_flag: true,
+        }).then(() => {
+          void load()
+          cancel()
+        })
+      } else {
+        void supabase.from('products').update({
+          name: form.name.trim(),
+          spec: form.spec.trim() || null,
+          unit_price: form.unit_price ? Number(form.unit_price) : null,
+          tax_rate: Number(form.tax_rate),
+          updated_at: new Date().toISOString(),
+        }).eq('id', editing).then(() => {
+          void load()
+          cancel()
+        })
+      }
+    } catch (_error) {
+      setErr('保存に失敗しました')
+    } finally {
+      setSaving(false)
     }
-    const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
-    const d   = await res.json()
-    setSaving(false)
-    if (!res.ok) { setErr(d.error); return }
-    cancel()
-    load()
   }
 
   const remove = async (id: string, n: string) => {
     if (!confirm(`「${n}」を無効化しますか？`)) return
-    await fetch(`/api/masters/products/${id}`, { method: 'DELETE' })
-    load()
+    void fetch(`/api/masters/products/${id}`, { method: 'DELETE' }).then(() => {
+      void load()
+    })
   }
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -115,7 +164,7 @@ export default function ProductsPage() {
       setPendingFile(null)
       if (!res.ok) { setImportMsg(`エラー: ${d.error}`); return }
       setImportMsg(`✅ 完了: 新規 ${d.created}件、更新 ${d.updated}件、スキップ ${d.skipped}件${d.errors?.length ? `\n⚠️ エラー: ${d.errors.join(', ')}` : ''}`)
-      load()
+      void load()
     } catch (_error) {
       setImporting(false)
       setImportMsg('❌ 取り込みに失敗しました。ファイル形式を確認してください。')
@@ -141,6 +190,19 @@ export default function ProductsPage() {
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20, flexWrap: 'wrap' }}>
         <h2 style={{ margin: 0, color: '#fff' }}>商品マスタ</h2>
         <button onClick={startNew} style={btnPrimary}>＋ 新規追加</button>
+
+        {/* LINEお問い合わせリンク */}
+        <div style={s.lineSupport}>
+          <span style={s.lineText}>🤔 ご不明な点はLINEから</span>
+          <a 
+            href="https://lin.ee/2WeE9qB" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            style={s.lineButton}
+          >
+            💬 LINEで問い合わせ
+          </a>
+        </div>
 
         {/* Search */}
         <input
@@ -345,6 +407,34 @@ export default function ProductsPage() {
 const btnPrimary: React.CSSProperties   = { padding: '8px 18px', background: '#FFD700', color: '#000', border: 'none', borderRadius: 6, cursor: 'pointer', fontSize: 13, fontWeight: 700 }
 const btnGreen: React.CSSProperties     = { padding: '8px 18px', background: '#34d399', color: '#000', border: 'none', borderRadius: 6, cursor: 'pointer', fontSize: 13, fontWeight: 700 }
 const btnSecondary: React.CSSProperties = { padding: '8px 18px', background: '#1a2035', color: '#9ca3af', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 6, cursor: 'pointer', fontSize: 13 }
+
+const s: Record<string, React.CSSProperties> = {
+  lineSupport: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 8,
+    padding: '6px 12px',
+    background: 'rgba(0, 200, 0, 0.1)',
+    border: '1px solid rgba(0, 200, 0, 0.3)',
+    borderRadius: 6,
+    marginLeft: 'auto',
+  },
+  lineText: {
+    fontSize: 12,
+    color: '#9ca3af',
+    fontWeight: 500,
+  },
+  lineButton: {
+    padding: '4px 8px',
+    fontSize: 11,
+    fontWeight: 600,
+    background: '#00C300',
+    color: '#fff',
+    textDecoration: 'none',
+    borderRadius: 4,
+    whiteSpace: 'nowrap',
+  },
+}
 const btnSmall = (bg: string): React.CSSProperties => ({ padding: '4px 10px', background: bg, color: '#fff', border: 'none', borderRadius: 4, cursor: 'pointer', fontSize: 12 })
 
 // Excel preview styles

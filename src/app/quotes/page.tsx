@@ -39,6 +39,19 @@ export default function QuotesPage() {
   return (
     <main style={mainStyle}>
       <div style={{ padding: '12px 16px 120px' }}>
+        {/* LINEお問い合わせリンク */}
+        <div style={s.lineSupport}>
+          <span style={s.lineText}>🤔 ご不明な点はLINEから</span>
+          <a 
+            href="https://lin.ee/2WeE9qB" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            style={s.lineButton}
+          >
+            💬 LINEで問い合わせ
+          </a>
+        </div>
+
         {/* 検索 */}
         <input
           type="text"
@@ -132,4 +145,32 @@ const inputStyle: React.CSSProperties = {
   background: '#1a2035',
   color: '#fff',
   boxSizing: 'border-box',
+}
+
+const s: Record<string, React.CSSProperties> = {
+  lineSupport: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 8,
+    padding: '8px 12px',
+    background: 'rgba(0, 200, 0, 0.1)',
+    border: '1px solid rgba(0, 200, 0, 0.3)',
+    borderRadius: 6,
+    marginBottom: 12,
+  },
+  lineText: {
+    fontSize: 13,
+    color: '#9ca3af',
+    fontWeight: 500,
+  },
+  lineButton: {
+    padding: '6px 12px',
+    fontSize: 12,
+    fontWeight: 600,
+    background: '#00C300',
+    color: '#fff',
+    textDecoration: 'none',
+    borderRadius: 4,
+    whiteSpace: 'nowrap',
+  },
 }

@@ -1,7 +1,6 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
 import type { CSSProperties } from 'react'
 
 // ---------------------------------------------------------------------------
@@ -31,55 +30,15 @@ function formatDate(iso: string): string {
 // ---------------------------------------------------------------------------
 
 export default function DeliveryCard({ delivery }: { delivery: DeliveryCardRow }) {
-  const [pressed, setPressed] = useState(false)
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
-  const [isDeleting, setIsDeleting] = useState(false)
-
-  const isEditable = delivery.status === 'editable'
-
-  const handleDelete = async () => {
-    if (!isEditable) return
-    
-    setIsDeleting(true)
-    try {
-      const response = await fetch(`/api/deliveries/${delivery.id}`, {
-        method: 'DELETE',
-      })
-      
-      if (response.ok) {
-        // 削除成功したらページをリロード
-        window.location.reload()
-      } else {
-        const error = await response.json()
-        alert(error.error || '削除に失敗しました')
-      }
-    } catch (_error) {
-      alert('削除に失敗しました')
-    } finally {
-      setIsDeleting(false)
-      setShowDeleteConfirm(false)
-    }
-  }
-
   return (
     <li style={{ position: 'relative' }}>
       <Link
         href={`/deliveries/${delivery.id}`}
-        style={{
-          ...s.card,
-          transform:  pressed ? 'scale(0.97)' : 'scale(1)',
-          boxShadow:  pressed
-            ? 'inset 0 1px 2px rgba(0,0,0,0.3)'
-            : '0 1px 3px rgba(0,0,0,0.3)',
-        }}
-        onPointerDown={()  => setPressed(true)}
-        onPointerUp={()    => setPressed(false)}
-        onPointerLeave={() => setPressed(false)}
-        onPointerCancel={()=> setPressed(false)}
+        style={s.card}
       >
         <div style={s.cardLeft}>
-          <p style={s.siteName}>{delivery.site?.name    ?? '—'}</p>
           <p style={s.companyName}>{delivery.company?.name ?? '—'}</p>
+          <p style={s.siteName}>{delivery.site?.name    ?? '—'}</p>
         </div>
         <div style={s.cardRight}>
           <p style={s.date}>{delivery.delivery_date ? formatDate(delivery.delivery_date) : '—'}</p>
@@ -87,48 +46,6 @@ export default function DeliveryCard({ delivery }: { delivery: DeliveryCardRow }
           <p style={s.tapHint}>詳細確認 ＞</p>
         </div>
       </Link>
-      
-      {/* 削除ボタン */}
-      {isEditable && (
-        <button
-          style={s.deleteButton}
-          onClick={(e) => {
-            e.preventDefault()
-            e.stopPropagation()
-            setShowDeleteConfirm(true)
-          }}
-          disabled={isDeleting}
-          title="削除"
-        >
-          🗑️
-        </button>
-      )}
-      
-      {/* 削除確認ダイアログ */}
-      {showDeleteConfirm && (
-        <div style={s.confirmOverlay}>
-          <div style={s.confirmDialog}>
-            <p style={s.confirmText}>本当に削除しますか？</p>
-            <p style={s.confirmSubText}>この操作は元に戻せません</p>
-            <div style={s.confirmButtons}>
-              <button
-                style={s.cancelButton}
-                onClick={() => setShowDeleteConfirm(false)}
-                disabled={isDeleting}
-              >
-                キャンセル
-              </button>
-              <button
-                style={s.deleteConfirmButton}
-                onClick={handleDelete}
-                disabled={isDeleting}
-              >
-                {isDeleting ? '削除中...' : '削除'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </li>
   )
 }

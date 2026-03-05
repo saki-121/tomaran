@@ -11,6 +11,16 @@ export async function GET() {
   if (tenantResult.error) return NextResponse.json({ error: tenantResult.error }, { status: 401 })
   const tenantId = tenantResult.tenantId as string
 
+  // Get tenant info with logo
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data: tenant, error: tenantErr } = await (supabase as any)
+    .from('tenants')
+    .select('logo_url')
+    .eq('id', tenantId)
+    .single()
+
+  if (tenantErr) return NextResponse.json({ error: tenantErr.message }, { status: 500 })
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data, error: dbErr } = await (supabase as any)
     .from('own_company_profiles')
@@ -19,7 +29,10 @@ export async function GET() {
     .maybeSingle()
 
   if (dbErr) return NextResponse.json({ error: dbErr.message }, { status: 500 })
-  return NextResponse.json({ profile: data })
+  return NextResponse.json({ 
+    profile: data,
+    logo_url: tenant?.logo_url || null
+  })
 }
 
 export async function PUT(req: Request) {

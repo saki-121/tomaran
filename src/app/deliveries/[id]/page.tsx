@@ -86,7 +86,7 @@ export default async function DeliveryDetailPage({
           rel="noopener noreferrer"
           style={s.printButton}
         >
-          📄 納品書発行
+          📄 納品書PDFダウンロード
         </Link>
       </div>
 

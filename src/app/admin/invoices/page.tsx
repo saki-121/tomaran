@@ -78,6 +78,19 @@ export default function InvoicesPage() {
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20, flexWrap: 'wrap' }}>
         <h2 style={{ margin: 0, color: '#fff' }}>請求書一覧</h2>
 
+        {/* LINEお問い合わせリンク */}
+        <div style={s.lineSupport}>
+          <span style={s.lineText}>🤔 ご不明な点はLINEから</span>
+          <a 
+            href="https://lin.ee/2WeE9qB" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            style={s.lineButton}
+          >
+            💬 LINEで問い合わせ
+          </a>
+        </div>
+
         {/* Manual generation */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginLeft: 'auto', flexWrap: 'wrap' }}>
           <input
@@ -163,3 +176,31 @@ export default function InvoicesPage() {
 
 const td  = { padding: '10px 12px', fontSize: 14, verticalAlign: 'middle' as const, color: '#d1d5db' }
 const btnGreen: React.CSSProperties = { padding: '8px 18px', background: '#34d399', color: '#000', border: 'none', borderRadius: 6, cursor: 'pointer', fontSize: 13, fontWeight: 700 }
+
+const s: Record<string, React.CSSProperties> = {
+  lineSupport: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 8,
+    padding: '6px 12px',
+    background: 'rgba(0, 200, 0, 0.1)',
+    border: '1px solid rgba(0, 200, 0, 0.3)',
+    borderRadius: 6,
+    marginLeft: 'auto',
+  },
+  lineText: {
+    fontSize: 12,
+    color: '#9ca3af',
+    fontWeight: 500,
+  },
+  lineButton: {
+    padding: '4px 8px',
+    fontSize: 11,
+    fontWeight: 600,
+    background: '#00C300',
+    color: '#fff',
+    textDecoration: 'none',
+    borderRadius: 4,
+    whiteSpace: 'nowrap',
+  },
+}

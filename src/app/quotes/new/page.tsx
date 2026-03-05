@@ -12,8 +12,17 @@ type Product = {
   status: string
 }
 
+type TemporaryProduct = {
+  id: string
+  name: string
+  spec: string | null
+  unit_price: string | null
+  comment: string
+}
+
 type LineItem = {
-  product: Product
+  product?: Product
+  temporaryProduct?: TemporaryProduct
   quantity: number
 }
 
@@ -27,6 +36,14 @@ export default function QuotesNewPage() {
   const [showPreview, setShowPreview] = useState(false)
   const [ownCompany, setOwnCompany]   = useState<OwnCompany | null>(null)
   const [savedQuoteId, setSavedQuoteId] = useState<string | null>(null)
+  const [showTempProduct, setShowTempProduct] = useState(false)
+  const [tempProduct, setTempProduct] = useState<TemporaryProduct>({
+    id: '',
+    name: '',
+    spec: null,
+    unit_price: null,
+    comment: ''
+  })
   const printRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -43,7 +60,12 @@ export default function QuotesNewPage() {
       .then(d => setOwnCompany((d as { profile?: OwnCompany }).profile ?? null))
   }, [])
 
-  const subtotal   = lineItems.reduce((s, i) => s + (i.product.unit_price ?? 0) * i.quantity, 0)
+  const subtotal   = lineItems.reduce((s, i) => {
+    const price = i.product ? (i.product.unit_price ?? 0) : 
+                   i.temporaryProduct?.unit_price === '後日お返事します' ? 0 : 
+                   Number(i.temporaryProduct?.unit_price || 0)
+    return s + price * i.quantity
+  }, 0)
   const tax        = Math.floor(subtotal * 0.1)
   const grandTotal = subtotal + tax
   const today      = new Date().toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' })
@@ -57,25 +79,64 @@ export default function QuotesNewPage() {
 
   function addProduct(product: Product) {
     setLineItems(prev => {
-      const existing = prev.find(i => i.product.id === product.id)
+      const existing = prev.find(i => i.product?.id === product.id)
       if (existing) {
-        return prev.map(i => i.product.id === product.id ? { ...i, quantity: i.quantity + 1 } : i)
+        return prev.map(i => i.product?.id === product.id ? { ...i, quantity: i.quantity + 1 } : i)
       }
       return [...prev, { product, quantity: 1 }]
     })
   }
 
-  function removeItem(productId: string) {
-    setLineItems(prev => prev.filter(i => i.product.id !== productId))
+  function addTemporaryProduct() {
+    if (!tempProduct.name.trim()) return
+    
+    const newTempProduct: TemporaryProduct = {
+      ...tempProduct,
+      id: `temp_${Date.now()}`
+    }
+    
+    setLineItems(prev => [...prev, { temporaryProduct: newTempProduct, quantity: 1 }])
+    setTempProduct({
+      id: '',
+      name: '',
+      spec: null,
+      unit_price: null,
+      comment: ''
+    })
+    setShowTempProduct(false)
   }
 
-  function setQuantity(productId: string, qty: number) {
+  function removeItem(itemId: string) {
+    setLineItems(prev => prev.filter(i => 
+      (i.product?.id !== itemId) && (i.temporaryProduct?.id !== itemId)
+    ))
+  }
+
+  function setQuantity(itemId: string, qty: number) {
     if (qty < 1) return
-    setLineItems(prev => prev.map(i => i.product.id === productId ? { ...i, quantity: qty } : i))
+    setLineItems(prev => prev.map(i => 
+      (i.product?.id === itemId || i.temporaryProduct?.id === itemId) ? { ...i, quantity: qty } : i
+    ))
   }
 
   function productLabel(p: Product): string {
     return p.spec ? `${p.name}（${p.spec}）` : p.name
+  }
+
+  function temporaryProductLabel(tp: TemporaryProduct): string {
+    return tp.spec ? `${tp.name}（${tp.spec}）` : tp.name
+  }
+
+  function getItemLabel(item: LineItem): string {
+    if (item.product) return productLabel(item.product)
+    if (item.temporaryProduct) return temporaryProductLabel(item.temporaryProduct)
+    return ''
+  }
+
+  function getItemPrice(item: LineItem): number {
+    if (item.product) return item.product.unit_price ?? 0
+    if (item.temporaryProduct?.unit_price === '後日お返事します') return 0
+    return Number(item.temporaryProduct?.unit_price || 0)
   }
 
   async function handlePrint() {
@@ -89,11 +150,13 @@ export default function QuotesNewPage() {
           tax_amount: tax,
           grand_total: grandTotal,
           items_json: lineItems.map(i => ({
-            product_id:   i.product.id,
-            product_name: i.product.spec ? `${i.product.name}（${i.product.spec}）` : i.product.name,
+            product_id:   i.product?.id || null,
+            product_name: getItemLabel(i),
             quantity:     i.quantity,
-            unit_price:   i.product.unit_price ?? 0,
-            amount:       (i.product.unit_price ?? 0) * i.quantity,
+            unit_price:   getItemPrice(i),
+            amount:       getItemPrice(i) * i.quantity,
+            is_temporary: !!i.temporaryProduct,
+            comment:      i.temporaryProduct?.comment || null,
           })),
           issued_date: new Date().toISOString().split('T')[0],
         }),
@@ -187,16 +250,18 @@ export default function QuotesNewPage() {
             </thead>
             <tbody>
               {lineItems.map(item => (
-                <tr key={item.product.id} style={{ borderBottom: '1px solid #e5e7eb' }}>
-                  <td style={tdStyle}>{productLabel(item.product)}</td>
+                <tr key={item.product?.id || item.temporaryProduct?.id} style={{ borderBottom: '1px solid #e5e7eb' }}>
+                  <td style={tdStyle}>{getItemLabel(item)}</td>
                   <td style={{ ...tdStyle, textAlign: 'center' }}>{item.quantity}</td>
                   <td style={{ ...tdStyle, textAlign: 'right' }}>
-                    {item.product.unit_price !== null
-                      ? `¥${item.product.unit_price.toLocaleString('ja-JP')}`
-                      : '—'}
+                    {getItemPrice(item) > 0
+                      ? `¥${getItemPrice(item).toLocaleString('ja-JP')}`
+                      : item.temporaryProduct?.unit_price === '後日お返事します' 
+                        ? '後日お返事します'
+                        : '—'}
                   </td>
                   <td style={{ ...tdStyle, textAlign: 'right' }}>
-                    ¥{((item.product.unit_price ?? 0) * item.quantity).toLocaleString('ja-JP')}
+                    ¥{getItemPrice(item) * item.quantity}
                   </td>
                 </tr>
               ))}
@@ -248,6 +313,143 @@ export default function QuotesNewPage() {
         <span style={{ width: 48 }} />
       </div>
 
+      {/* 仮商品追加モーダル */}
+      {showTempProduct && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0,0,0,0.5)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 100,
+        }}>
+          <div style={{
+            background: '#1a2035',
+            padding: '24px',
+            borderRadius: 8,
+            width: '90%',
+            maxWidth: 400,
+            border: '1px solid rgba(255,255,255,0.1)',
+          }}>
+            <h3 style={{ margin: '0 0 16px', color: '#fff', fontSize: 16 }}>仮商品を追加</h3>
+            
+            <div style={{ marginBottom: 12 }}>
+              <label style={{ display: 'block', fontSize: 12, color: '#9ca3af', marginBottom: 4 }}>商品名 *</label>
+              <input
+                type="text"
+                value={tempProduct.name}
+                onChange={e => setTempProduct(p => ({ ...p, name: e.target.value }))}
+                placeholder="例：臨時作業"
+                style={{
+                  width: '100%',
+                  padding: '8px 12px',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  borderRadius: 4,
+                  background: '#0a0f1e',
+                  color: '#fff',
+                  fontSize: 14,
+                }}
+              />
+            </div>
+
+            <div style={{ marginBottom: 12 }}>
+              <label style={{ display: 'block', fontSize: 12, color: '#9ca3af', marginBottom: 4 }}>規格</label>
+              <input
+                type="text"
+                value={tempProduct.spec || ''}
+                onChange={e => setTempProduct(p => ({ ...p, spec: e.target.value || null }))}
+                placeholder="例：A4サイズ"
+                style={{
+                  width: '100%',
+                  padding: '8px 12px',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  borderRadius: 4,
+                  background: '#0a0f1e',
+                  color: '#fff',
+                  fontSize: 14,
+                }}
+              />
+            </div>
+
+            <div style={{ marginBottom: 12 }}>
+              <label style={{ display: 'block', fontSize: 12, color: '#9ca3af', marginBottom: 4 }}>単価</label>
+              <input
+                type="text"
+                value={tempProduct.unit_price || ''}
+                onChange={e => setTempProduct(p => ({ ...p, unit_price: e.target.value || null }))}
+                placeholder="後日お返事します または 金額"
+                style={{
+                  width: '100%',
+                  padding: '8px 12px',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  borderRadius: 4,
+                  background: '#0a0f1e',
+                  color: '#fff',
+                  fontSize: 14,
+                }}
+              />
+            </div>
+
+            <div style={{ marginBottom: 16 }}>
+              <label style={{ display: 'block', fontSize: 12, color: '#9ca3af', marginBottom: 4 }}>コメント</label>
+              <textarea
+                value={tempProduct.comment}
+                onChange={e => setTempProduct(p => ({ ...p, comment: e.target.value }))}
+                placeholder="例：詳細仕様は別途ご連絡"
+                rows={3}
+                style={{
+                  width: '100%',
+                  padding: '8px 12px',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  borderRadius: 4,
+                  background: '#0a0f1e',
+                  color: '#fff',
+                  fontSize: 14,
+                  resize: 'vertical',
+                }}
+              />
+            </div>
+
+            <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+              <button
+                onClick={() => setShowTempProduct(false)}
+                style={{
+                  padding: '8px 16px',
+                  background: 'none',
+                  color: '#9ca3af',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  borderRadius: 4,
+                  cursor: 'pointer',
+                  fontSize: 14,
+                }}
+              >
+                キャンセル
+              </button>
+              <button
+                onClick={addTemporaryProduct}
+                disabled={!tempProduct.name.trim()}
+                style={{
+                  padding: '8px 16px',
+                  background: tempProduct.name.trim() ? '#FFD700' : 'rgba(255,255,255,0.1)',
+                  color: tempProduct.name.trim() ? '#000' : '#6b7280',
+                  border: 'none',
+                  borderRadius: 4,
+                  cursor: tempProduct.name.trim() ? 'pointer' : 'not-allowed',
+                  fontSize: 14,
+                  fontWeight: 600,
+                }}
+              >
+                追加
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div style={{ padding: '0 16px 120px' }}>
         {/* 宛先 */}
         <div style={{ marginBottom: 16 }}>
@@ -263,6 +465,25 @@ export default function QuotesNewPage() {
             <span style={{ fontSize: 14, color: '#9ca3af', whiteSpace: 'nowrap' }}>御中</span>
           </div>
         </div>
+
+        {/* 仮商品追加ボタン */}
+        <button
+          onClick={() => setShowTempProduct(true)}
+          style={{
+            width: '100%',
+            padding: '12px',
+            fontSize: 14,
+            fontWeight: 600,
+            background: 'rgba(255,255,255,0.08)',
+            color: '#9ca3af',
+            border: '1px dashed rgba(255,255,255,0.2)',
+            borderRadius: 6,
+            cursor: 'pointer',
+            marginBottom: 16,
+          }}
+        >
+          ＋ 仮商品を追加（単価未設定可）
+        </button>
 
         {/* 商品絞り込み */}
         <div style={{ marginBottom: 12 }}>
@@ -332,10 +553,10 @@ export default function QuotesNewPage() {
             <p style={{ fontSize: 12, fontWeight: 600, color: '#6b7280', margin: '0 0 8px', letterSpacing: '0.05em' }}>
               ── 見積内容（追加済み商品） ──────────
             </p>
-            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 4 }}>
+            <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 24px', display: 'flex', flexDirection: 'column', gap: 4 }}>
               {lineItems.map(item => (
                 <li
-                  key={item.product.id}
+                  key={item.product?.id || item.temporaryProduct?.id}
                   style={{
                     display: 'flex',
                     alignItems: 'center',
@@ -346,14 +567,21 @@ export default function QuotesNewPage() {
                     border: '1px solid rgba(255,255,255,0.1)',
                   }}
                 >
-                  <span style={{ flex: 1, fontSize: 13, color: '#d1d5db' }}>{productLabel(item.product)}</span>
+                  <span style={{ flex: 1, fontSize: 13, color: '#d1d5db' }}>
+                    {getItemLabel(item)}
+                    {item.temporaryProduct?.comment && (
+                      <span style={{ display: 'block', fontSize: 11, color: '#9ca3af', marginTop: 2 }}>
+                        {item.temporaryProduct.comment}
+                      </span>
+                    )}
+                  </span>
                   <label style={{ fontSize: 12, color: '#9ca3af', whiteSpace: 'nowrap' }}>
                     数量:
                     <input
                       type="number"
                       min="1"
                       value={item.quantity}
-                      onChange={e => setQuantity(item.product.id, Number(e.target.value))}
+                      onChange={e => setQuantity(item.product?.id || item.temporaryProduct?.id || '', Number(e.target.value))}
                       style={{
                         width: 64,
                         marginLeft: 4,
@@ -368,10 +596,10 @@ export default function QuotesNewPage() {
                     />
                   </label>
                   <span style={{ fontSize: 13, color: '#d1d5db', whiteSpace: 'nowrap', minWidth: 64, textAlign: 'right' }}>
-                    ¥{((item.product.unit_price ?? 0) * item.quantity).toLocaleString('ja-JP')}
+                    ¥{getItemPrice(item) * item.quantity}
                   </span>
                   <button
-                    onClick={() => removeItem(item.product.id)}
+                    onClick={() => removeItem(item.product?.id || item.temporaryProduct?.id || '')}
                     style={{
                       minWidth: 36,
                       minHeight: 36,
