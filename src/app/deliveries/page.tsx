@@ -151,7 +151,20 @@ export default async function DeliveriesPage({
         <p style={s.empty}>条件に一致する納品がありません</p>
       )}
 
-      {/* ── FAB ─────────────────────────────────────────────────── */}
+      {/* LINEお問い合わせリンク */}
+      <div style={s.lineSupport}>
+        <p style={s.lineText}>🤔 ご不明な点はこちらから</p>
+        <a 
+          href="https://lin.ee/2WeE9qB" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          style={s.lineButton}
+        >
+          💬 LINEで問い合わせ
+        </a>
+      </div>
+
+      {/* ── FAB ─────────────────────────────────────────────── */}
       <Link href="/deliveries/new" style={s.fab} aria-label="納品を登録">
         ＋
       </Link>
@@ -238,5 +251,29 @@ const s: Record<string, CSSProperties> = {
     fontSize: 28,
     textDecoration: 'none',
     boxShadow: '0 4px 14px rgba(255,215,0,0.4)',
+  },
+  lineSupport: {
+    background: 'rgba(0, 200, 0, 0.1)',
+    border: '1px solid rgba(0, 200, 0, 0.3)',
+    borderRadius: 12,
+    padding: '16px',
+    margin: '24px 0',
+    textAlign: 'center' as const,
+  },
+  lineText: {
+    fontSize: 14,
+    color: '#9ca3af',
+    margin: '0 0 12px',
+  },
+  lineButton: {
+    display: 'inline-block',
+    padding: '10px 20px',
+    fontSize: 14,
+    fontWeight: 600,
+    background: '#00C300',
+    color: '#fff',
+    textDecoration: 'none',
+    borderRadius: 8,
+    transition: 'transform 0.2s ease',
   },
 }

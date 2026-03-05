@@ -107,6 +107,36 @@ export default async function PaymentSuccessPage({
           最後に会社名を登録してください。<br />
           あとから変更できます。
         </p>
+        
+        {/* LINEお問い合わせ案内 */}
+        <div style={{
+          background: 'rgba(0, 200, 0, 0.1)',
+          border: '1px solid rgba(0, 200, 0, 0.3)',
+          borderRadius: 8,
+          padding: '16px',
+          margin: '0 0 32px',
+        }}>
+          <p style={{ margin: '0 0 12px', fontSize: 13, color: '#9ca3af' }}>
+            🤔 ご不明な点はLINEからお気軽にお問い合わせください
+          </p>
+          <a
+            href="https://lin.ee/2WeE9qB"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: 'inline-block',
+              padding: '8px 16px',
+              fontSize: 13,
+              fontWeight: 600,
+              background: '#00C300',
+              color: '#fff',
+              textDecoration: 'none',
+              borderRadius: 6,
+            }}
+          >
+            💬 LINEで問い合わせ
+          </a>
+        </div>
         <Link
           href="/onboarding"
           style={{

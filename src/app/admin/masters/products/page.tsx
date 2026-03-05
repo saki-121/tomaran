@@ -23,6 +23,7 @@ function toForm(p: Product): FormData {
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([])
   const [filter, setFilter]     = useState<'all' | 'active' | 'provisional'>('all')
+  const [searchQuery, setSearchQuery] = useState('')
   const [editing, setEditing]   = useState<string | null>(null)
   const [form, setForm]         = useState<FormData>(emptyForm)
   const [saving, setSaving]     = useState(false)
@@ -45,8 +46,17 @@ export default function ProductsPage() {
   useEffect(load, [])
 
   const filtered = products.filter(p => {
+    // Filter by status
     if (filter === 'active')      return p.status === 'active'
     if (filter === 'provisional') return p.status === 'provisional'
+    
+    // Filter by search query (partial match)
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase().trim()
+      return p.name.toLowerCase().includes(query) || 
+             (p.spec && p.spec.toLowerCase().includes(query))
+    }
+    
     return true
   })
 
@@ -91,16 +101,25 @@ export default function ProductsPage() {
   const confirmImport = async () => {
     if (!pendingFile) return
     setImporting(true)
-    setImportMsg(null)
-    const fd = new FormData()
-    fd.append('file', pendingFile)
-    const res = await fetch('/api/masters/products/import', { method: 'POST', body: fd })
-    const d   = await res.json()
-    setImporting(false)
-    setPendingFile(null)
-    if (!res.ok) { setImportMsg(`エラー: ${d.error}`); return }
-    setImportMsg(`完了: 新規 ${d.created}件、更新 ${d.updated}件、スキップ ${d.skipped}件${d.errors?.length ? `\nエラー: ${d.errors.join(', ')}` : ''}`)
-    load()
+    setImportMsg('⏳ Excelファイルを解析中...')
+    
+    // Small delay to show processing state
+    await new Promise(resolve => setTimeout(resolve, 100))
+    
+    try {
+      const fd = new FormData()
+      fd.append('file', pendingFile)
+      const res = await fetch('/api/masters/products/import', { method: 'POST', body: fd })
+      const d = await res.json()
+      setImporting(false)
+      setPendingFile(null)
+      if (!res.ok) { setImportMsg(`エラー: ${d.error}`); return }
+      setImportMsg(`✅ 完了: 新規 ${d.created}件、更新 ${d.updated}件、スキップ ${d.skipped}件${d.errors?.length ? `\n⚠️ エラー: ${d.errors.join(', ')}` : ''}`)
+      load()
+    } catch (_error) {
+      setImporting(false)
+      setImportMsg('❌ 取り込みに失敗しました。ファイル形式を確認してください。')
+    }
   }
 
   const inp = (label: string, key: keyof FormData, type = 'text') => (
@@ -122,6 +141,24 @@ export default function ProductsPage() {
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20, flexWrap: 'wrap' }}>
         <h2 style={{ margin: 0, color: '#fff' }}>商品マスタ</h2>
         <button onClick={startNew} style={btnPrimary}>＋ 新規追加</button>
+
+        {/* Search */}
+        <input
+          type="text"
+          placeholder="商品名・規格で検索"
+          value={searchQuery}
+          onChange={e => setSearchQuery(e.target.value)}
+          style={{ 
+            padding: '6px 12px', 
+            border: '1px solid rgba(255,255,255,0.1)', 
+            borderRadius: 6, 
+            fontSize: 14, 
+            background: '#1a2035', 
+            color: '#fff',
+            width: 200,
+            minWidth: 150
+          }}
+        />
 
         {/* Excel Import */}
         <button onClick={() => fileRef.current?.click()} disabled={importing || !!pendingFile} style={btnGreen}>

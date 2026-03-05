@@ -99,6 +99,7 @@ const badgeReady: React.CSSProperties = {
 
 export default function CompaniesPage() {
   const [companies, setCompanies]   = useState<Company[]>([])
+  const [searchQuery, setSearchQuery] = useState('')
   const [loading, setLoading]       = useState(true)
   const [expanded, setExpanded]     = useState<Set<string>>(new Set())
   const [sites, setSites]           = useState<Record<string, Site[]>>({})
@@ -132,6 +133,15 @@ export default function CompaniesPage() {
   }
 
   useEffect(loadCompanies, [])
+
+  // Filter companies by search query
+  const filteredCompanies = companies.filter(c => {
+    if (!searchQuery.trim()) return true
+    const query = searchQuery.toLowerCase().trim()
+    return c.name.toLowerCase().includes(query) ||
+           (c.address && c.address.toLowerCase().includes(query)) ||
+           (c.phone && c.phone.toLowerCase().includes(query))
+  })
 
   // ── Toggle company expand ──────────────────────────────────────────────────
   const toggleExpand = async (companyId: string) => {
@@ -235,15 +245,27 @@ export default function CompaniesPage() {
     if (!pendingFile) return
     setImporting(true)
     setImportResult(null)
-    const fd = new FormData()
-    fd.append('file', pendingFile)
-    const res = await fetch('/api/masters/companies/import', { method: 'POST', body: fd })
-    const d = await res.json()
-    setImporting(false)
-    setPendingFile(null)
-    if (!res.ok) { setImportResult({ created: 0, updated: 0, skipped: 0, errors: [d.error] }); return }
-    setImportResult(d)
-    loadCompanies()
+    
+    // Show processing state immediately
+    setImportResult({ created: 0, updated: 0, skipped: 0, errors: ['⏳ Excelファイルを解析中...'] })
+    
+    // Small delay to show processing state
+    await new Promise(resolve => setTimeout(resolve, 100))
+    
+    try {
+      const fd = new FormData()
+      fd.append('file', pendingFile)
+      const res = await fetch('/api/masters/companies/import', { method: 'POST', body: fd })
+      const d = await res.json()
+      setImporting(false)
+      setPendingFile(null)
+      if (!res.ok) { setImportResult({ created: 0, updated: 0, skipped: 0, errors: [d.error] }); return }
+      setImportResult(d)
+      loadCompanies()
+    } catch (_error) {
+      setImporting(false)
+      setImportResult({ created: 0, updated: 0, skipped: 0, errors: ['❌ 取り込みに失敗しました。ファイル形式を確認してください。'] })
+    }
   }
 
   // ── Company form ─────────────────────────────────────────────────────────────
@@ -276,6 +298,25 @@ export default function CompaniesPage() {
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20, flexWrap: 'wrap' }}>
         <h2 style={{ margin: 0, color: '#fff' }}>取引先マスタ</h2>
         <button onClick={startNewCo} style={btnPrimary}>＋ 新規追加</button>
+
+        {/* Search */}
+        <input
+          type="text"
+          placeholder="会社名・住所・電話で検索"
+          value={searchQuery}
+          onChange={e => setSearchQuery(e.target.value)}
+          style={{ 
+            padding: '6px 12px', 
+            border: '1px solid rgba(255,255,255,0.1)', 
+            borderRadius: 6, 
+            fontSize: 14, 
+            background: '#1a2035', 
+            color: '#fff',
+            width: 200,
+            minWidth: 150
+          }}
+        />
+
         <button
           onClick={() => fileInputRef.current?.click()}
           disabled={importing || !!pendingFile}
@@ -405,149 +446,153 @@ export default function CompaniesPage() {
 
       {/* Table */}
       {loading ? <p style={{ color: '#9ca3af' }}>読み込み中…</p> : (
-        <table style={{ width: '100%', borderCollapse: 'collapse', background: '#111827', borderRadius: 8, overflow: 'hidden' }}>
-          <thead>
-            <tr style={{ background: '#1a2035' }}>
-              {['', '会社名', '住所', '締め日', '支払条件', '状態', ''].map((h, i) => (
-                <th key={i} style={th}>{h}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {companies.length === 0 && (
-              <tr><td colSpan={7} style={{ padding: 24, textAlign: 'center', color: '#6b7280' }}>取引先がありません</td></tr>
-            )}
-            {companies.map(c => {
-              const isExpanded = expanded.has(c.id)
-              const companySites = sites[c.id] ?? []
-              const loadingSites = sitesLoading[c.id] ?? false
-              const editingThisSite = editingSite
-              const isAddingNewSite = editingThisSite === `new-${c.id}`
+        <>
+          <p style={{ fontSize: 13, color: '#9ca3af', marginBottom: 8 }}>
+            {filteredCompanies.length}件表示
+            {searchQuery.trim() && ` / 全${companies.length}件`}
+          </p>
+          <table style={{ width: '100%', borderCollapse: 'collapse', background: '#111827', borderRadius: 8, overflow: 'hidden' }}>
+            <thead>
+              <tr style={{ background: '#1a2035' }}>
+                {['', '会社名', '住所', '締め日', '支払条件', '状態', ''].map((h, i) => (
+                  <th key={i} style={th}>{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {filteredCompanies.length === 0 && (
+                <tr><td colSpan={7} style={{ padding: 24, textAlign: 'center', color: '#6b7280' }}>取引先がありません</td></tr>
+              )}
+              {filteredCompanies.map(c => {
+                const isExpanded = expanded.has(c.id)
+                const companySites = sites[c.id] ?? []
+                const loadingSites = sitesLoading[c.id] ?? false
+                const editingThisSite = editingSite
+                const isAddingNewSite = editingThisSite === `new-${c.id}`
 
-              return (
-                <>
-                  {/* Company row */}
-                  <tr
-                    key={c.id}
-                    onClick={() => toggleExpand(c.id)}
-                    style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', opacity: c.active_flag ? 1 : 0.5, cursor: 'pointer', background: isExpanded ? 'rgba(255,215,0,0.03)' : undefined }}
-                  >
-                    <td style={{ ...td, width: 28, color: '#FFD700', fontSize: 13 }}>{isExpanded ? '▼' : '▶'}</td>
-                    <td style={td}>
-                      {c.name}
-                      {isNew(c.created_at) && <span style={badgeNew}>NEW</span>}
-                      {(!c.closing_day || !c.payment_type) && <span style={badgeReady}>請求設定未完</span>}
-                    </td>
-                    <td style={td}>{c.address ?? '—'}</td>
-                    <td style={td}>{closingLabel(c.closing_day)}</td>
-                    <td style={td}>{paymentLabel(c.payment_type)}</td>
-                    <td style={td}>
-                      <span style={{ fontSize: 12, padding: '2px 8px', borderRadius: 10, background: c.active_flag ? 'rgba(52,211,153,0.1)' : 'rgba(239,68,68,0.1)', color: c.active_flag ? '#34d399' : '#ef4444', fontWeight: 600 }}>
-                        {c.active_flag ? '有効' : '無効'}
-                      </span>
-                    </td>
-                    <td style={{ padding: '8px 12px', whiteSpace: 'nowrap' }}>
-                      <button onClick={e => startEditCo(c, e)} style={btnSmall('#6b7280')}>編集</button>
-                      {c.active_flag && (
-                        <button onClick={e => deactivateCo(c.id, c.name, e)} style={{ ...btnSmall('#ef4444'), marginLeft: 6 }}>無効化</button>
-                      )}
-                    </td>
-                  </tr>
+                return (
+                  <>
+                    {/* Company row */}
+                    <tr
+                      key={c.id}
+                      onClick={() => toggleExpand(c.id)}
+                      style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', opacity: c.active_flag ? 1 : 0.5, cursor: 'pointer', background: isExpanded ? 'rgba(255,215,0,0.03)' : undefined }}
+                    >
+                      <td style={{ ...td, width: 28, color: '#FFD700', fontSize: 13 }}>{isExpanded ? '▼' : '▶'}</td>
+                      <td style={td}>
+                        {c.name}
+                        {isNew(c.created_at) && <span style={badgeNew}>NEW</span>}
+                        {(!c.closing_day || !c.payment_type) && <span style={badgeReady}>請求設定未完</span>}
+                      </td>
+                      <td style={td}>{c.address ?? '—'}</td>
+                      <td style={td}>{closingLabel(c.closing_day)}</td>
+                      <td style={td}>{paymentLabel(c.payment_type)}</td>
+                      <td style={td}>
+                        <span style={{ fontSize: 12, padding: '2px 8px', borderRadius: 10, background: c.active_flag ? 'rgba(52,211,153,0.1)' : 'rgba(239,68,68,0.1)', color: c.active_flag ? '#34d399' : '#ef4444', fontWeight: 600 }}>
+                          {c.active_flag ? '有効' : '無効'}
+                        </span>
+                      </td>
+                      <td style={{ padding: '8px 12px', whiteSpace: 'nowrap' }}>
+                        <button onClick={e => startEditCo(c, e)} style={btnSmall('#6b7280')}>編集</button>
+                        {c.active_flag && (
+                          <button onClick={e => deactivateCo(c.id, c.name, e)} style={{ ...btnSmall('#ef4444'), marginLeft: 6 }}>無効化</button>
+                        )}
+                      </td>
+                    </tr>
 
-                  {/* Expanded site rows */}
-                  {isExpanded && (
-                    <>
-                      {loadingSites && (
-                        <tr key={`${c.id}-loading`}>
-                          <td colSpan={7} style={{ ...tdSub, paddingLeft: 40, color: '#6b7280' }}>読み込み中…</td>
-                        </tr>
-                      )}
-                      {!loadingSites && companySites.map(s => {
-                        const isEditingThis = editingThisSite === s.id
-                        return (
-                          <tr key={s.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.03)', opacity: s.active_flag ? 1 : 0.5 }}>
+                    {/* Expanded site rows */}
+                    {isExpanded && (
+                      <>
+                        {loadingSites && (
+                          <tr key={`${c.id}-loading`}>
+                            <td colSpan={7} style={{ ...tdSub, paddingLeft: 40, color: '#6b7280' }}>読み込み中…</td>
+                          </tr>
+                        )}
+                        {!loadingSites && companySites.map(s => {
+                          const isEditingThis = editingThisSite === s.id
+                          return (
+                            <tr key={s.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.03)', opacity: s.active_flag ? 1 : 0.5 }}>
+                              <td style={tdSub} />
+                              <td colSpan={4} style={{ ...tdSub, paddingLeft: 32 }}>
+                                {isEditingThis ? (
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                                    <input
+                                      value={siteForm.name}
+                                      onChange={e => setSiteForm({ name: e.target.value })}
+                                      style={{ padding: '4px 8px', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 4, fontSize: 13, width: 220, background: '#1a2035', color: '#fff' }}
+                                      autoFocus
+                                    />
+                                    <button onClick={() => saveSite(c.id)} disabled={siteSaving} style={btnSmall('#FFD700')}>{siteSaving ? '…' : '保存'}</button>
+                                    <button onClick={cancelSite} style={btnSmall('#6b7280')}>取消</button>
+                                    {siteErr && <span style={{ color: '#ef4444', fontSize: 12 }}>{siteErr}</span>}
+                                  </div>
+                                ) : (
+                                  <span style={{ color: '#9ca3af' }}>└ {s.name}</span>
+                                )}
+                              </td>
+                              <td style={tdSub}>
+                                <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 8, background: s.active_flag ? 'rgba(52,211,153,0.1)' : 'rgba(239,68,68,0.1)', color: s.active_flag ? '#34d399' : '#ef4444', fontWeight: 600 }}>
+                                  {s.active_flag ? '有効' : '無効'}
+                                </span>
+                              </td>
+                              <td style={{ ...tdSub, whiteSpace: 'nowrap' }}>
+                                {!isEditingThis && (
+                                  <>
+                                    <button onClick={() => startEditSite(s)} style={btnSmall('#6b7280')}>編集</button>
+                                    {s.active_flag && (
+                                      <button onClick={() => deactivateSite(s.id, s.name, c.id)} style={{ ...btnSmall('#ef4444'), marginLeft: 6 }}>無効化</button>
+                                    )}
+                                  </>
+                                )}
+                              </td>
+                            </tr>
+                          )
+                        })}
+
+                        {/* Add new site row */}
+                        {!loadingSites && (
+                          <tr key={`${c.id}-add`} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', background: '#0f1629' }}>
                             <td style={tdSub} />
-                            <td colSpan={4} style={{ ...tdSub, paddingLeft: 32 }}>
-                              {isEditingThis ? (
+                            <td colSpan={5} style={{ ...tdSub, paddingLeft: 32 }}>
+                              {isAddingNewSite ? (
                                 <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                                   <input
                                     value={siteForm.name}
                                     onChange={e => setSiteForm({ name: e.target.value })}
+                                    placeholder="現場名"
                                     style={{ padding: '4px 8px', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 4, fontSize: 13, width: 220, background: '#1a2035', color: '#fff' }}
                                     autoFocus
                                   />
-                                  <button onClick={() => saveSite(c.id)} disabled={siteSaving} style={btnSmall('#FFD700')}>{siteSaving ? '…' : '保存'}</button>
+                                  <button onClick={() => saveSite(c.id)} disabled={siteSaving} style={btnSmall('#34d399')}>{siteSaving ? '…' : '追加'}</button>
                                   <button onClick={cancelSite} style={btnSmall('#6b7280')}>取消</button>
                                   {siteErr && <span style={{ color: '#ef4444', fontSize: 12 }}>{siteErr}</span>}
                                 </div>
                               ) : (
-                                <span style={{ color: '#9ca3af' }}>└ {s.name}</span>
+                                <button
+                                  onClick={() => startNewSite(c.id)}
+                                  style={{ background: 'none', border: '1px dashed rgba(255,255,255,0.15)', borderRadius: 4, padding: '3px 10px', fontSize: 12, cursor: 'pointer', color: '#9ca3af' }}
+                                >
+                                  ＋ 現場を追加
+                                </button>
                               )}
                             </td>
-                            <td style={tdSub}>
-                              <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 8, background: s.active_flag ? 'rgba(52,211,153,0.1)' : 'rgba(239,68,68,0.1)', color: s.active_flag ? '#34d399' : '#ef4444', fontWeight: 600 }}>
-                                {s.active_flag ? '有効' : '無効'}
-                              </span>
-                            </td>
-                            <td style={{ ...tdSub, whiteSpace: 'nowrap' }}>
-                              {!isEditingThis && (
-                                <>
-                                  <button onClick={() => startEditSite(s)} style={btnSmall('#6b7280')}>編集</button>
-                                  {s.active_flag && (
-                                    <button onClick={() => deactivateSite(s.id, s.name, c.id)} style={{ ...btnSmall('#ef4444'), marginLeft: 6 }}>無効化</button>
-                                  )}
-                                </>
-                              )}
-                            </td>
+                            <td style={tdSub} />
                           </tr>
-                        )
-                      })}
-
-                      {/* Add new site row */}
-                      {!loadingSites && (
-                        <tr key={`${c.id}-add`} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', background: '#0f1629' }}>
-                          <td style={tdSub} />
-                          <td colSpan={5} style={{ ...tdSub, paddingLeft: 32 }}>
-                            {isAddingNewSite ? (
-                              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                                <input
-                                  value={siteForm.name}
-                                  onChange={e => setSiteForm({ name: e.target.value })}
-                                  placeholder="現場名"
-                                  style={{ padding: '4px 8px', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 4, fontSize: 13, width: 220, background: '#1a2035', color: '#fff' }}
-                                  autoFocus
-                                />
-                                <button onClick={() => saveSite(c.id)} disabled={siteSaving} style={btnSmall('#34d399')}>{siteSaving ? '…' : '追加'}</button>
-                                <button onClick={cancelSite} style={btnSmall('#6b7280')}>取消</button>
-                                {siteErr && <span style={{ color: '#ef4444', fontSize: 12 }}>{siteErr}</span>}
-                              </div>
-                            ) : (
-                              <button
-                                onClick={() => startNewSite(c.id)}
-                                style={{ background: 'none', border: '1px dashed rgba(255,255,255,0.15)', borderRadius: 4, padding: '3px 10px', fontSize: 12, cursor: 'pointer', color: '#9ca3af' }}
-                              >
-                                ＋ 現場を追加
-                              </button>
-                            )}
-                          </td>
-                          <td style={tdSub} />
-                        </tr>
-                      )}
-                    </>
-                  )}
-                </>
-              )
-            })}
-          </tbody>
-        </table>
+                        )}
+                      </>
+                    )}
+                  </>
+                )
+              })}
+            </tbody>
+          </table>
+        </>
       )}
     </div>
   )
 }
-
 const btnGreen: React.CSSProperties = { padding: '8px 18px', background: '#34d399', color: '#000', border: 'none', borderRadius: 6, cursor: 'pointer', fontSize: 13, fontWeight: 700 }
 
 // Excel preview styles
 const xlRowNum: React.CSSProperties = { padding: '4px 8px', textAlign: 'center', border: '1px solid rgba(255,255,255,0.1)', color: '#6b7280', fontSize: 11, background: '#0f1629', width: 28, minWidth: 28 }
 const xlColHead: React.CSSProperties = { padding: '4px 10px', textAlign: 'left', border: '1px solid rgba(255,255,255,0.1)', color: '#9ca3af', fontSize: 11, background: '#0f1629', fontWeight: 600, whiteSpace: 'nowrap' }
-const xlCell: React.CSSProperties = { padding: '5px 10px', border: '1px solid rgba(255,255,255,0.1)', color: '#d1d5db', fontSize: 12, background: '#111827' }
