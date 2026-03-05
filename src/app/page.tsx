@@ -46,8 +46,13 @@ export default async function Page() {
         <Link
           href="/login"
           style={{
-            background: Y, color: '#000', fontWeight: 900, fontSize: 14,
-            padding: '10px 20px', borderRadius: 6, textDecoration: 'none',
+            background: Y, 
+            padding: '10px 20px',
+            fontSize: 14,
+            fontWeight: 700,
+            color: '#000',
+            textDecoration: 'none',
+            borderRadius: 6,
             whiteSpace: 'nowrap',
           }}
         >
@@ -135,7 +140,8 @@ export default async function Page() {
             ⛔ STOP
           </p>
           <h2 style={{ fontSize: 'clamp(24px, 5vw, 42px)', fontWeight: 900, marginBottom: 16, lineHeight: 1.25 }}>
-            その「待ち」が、<br />会社の時間を食っている。
+            月末になると<br />事務所がバタバタする。<br />
+            <span style={{ color: Y }}>あれ、やめませんか。</span>
           </h2>
           <p style={{ color: '#6b7280', marginBottom: 52, fontSize: 15 }}>
             毎日起きている「小さなSTOP」が、月に換算すると何時間になるか、数えたことがあるか。
@@ -193,7 +199,7 @@ export default async function Page() {
                 emoji: '🏗️',
                 color: Y,
                 desc: '商品を選んで、数量を入れる。単価は要らない。マスタになければ仮登録。それだけ。',
-                items: ['マスタから商品を選ぶだけ', '単価入力は不要', '仮登録で現場を止めない', 'スマホで60秒以内に完了'],
+                items: ['マスタから商品を選ぶだけ', '単価入力は不要', '仮登録で現場を止めない', 'スマホで60秒以内に完了', '納品書も即発行'],
               },
               {
                 role: '営業',
@@ -242,79 +248,68 @@ export default async function Page() {
             📹 HOW TO
           </p>
           <h2 style={{ fontSize: 'clamp(24px, 5vw, 42px)', fontWeight: 900, marginBottom: 16, lineHeight: 1.25 }}>
-            マニュアルPDFは<br />廃止しました。
+            YouTubeで使い方<br />全部説明してます。
           </h2>
           <p style={{ color: '#9ca3af', fontSize: 15, marginBottom: 52, lineHeight: 1.8, maxWidth: 560 }}>
-            全部YouTubeショート（30秒以内）で見てください。<br />
-            読む時間も、説明を聞く時間も、無駄です。
+            動画で全部わかります。読む時間も、説明を聞く時間も、無駄です。<br />
+            まずはチャンネルを登録して、気になった動画から見てください。
           </p>
 
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 200px))',
-            gap: 20, justifyContent: 'center',
-          }}>
-            {[
-              { title: '納品入力の基本', dur: '0:28', no: '01' },
-              { title: '請求書をExcelで出力する', dur: '0:35', no: '02' },
-              { title: '商品マスタを登録する', dur: '0:22', no: '03' },
-            ].map(v => (
-              <a
-                key={v.title}
-                href="https://youtube.com/@tomaran"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ textDecoration: 'none', color: '#fff' }}
-              >
-                <div style={{ background: CARD2, borderRadius: 12, overflow: 'hidden' }}>
-                  <div style={{
-                    aspectRatio: '9/16', background: BG,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    position: 'relative',
-                  }}>
-                    <div style={{ textAlign: 'center' }}>
-                      <div style={{
-                        width: 56, height: 56, background: '#ff0000',
-                        borderRadius: '50%', display: 'flex', alignItems: 'center',
-                        justifyContent: 'center', margin: '0 auto 12px', fontSize: 22,
-                      }}>
-                        ▶
-                      </div>
-                      <p style={{ fontSize: 11, color: '#6b7280', margin: 0 }}>YouTube</p>
-                    </div>
-                    <div style={{
-                      position: 'absolute', top: 10, left: 10,
-                      background: Y, color: '#000', fontSize: 10,
-                      fontWeight: 900, padding: '2px 8px', borderRadius: 3,
-                    }}>
-                      #{v.no}
-                    </div>
-                    <div style={{
-                      position: 'absolute', bottom: 10, right: 10,
-                      background: 'rgba(0,0,0,0.8)', fontSize: 11,
-                      padding: '2px 6px', borderRadius: 3,
-                    }}>
-                      {v.dur}
-                    </div>
-                  </div>
-                  <div style={{ padding: '12px 14px' }}>
-                    <p style={{ fontWeight: 700, fontSize: 13, margin: 0, lineHeight: 1.4 }}>{v.title}</p>
-                  </div>
-                </div>
-              </a>
-            ))}
-          </div>
-
-          <p style={{ textAlign: 'center', marginTop: 36 }}>
+          <div style={{ textAlign: 'center', marginBottom: 52 }}>
             <a
-              href="https://youtube.com/@tomaran"
+              href="https://youtube.com/@tomaran.net3?si=Ea5PJWp72erIRKHI"
               target="_blank"
               rel="noopener noreferrer"
-              style={{ color: Y, fontWeight: 700, textDecoration: 'none', fontSize: 15 }}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 12,
+                background: '#ff0000',
+                color: '#fff',
+                padding: '16px 32px',
+                borderRadius: 8,
+                fontSize: 16,
+                fontWeight: 700,
+                textDecoration: 'none',
+                boxShadow: '0 4px 16px rgba(255,0,0,0.3)',
+                transition: 'transform 0.2s ease',
+              }}
             >
-              YouTubeチャンネルをすべて見る →
+              <span style={{ fontSize: 24 }}>▶</span>
+              YouTubeチャンネルを見る
             </a>
-          </p>
+          </div>
+
+          <div style={{ 
+            background: CARD2, 
+            border: '1px solid rgba(255,255,255,0.1)', 
+            borderRadius: 12, 
+            padding: '24px',
+            textAlign: 'center'
+          }}>
+            <p style={{ color: Y, fontSize: 14, fontWeight: 700, marginBottom: 12 }}>
+              📺 主な動画内容
+            </p>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16 }}>
+              {[
+                '納品入力の基本操作',
+                '請求書をExcelで出力',
+                '商品マスタの登録方法',
+                '取引先の一括登録',
+                '見積書の作成と印刷',
+              ].map((topic, i) => (
+                <div key={topic} style={{ 
+                  background: BG, 
+                  padding: '12px', 
+                  borderRadius: 8,
+                  fontSize: 13,
+                  color: '#9ca3af'
+                }}>
+                  {i + 1}. {topic}
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 

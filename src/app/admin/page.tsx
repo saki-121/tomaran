@@ -147,6 +147,19 @@ export default async function AdminDeliveryPage({
     <main style={s.main}>
       <h1 style={s.heading}>管理：納品一覧</h1>
 
+      {/* ── LINEお問い合わせリンク ───────────────────────────── */}
+      <div style={s.lineSupport}>
+        <span style={s.lineText}>🤔 ご不明な点はLINEから</span>
+        <a 
+          href="https://lin.ee/2WeE9qB" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          style={s.lineButton}
+        >
+          💬 LINEで問い合わせ
+        </a>
+      </div>
+
       {/* ── フィルタ ─────────────────────────────── */}
       <div style={s.filterRow}>
         <form method="GET" style={s.filterForm}>
@@ -268,6 +281,31 @@ const s: Record<string, CSSProperties> = {
     cursor: 'pointer', listStyle: 'none', userSelect: 'none',
   },
   arrow: { fontSize: 10, color: '#6b7280' },
+  lineSupport: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 12,
+    marginBottom: 20,
+    padding: '12px 16px',
+    background: 'rgba(0, 200, 0, 0.1)',
+    border: '1px solid rgba(0, 200, 0, 0.3)',
+    borderRadius: 8,
+  },
+  lineText: {
+    fontSize: 14,
+    color: '#9ca3af',
+    fontWeight: 500,
+  },
+  lineButton: {
+    padding: '6px 12px',
+    fontSize: 12,
+    fontWeight: 600,
+    background: '#00C300',
+    color: '#fff',
+    textDecoration: 'none',
+    borderRadius: 6,
+    whiteSpace: 'nowrap',
+  },
 }
 
 const card: Record<string, CSSProperties> = {

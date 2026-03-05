@@ -275,5 +275,8 @@ const s: Record<string, CSSProperties> = {
     textDecoration: 'none',
     borderRadius: 8,
     transition: 'transform 0.2s ease',
+    ':hover': {
+      transform: 'scale(1.05)',
+    },
   },
 }
