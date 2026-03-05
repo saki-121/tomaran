@@ -32,7 +32,7 @@ export default async function PaymentSuccessPage({
           if (error) {
             console.error('[payment-success] mark_user_as_paid failed:', error)
           } else {
-            console.log('[payment-success] is_paid updated for user:', user.id)
+            console.error('[payment-success] is_paid updated for user:', user.id)
           }
         }
       }

@@ -25,7 +25,7 @@ export default function DeliveryDeleteButton({ deliveryId }: DeliveryDeleteButto
         const error = await response.json()
         alert(error.error || '削除に失敗しました')
       }
-    } catch (error) {
+    } catch (_error) {
       alert('削除に失敗しました')
     } finally {
       setIsDeleting(false)
