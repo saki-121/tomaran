@@ -59,11 +59,11 @@ export default function ProductsPage() {
           .from('products')
           .select('*')
           .eq('tenant_id', tenantId)
-          .order('created_at', { ascending: false })
+          .order('name', { ascending: true })
         
         // Apply server-side search if query exists
         if (searchQuery.trim()) {
-          query = query.ilike('name', `%${searchQuery.trim()}%`)
+          query = query.or(`name.ilike.%${searchQuery.trim()}%,spec.ilike.%${searchQuery.trim()}%`)
         }
         
         const { data } = await query
@@ -82,11 +82,16 @@ export default function ProductsPage() {
 
   const filtered = products.filter(p => {
     // Filter by status (client-side for status filtering)
-    if (filter === 'active')      return p.status === 'active'
-    if (filter === 'provisional') return p.status === 'provisional'
-    
-    // Search is now handled server-side, so no client-side search needed
+    if (filter === 'all') return true
+    if (filter === 'active') return p.status === 'active'
+    if (filter === 'provisional') return p.unit_price === null
     return true
+  }).filter(p => {
+    // Additional client-side search for safety
+    if (!searchQuery.trim()) return true
+    const query = searchQuery.toLowerCase().trim()
+    return p.name.toLowerCase().includes(query) ||
+           (p.spec && p.spec.toLowerCase().includes(query))
   })
 
   const startNew  = () => { setForm(emptyForm); setEditing('new'); setErr(null) }

@@ -149,11 +149,11 @@ export default function CompaniesPage() {
             .from('companies')
             .select('*')
             .eq('tenant_id', tenantId)
-            .order('created_at', { ascending: false })
+            .order('name', { ascending: true })
           
           // Apply server-side search if query exists
           if (searchQuery.trim()) {
-            query = query.ilike('name', `%${searchQuery.trim()}%`)
+            query = query.or(`name.ilike.%${searchQuery.trim()}%,address.ilike.%${searchQuery.trim()}%,phone.ilike.%${searchQuery.trim()}%`)
           }
           
           const { data } = await query
@@ -171,12 +171,13 @@ export default function CompaniesPage() {
     void loadCompanies()
   }, [searchQuery, loadCompanies]) // Reload when search query changes
 
-  // Filter companies by search query (now only for address/phone search)
+  // Filter companies by search query (client-side fallback)
   const filteredCompanies = companies.filter(c => {
     if (!searchQuery.trim()) return true
     const query = searchQuery.toLowerCase().trim()
-    // Name search is handled server-side, but address/phone still client-side
-    return (c.address && c.address.toLowerCase().includes(query)) ||
+    // Server-side search should handle name, but keep client-side for safety
+    return c.name.toLowerCase().includes(query) ||
+           (c.address && c.address.toLowerCase().includes(query)) ||
            (c.phone && c.phone.toLowerCase().includes(query))
   })
 

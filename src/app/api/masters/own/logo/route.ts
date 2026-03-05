@@ -31,20 +31,25 @@ export async function POST(req: Request) {
     }
 
     // Check if storage bucket exists, create if not
-    const { data: buckets } = await supabase.storage.listBuckets()
-    const bucketExists = buckets?.some(b => b.name === 'company-logos')
-    
-    if (!bucketExists) {
-      const { error: bucketError } = await supabase.storage.createBucket('company-logos', {
-        public: true,
-        allowedMimeTypes: allowedTypes,
-        fileSizeLimit: 5 * 1024 * 1024 // 5MB
-      })
+    try {
+      const { data: buckets } = await supabase.storage.listBuckets()
+      const bucketExists = buckets?.some(b => b.name === 'company-logos')
       
-      if (bucketError) {
-        console.error('Bucket creation error:', bucketError)
-        return NextResponse.json({ error: 'ストレージの初期化に失敗しました' }, { status: 500 })
+      if (!bucketExists) {
+        const { error: bucketError } = await supabase.storage.createBucket('company-logos', {
+          public: true,
+          allowedMimeTypes: allowedTypes,
+          fileSizeLimit: 5 * 1024 * 1024 // 5MB
+        })
+        
+        if (bucketError) {
+          console.error('Bucket creation error:', bucketError)
+          return NextResponse.json({ error: 'ストレージの初期化に失敗しました' }, { status: 500 })
+        }
       }
+    } catch (bucketError) {
+      console.error('Bucket check error:', bucketError)
+      // Continue anyway - bucket might exist but we can't check due to permissions
     }
 
     // Upload to Supabase Storage

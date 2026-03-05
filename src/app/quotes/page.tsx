@@ -39,6 +39,27 @@ export default function QuotesPage() {
   return (
     <main style={mainStyle}>
       <div style={{ padding: '12px 16px 120px' }}>
+        {/* ヘッダー */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+          <h1 style={{ margin: 0, fontSize: 20, fontWeight: 700, color: '#fff' }}>見積書一覧</h1>
+          <Link
+            href="/quotes/new"
+            aria-label="見積書を作成"
+            style={{
+              padding: '10px 20px',
+              background: '#FFD700',
+              color: '#000',
+              textDecoration: 'none',
+              borderRadius: 6,
+              fontSize: 14,
+              fontWeight: 700,
+              boxShadow: '0 2px 8px rgba(255,215,0,0.3)',
+            }}
+          >
+            ＋ 見積書を作成
+          </Link>
+        </div>
+
         {/* LINEお問い合わせリンク */}
         <div style={s.lineSupport}>
           <span style={s.lineText}>🤔 ご不明な点はLINEから</span>
@@ -100,31 +121,6 @@ export default function QuotesPage() {
           </ul>
         )}
       </div>
-
-      {/* 新規作成 FAB */}
-      <Link
-        href="/quotes/new"
-        aria-label="見積書を作成"
-        style={{
-          position: 'fixed',
-          bottom: 24,
-          right: 16,
-          width: 56,
-          height: 56,
-          borderRadius: '50%',
-          background: '#FFD700',
-          color: '#000',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontSize: 28,
-          textDecoration: 'none',
-          boxShadow: '0 4px 14px rgba(255,215,0,0.4)',
-          zIndex: 20,
-        }}
-      >
-        ＋
-      </Link>
     </main>
   )
 }

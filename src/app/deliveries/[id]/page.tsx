@@ -4,7 +4,6 @@ import Link from 'next/link'
 import { createRepositories } from '@/repositories'
 import type { CSSProperties } from 'react'
 import DeliveryItemList from './_components/DeliveryItemList'
-import DeliveryDeleteButton from './_components/DeliveryDeleteButton'
 
 // ---------------------------------------------------------------------------
 // Helper
@@ -90,10 +89,15 @@ export default async function DeliveryDetailPage({
         </Link>
       </div>
 
-      {/* ── 削除ボタン ─────────────────────────────── */}
+      {/* ── 編集ボタン ─────────────────────────────── */}
       {isEditable && (
         <div style={{ marginBottom: 16 }}>
-          <DeliveryDeleteButton deliveryId={id} />
+          <Link
+            href={`/deliveries/${id}`}
+            style={s.editButton}
+          >
+            ✏️ 納品内容を編集
+          </Link>
         </div>
       )}
 
@@ -230,6 +234,17 @@ const s: Record<string, CSSProperties> = {
     background: 'rgba(255,215,0,0.15)',
     color: '#FFD700',
     border: '1px solid rgba(255,215,0,0.4)',
+    borderRadius: 8,
+    textDecoration: 'none',
+  },
+  editButton: {
+    display: 'inline-block',
+    padding: '10px 16px',
+    fontSize: 14,
+    fontWeight: 600,
+    background: '#FFD700',
+    color: '#000',
+    border: 'none',
     borderRadius: 8,
     textDecoration: 'none',
   },
