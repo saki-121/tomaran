@@ -77,6 +77,18 @@ export default async function DeliveryDetailPage({
         </div>
       </div>
 
+      {/* ── 納品書発行 ─────────────────────────────── */}
+      <div style={{ marginBottom: 16 }}>
+        <Link
+          href={`/deliveries/${id}/print`}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={s.printButton}
+        >
+          📄 納品書発行
+        </Link>
+      </div>
+
       {/* ── 商品一覧 ─────────────────────────────── */}
       <h2 style={s.sectionTitle}>
         商品{isEditable && <span style={{ fontSize: 11, fontWeight: 400, color: '#6b7280', marginLeft: 6 }}>編集・削除できます</span>}
@@ -201,5 +213,16 @@ const s: Record<string, CSSProperties> = {
     color: '#9ca3af',
     margin: '0 0 8px 4px',
     letterSpacing: '0.05em',
+  },
+  printButton: {
+    display: 'inline-block',
+    padding: '10px 16px',
+    fontSize: 14,
+    fontWeight: 600,
+    background: 'rgba(255,215,0,0.15)',
+    color: '#FFD700',
+    border: '1px solid rgba(255,215,0,0.4)',
+    borderRadius: 8,
+    textDecoration: 'none',
   },
 }

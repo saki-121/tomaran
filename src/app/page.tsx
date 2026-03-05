@@ -377,7 +377,7 @@ export default async function Page() {
             💴 PRICING
           </p>
           <h2 style={{ fontSize: 'clamp(24px, 5vw, 40px)', fontWeight: 900, marginBottom: 48 }}>
-            シンプルに、一択。
+            業界標準は、一択。
           </h2>
 
           <div style={{
@@ -413,7 +413,7 @@ export default async function Page() {
               </p>
               <p style={{ color: '#9ca3af', fontSize: 14, lineHeight: 1.7, margin: 0 }}>
                 使い方動画を全部公開しています。迷うなら先に全部見てきてください。
-                それで判断できます。自信があるから、無料期間は設けていません。
+                業務を止めない仕組みは、試すものではなく導入するものだと考えています。
               </p>
             </div>
 
