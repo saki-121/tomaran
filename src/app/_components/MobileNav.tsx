@@ -54,19 +54,17 @@ export default function MobileNav() {
 
       <span style={{ marginLeft: 'auto' }} />
 
-      <Link href="/admin" style={{
-        color: '#9ca3af',
+      <Link href="/admin" aria-label="管理画面" style={{
+        color: '#6b7280',
         textDecoration: 'none',
-        padding: '0 12px',
+        padding: '0 8px',
         height: 48,
         display: 'flex',
         alignItems: 'center',
-        fontSize: 13,
-        fontWeight: 500,
+        fontSize: 14,
         borderLeft: '1px solid rgba(255,255,255,0.06)',
-        whiteSpace: 'nowrap',
       }}>
-        管理画面
+        ⚙️
       </Link>
     </nav>
   )

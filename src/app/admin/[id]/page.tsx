@@ -64,7 +64,8 @@ async function fetchAdminDelivery(id: string): Promise<AdminDeliveryDetail | nul
 // ---------------------------------------------------------------------------
 
 function formatDateJP(iso: string): string {
-  const d   = new Date(`${iso}T00:00:00+09:00`)
+  const datePart = iso.slice(0, 10)
+  const d   = new Date(`${datePart}T12:00:00+09:00`)
   const m   = d.getMonth() + 1
   const dd  = d.getDate()
   const day = ['日', '月', '火', '水', '木', '金', '土'][d.getDay()]
@@ -116,11 +117,12 @@ export default async function AdminDeliveryDetailPage({
   if (delivery.tenant_id !== tenantId) notFound()
 
   const isEditable = delivery.status === 'editable'
+  const items = delivery.delivery_items ?? []
 
   // 合計計算
   let grandSubtotal = 0
   let grandTax      = 0
-  for (const item of delivery.delivery_items) {
+  for (const item of items) {
     const { subtotal, tax } = calcLine(item)
     grandSubtotal += subtotal
     grandTax      += tax
@@ -152,7 +154,7 @@ export default async function AdminDeliveryDetailPage({
       {/* ── 商品明細（単価・税・小計を表示） ──────── */}
       <h2 style={s.sectionTitle}>明細</h2>
       <div style={s.card}>
-        {delivery.delivery_items.map((item, idx) => {
+        {items.map((item, idx) => {
           const { subtotal, tax, total, taxRatePct } = calcLine(item)
           return (
             <div key={item.id}>

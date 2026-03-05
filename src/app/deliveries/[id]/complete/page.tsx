@@ -8,9 +8,10 @@ import type { CSSProperties } from 'react'
 // Helpers
 // ---------------------------------------------------------------------------
 
-/** "2024-01-05" → "1月5日（月）" */
+/** "2024-01-05" → "1月5日（月）"（JSTで解釈） */
 function formatDateJP(iso: string): string {
-  const d = new Date(`${iso}T00:00:00+09:00`)
+  const datePart = iso.slice(0, 10)
+  const d = new Date(`${datePart}T12:00:00+09:00`)
   const m  = d.getMonth() + 1
   const dd = d.getDate()
   const day = ['日', '月', '火', '水', '木', '金', '土'][d.getDay()]

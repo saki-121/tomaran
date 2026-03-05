@@ -10,9 +10,11 @@ import DeliveryItemList from './_components/DeliveryItemList'
 // ---------------------------------------------------------------------------
 
 function formatDateJP(iso: string): string {
-  const d   = new Date(`${iso}T00:00:00+09:00`)
-  const m   = d.getMonth() + 1
-  const dd  = d.getDate()
+  // 日付のみ取り出し（ISO時刻の場合は先頭10文字）、JSTで解釈してずれを防ぐ
+  const datePart = iso.slice(0, 10)
+  const d = new Date(`${datePart}T12:00:00+09:00`)
+  const m = d.getMonth() + 1
+  const dd = d.getDate()
   const day = ['日', '月', '火', '水', '木', '金', '土'][d.getDay()]
   return `${m}月${dd}日（${day}）`
 }

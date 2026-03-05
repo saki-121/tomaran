@@ -22,7 +22,7 @@ export default function DeliveryItemList({ deliveryId, initialItems, isEditable 
   const [busy, setBusy] = useState<string | null>(null) // itemId being processed
 
   function productLabel(item: Item): string {
-    if (!item.product) return '—'
+    if (!item.product) return '（削除された商品）'
     return item.product.spec
       ? `${item.product.name}（${item.product.spec}）`
       : item.product.name
