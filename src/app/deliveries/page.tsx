@@ -81,7 +81,7 @@ export default async function DeliveriesPage({
       delivery_items(id)
     `)
     .eq('tenant_id', tenantId)
-    .order('delivery_date', { ascending: false })
+    .order('created_at', { ascending: false })
     .limit(50)
 
   if (filterCompanyId) deliveriesQuery.eq('company_id', filterCompanyId)
@@ -153,7 +153,7 @@ export default async function DeliveriesPage({
 
       {/* LINEお問い合わせリンク */}
       <div style={s.lineSupport}>
-        <p style={s.lineText}>🤔 ご不明な点はこちらから</p>
+        <span style={s.lineText}>🤔 ご不明な点はLINEから</span>
         <a 
           href="https://lin.ee/2WeE9qB" 
           target="_blank" 
@@ -253,30 +253,28 @@ const s: Record<string, CSSProperties> = {
     boxShadow: '0 4px 14px rgba(255,215,0,0.4)',
   },
   lineSupport: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 8,
+    padding: '8px 12px',
     background: 'rgba(0, 200, 0, 0.1)',
     border: '1px solid rgba(0, 200, 0, 0.3)',
-    borderRadius: 12,
-    padding: '16px',
+    borderRadius: 6,
     margin: '24px 0',
-    textAlign: 'center' as const,
   },
   lineText: {
-    fontSize: 14,
+    fontSize: 13,
     color: '#9ca3af',
-    margin: '0 0 12px',
+    fontWeight: 500,
   },
   lineButton: {
-    display: 'inline-block',
-    padding: '10px 20px',
-    fontSize: 14,
+    padding: '6px 12px',
+    fontSize: 12,
     fontWeight: 600,
     background: '#00C300',
     color: '#fff',
     textDecoration: 'none',
-    borderRadius: 8,
-    transition: 'transform 0.2s ease',
-    ':hover': {
-      transform: 'scale(1.05)',
-    },
+    borderRadius: 4,
+    whiteSpace: 'nowrap',
   },
 }
