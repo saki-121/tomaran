@@ -24,16 +24,30 @@ export default async function PaymentSuccessPage({
       } else {
         const session = await stripe.checkout.sessions.retrieve(session_id)
         if (session.payment_status === 'paid') {
-          // SECURITY DEFINER RPC: auth.uid() チェックで安全に is_paid を更新
+          const customerId     = typeof session.customer === 'string'
+            ? session.customer
+            : (session.customer as { id?: string } | null)?.id ?? null
+          const subscriptionId = typeof session.subscription === 'string'
+            ? session.subscription
+            : (session.subscription as { id?: string } | null)?.id ?? null
+
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const { error } = await (supabase as any).rpc('mark_user_as_paid', {
             target_user_id: user.id,
           })
           if (error) {
             console.error('[payment-success] mark_user_as_paid failed:', error)
-          } else {
-            console.error('[payment-success] is_paid updated for user:', user.id)
           }
+
+          // Webhook に頼らず、ここでも確実に保存する
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          await (supabase as any)
+            .from('profiles')
+            .update({
+              ...(customerId     ? { stripe_customer_id:      customerId     } : {}),
+              ...(subscriptionId ? { stripe_subscription_id: subscriptionId } : {}),
+            })
+            .eq('id', user.id)
         }
       }
     } catch (err) {

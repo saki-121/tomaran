@@ -53,12 +53,12 @@ export default async function Page() {
       ══════════════════════════════════════════════════════════ */}
       <header style={{
         position: 'sticky', top: 0, zIndex: 100,
-        background: 'rgba(10,15,30,0.97)', backdropFilter: 'blur(8px)',
-        borderBottom: '1px solid rgba(255,215,0,0.15)',
+        background: 'rgba(253,252,251,0.97)', backdropFilter: 'blur(8px)',
+        borderBottom: '1px solid #E5E0DA',
         padding: `0 ${PX}`, height: 60,
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
       }}>
-        <span style={{ fontWeight: 900, fontSize: 26, letterSpacing: '0.05em', color: Y }}>
+        <span style={{ fontWeight: 900, fontSize: 26, letterSpacing: '0.05em', color: AMBER }}>
           tomaran
         </span>
         <Link
@@ -92,32 +92,6 @@ export default async function Page() {
           納品・見積・請求を<br />
           <span style={{ color: AMBER }}>スマホひとつで回す道具。</span>
         </p>
-
-        {/* デモ画面（即実利を示す） */}
-        <div style={{
-          background: CARD, border: '1px solid #E5E0DA',
-          borderRadius: 14, padding: '20px 18px', marginBottom: 32,
-          boxShadow: '3px 3px 0 #E5E0DA', textAlign: 'left',
-        }}>
-          <p style={{ fontSize: 15, color: TEXT3, margin: '0 0 12px', fontWeight: 700 }}>
-            ▶ 単価表 Excel 取込デモ
-          </p>
-          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-            {[
-              { bg: '#F0FDF4', border: '#BBF7D0', color: '#166534', label: '✓ 500件 → 5分' },
-              { bg: '#FFF7ED', border: '#FED7AA', color: '#C2410C', label: '✓ CSV変換不要' },
-              { bg: '#EFF6FF', border: '#BFDBFE', color: '#1D4ED8', label: '✓ 今のExcelそのまま' },
-            ].map(t => (
-              <div key={t.label} style={{
-                background: t.bg, border: `1px solid ${t.border}`,
-                borderRadius: 10, padding: '10px 16px',
-                fontSize: 17, color: t.color, fontWeight: 700,
-              }}>
-                {t.label}
-              </div>
-            ))}
-          </div>
-        </div>
 
         {/* 「本音」ボックス — 明朝体・薄ベージュで思想でなく本音の演出 */}
         <div style={{
@@ -176,7 +150,7 @@ export default async function Page() {
       <section style={{ background: BG2, padding: '64px 20px' }}>
         <div style={{ maxWidth: MAX_W, margin: '0 auto' }}>
           <h2 style={{ fontSize: 30, fontWeight: 900, marginBottom: 8, lineHeight: 1.4, color: TEXT }}>
-            この道具が<br />向いている資材屋
+            この道具が<br />向いている資材屋さん
           </h2>
           <p style={{ color: TEXT2, fontSize: 19, marginBottom: 32, lineHeight: 1.7 }}>
             もし3つ以上当てはまるなら<br />たぶん役に立ちます。
