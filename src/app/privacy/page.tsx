@@ -39,7 +39,7 @@ export default function PrivacyPage() {
 
           {/* Intro */}
           <div style={{ background: CARD2, borderLeft: `3px solid ${Y}`, borderRadius: 8, padding: '24px 28px', marginBottom: 32 }}>
-            <p style={{ color: '#d1d5db', fontSize: 15, lineHeight: 1.85, margin: 0 }}>
+            <p style={{ color: '#555555', fontSize: 15, lineHeight: 1.85, margin: 0 }}>
               tomaran（以下「当サービス」）は、ユーザーのプライバシーを尊重します。
               このページでは、何を取得して、何のために使って、どこに保管するかを率直に説明します。
               読んで判断してください。
@@ -61,7 +61,7 @@ export default function PrivacyPage() {
                       'Googleアカウントの表示名',
                       'プロフィール画像URL（使用する場合）',
                     ].map(i => (
-                      <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, color: '#d1d5db', fontSize: 15 }}>
+                      <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, color: '#555555', fontSize: 15 }}>
                         <span style={{ color: Y, flexShrink: 0, fontWeight: 700 }}>▸</span>{i}
                       </li>
                     ))}
@@ -83,7 +83,7 @@ export default function PrivacyPage() {
                     'LINEサポート対応',
                     '利用状況の集計・サービス改善（個人を特定しない形で実施）',
                   ].map(i => (
-                    <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, color: '#d1d5db', fontSize: 15 }}>
+                    <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, color: '#555555', fontSize: 15 }}>
                       <span style={{ color: Y, flexShrink: 0, fontWeight: 700 }}>▸</span>{i}
                     </li>
                   ))}
@@ -95,7 +95,7 @@ export default function PrivacyPage() {
               title: '第三者への提供',
               body: (
                 <>
-                  <p style={{ color: '#d1d5db', fontSize: 15, lineHeight: 1.75, marginBottom: 16 }}>
+                  <p style={{ color: '#555555', fontSize: 15, lineHeight: 1.75, marginBottom: 16 }}>
                     法令に基づく場合を除き、取得した個人情報を第三者に提供・販売・貸与することはありません。
                   </p>
                   <p style={{ color: '#777777', fontSize: 14, marginBottom: 12 }}>
@@ -107,7 +107,7 @@ export default function PrivacyPage() {
                       'Stripe, Inc. —— 決済処理',
                       'Google LLC —— OAuth認証',
                     ].map(i => (
-                      <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, color: '#d1d5db', fontSize: 15 }}>
+                      <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, color: '#555555', fontSize: 15 }}>
                         <span style={{ color: '#888888', flexShrink: 0 }}>—</span>{i}
                       </li>
                     ))}
@@ -119,7 +119,7 @@ export default function PrivacyPage() {
               n: '04',
               title: '情報の保管',
               body: (
-                <p style={{ color: '#d1d5db', fontSize: 15, lineHeight: 1.75, margin: 0 }}>
+                <p style={{ color: '#555555', fontSize: 15, lineHeight: 1.75, margin: 0 }}>
                   取得した情報はSupabaseが管理するデータベース（AWS東京リージョン）に保存されます。
                   アクセス制御・TLS暗号化通信により安全に管理しています。
                 </p>
@@ -129,7 +129,7 @@ export default function PrivacyPage() {
               n: '05',
               title: '情報の削除',
               body: (
-                <p style={{ color: '#d1d5db', fontSize: 15, lineHeight: 1.75, margin: 0 }}>
+                <p style={{ color: '#555555', fontSize: 15, lineHeight: 1.75, margin: 0 }}>
                   アカウントの削除を希望する場合は、下記メールアドレスへご連絡ください。
                   合理的な期間内にアカウントおよび関連データを削除します。
                 </p>
@@ -139,7 +139,7 @@ export default function PrivacyPage() {
               n: '06',
               title: 'Cookieの利用',
               body: (
-                <p style={{ color: '#d1d5db', fontSize: 15, lineHeight: 1.75, margin: 0 }}>
+                <p style={{ color: '#555555', fontSize: 15, lineHeight: 1.75, margin: 0 }}>
                   当サービスはログインセッションの維持のためにCookieを使用します。
                   ブラウザでCookieを無効にした場合、ログイン機能が正常に動作しない場合があります。
                   トラッキング目的のCookieは使用しません。
@@ -150,7 +150,7 @@ export default function PrivacyPage() {
               n: '07',
               title: 'お問い合わせ',
               body: (
-                <p style={{ color: '#d1d5db', fontSize: 15, lineHeight: 1.75, margin: 0 }}>
+                <p style={{ color: '#555555', fontSize: 15, lineHeight: 1.75, margin: 0 }}>
                   個人情報の取り扱いに関するお問い合わせは以下へ。<br />
                   <br />
                   tomaran<br />

@@ -382,7 +382,7 @@ export default function CompaniesPage() {
               {importResult.errors.map((e, i) => <li key={i}>{e}</li>)}
             </ul>
           )}
-          <button onClick={() => setImportResult(null)} style={{ marginTop: 8, ...btnSmall('#6b7280') }}>閉じる</button>
+          <button onClick={() => setImportResult(null)} style={{ marginTop: 8, ...btnSmall('#777777') }}>閉じる</button>
         </div>
       )}
 
@@ -519,7 +519,7 @@ export default function CompaniesPage() {
                         </span>
                       </td>
                       <td style={{ padding: '8px 12px', whiteSpace: 'nowrap' }}>
-                        <button onClick={e => startEditCo(c, e)} style={btnSmall('#6b7280')}>編集</button>
+                        <button onClick={e => startEditCo(c, e)} style={btnSmall('#777777')}>編集</button>
                         {c.active_flag && (
                           <button onClick={e => deactivateCo(c.id, c.name, e)} style={{ ...btnSmall('#ef4444'), marginLeft: 6 }}>無効化</button>
                         )}
@@ -531,7 +531,7 @@ export default function CompaniesPage() {
                       <>
                         {loadingSites && (
                           <tr key={`${c.id}-loading`}>
-                            <td colSpan={7} style={{ ...tdSub, paddingLeft: 40, color: '#6b7280' }}>読み込み中…</td>
+                            <td colSpan={7} style={{ ...tdSub, paddingLeft: 40, color: '#888888' }}>読み込み中…</td>
                           </tr>
                         )}
                         {!loadingSites && companySites.map(s => {
@@ -549,7 +549,7 @@ export default function CompaniesPage() {
                                       autoFocus
                                     />
                                     <button onClick={() => saveSite(c.id)} disabled={siteSaving} style={btnSmall('#FFD700')}>{siteSaving ? '…' : '保存'}</button>
-                                    <button onClick={cancelSite} style={btnSmall('#6b7280')}>取消</button>
+                                    <button onClick={cancelSite} style={btnSmall('#777777')}>取消</button>
                                     {siteErr && <span style={{ color: '#ef4444', fontSize: 12 }}>{siteErr}</span>}
                                   </div>
                                 ) : (
@@ -564,7 +564,7 @@ export default function CompaniesPage() {
                               <td style={{ ...tdSub, whiteSpace: 'nowrap' }}>
                                 {!isEditingThis && (
                                   <>
-                                    <button onClick={() => startEditSite(s)} style={btnSmall('#6b7280')}>編集</button>
+                                    <button onClick={() => startEditSite(s)} style={btnSmall('#777777')}>編集</button>
                                     {s.active_flag && (
                                       <button onClick={() => deactivateSite(s.id, s.name, c.id)} style={{ ...btnSmall('#ef4444'), marginLeft: 6 }}>無効化</button>
                                     )}
@@ -590,7 +590,7 @@ export default function CompaniesPage() {
                                     autoFocus
                                   />
                                   <button onClick={() => saveSite(c.id)} disabled={siteSaving} style={btnSmall('#16A34A')}>{siteSaving ? '…' : '追加'}</button>
-                                  <button onClick={cancelSite} style={btnSmall('#6b7280')}>取消</button>
+                                  <button onClick={cancelSite} style={btnSmall('#777777')}>取消</button>
                                   {siteErr && <span style={{ color: '#ef4444', fontSize: 12 }}>{siteErr}</span>}
                                 </div>
                               ) : (

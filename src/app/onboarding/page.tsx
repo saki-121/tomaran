@@ -58,7 +58,7 @@ export default function OnboardingPage() {
               <span style={{
                 width: 24, height: 24, borderRadius: '50%',
                 background: step.done ? Y : step.active ? Y : '#F0EDE8',
-                color: step.done || step.active ? '#000' : '#6b7280',
+                color: step.done || step.active ? '#000' : '#888888',
                 fontSize: 11, fontWeight: 700,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
               }}>

@@ -146,7 +146,7 @@ export default function LegalPage() {
               </div>
               <div style={{
                 padding: '18px 20px', fontSize: 14,
-                lineHeight: 1.75, color: '#d1d5db',
+                lineHeight: 1.75, color: '#555555',
               }}>
                 {row.value}
               </div>

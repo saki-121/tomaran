@@ -4,7 +4,6 @@ import PaymentActions from './_components/PaymentActions'
 
 const BG   = '#FDFCFB'
 const CARD = '#FFFFFF'
-const Y    = '#FFD700'
 
 export default async function PaymentRequiredPage() {
   const supabase = await createClient()

@@ -20,7 +20,7 @@ export default function GoogleLoginButton() {
         padding: '12px 0',
         background: '#fff',
         color: '#374151',
-        border: '1px solid #d1d5db',
+        border: '1px solid #D0CAC3',
         borderRadius: 6,
         fontSize: 15,
         fontWeight: 600,
