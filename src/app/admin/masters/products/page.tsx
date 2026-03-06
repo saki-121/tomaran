@@ -1,8 +1,6 @@
 'use client'
 
 import { useEffect, useRef, useState, useCallback } from 'react'
-import { createClient } from '@/lib/supabase/client'
-import { withQueryTracking } from '@/lib/performance'
 
 type Product = {
   id: string
@@ -40,49 +38,23 @@ export default function ProductsPage() {
   const load = useCallback(async () => {
     setLoading(true)
     try {
-      const supabase = await createClient()
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) return
-
-      // Get tenant_id
-      const { data: userTenant } = await supabase
-        .from('user_tenants')
-        .select('tenant_id')
-        .eq('user_id', user.id)
-        .single()
-      
-      if (!userTenant) return
-      const tenantId = userTenant.tenant_id
-
-      await withQueryTracking('products-load', async () => {
-        let query = supabase
-          .from('products')
-          .select('*')
-          .eq('tenant_id', tenantId)
-          .order('name', { ascending: true })
-        
-        // Apply server-side search if query exists
-        if (searchQuery.trim()) {
-          query = query.or(`name.ilike.%${searchQuery.trim()}%,spec.ilike.%${searchQuery.trim()}%`)
-        }
-        
-        const { data, error } = await query
-        if (error) {
-          console.error('Products query error:', error)
-          return
-        }
-        setProducts(data ?? [])
-      })
+      const res = await fetch('/api/masters/products?all=1')
+      if (!res.ok) {
+        console.error('Products load failed:', res.status)
+        return
+      }
+      const d = await res.json()
+      setProducts(d.products ?? [])
     } catch (error) {
       console.error('Failed to load products:', error)
     } finally {
       setLoading(false)
     }
-  }, [searchQuery])
+  }, [])
 
   useEffect(() => {
     void load()
-  }, [searchQuery, load]) // Reload when search query changes
+  }, [load])
 
   const filtered = products.filter(p => {
     // Filter by status (client-side for status filtering)
@@ -106,32 +78,17 @@ export default function ProductsPage() {
     if (!form.name.trim()) { setErr('名称は必須です'); return }
     setSaving(true); setErr(null)
     try {
-      const supabase = await createClient()
-      if (editing === 'new') {
-        void supabase.from('products').insert({
-          tenant_id: tenantId,
-          name: form.name.trim(),
-          spec: form.spec.trim() || null,
-          unit_price: form.unit_price ? Number(form.unit_price) : null,
-          tax_rate: Number(form.tax_rate),
-          status: 'provisional',
-          active_flag: true,
-        }).then(() => {
-          void load()
-          cancel()
-        })
-      } else {
-        void supabase.from('products').update({
-          name: form.name.trim(),
-          spec: form.spec.trim() || null,
-          unit_price: form.unit_price ? Number(form.unit_price) : null,
-          tax_rate: Number(form.tax_rate),
-          updated_at: new Date().toISOString(),
-        }).eq('id', editing).then(() => {
-          void load()
-          cancel()
-        })
-      }
+      const url    = editing === 'new' ? '/api/masters/products' : `/api/masters/products/${editing}`
+      const method = editing === 'new' ? 'POST' : 'PUT'
+      const res = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: form.name.trim(), unit_price: form.unit_price, status: form.status }),
+      })
+      const d = await res.json()
+      if (!res.ok) { setErr(d.error ?? '保存に失敗しました'); return }
+      cancel()
+      void load()
     } catch (_error) {
       setErr('保存に失敗しました')
     } finally {

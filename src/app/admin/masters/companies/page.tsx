@@ -1,8 +1,6 @@
 'use client'
 
 import { useEffect, useRef, useState, useCallback } from 'react'
-import { createClient } from '@/lib/supabase/client'
-import { withQueryTracking } from '@/lib/performance'
 
 type Company = {
   id: string
@@ -130,50 +128,24 @@ export default function CompaniesPage() {
     void (async () => {
       setLoading(true)
       try {
-        const supabase = await createClient()
-        const { data: { user } } = await supabase.auth.getUser()
-        if (!user) return
-
-        // Get tenant_id
-        const { data: userTenant } = await supabase
-          .from('user_tenants')
-          .select('tenant_id')
-          .eq('user_id', user.id)
-          .single()
-        
-        if (!userTenant) return
-        const tenantId = userTenant.tenant_id
-
-        await withQueryTracking('companies-load', async () => {
-          let query = supabase
-            .from('companies')
-            .select('*')
-            .eq('tenant_id', tenantId)
-            .order('name', { ascending: true })
-          
-          // Apply server-side search if query exists
-          if (searchQuery.trim()) {
-            query = query.or(`name.ilike.%${searchQuery.trim()}%,address.ilike.%${searchQuery.trim()}%,phone.ilike.%${searchQuery.trim()}%`)
-          }
-          
-          const { data, error } = await query
-          if (error) {
-            console.error('Companies query error:', error)
-            return
-          }
-          setCompanies(data ?? [])
-        })
+        const res = await fetch('/api/masters/companies?all=1')
+        if (!res.ok) {
+          console.error('Companies load failed:', res.status)
+          return
+        }
+        const d = await res.json()
+        setCompanies(d.companies ?? [])
       } catch (_error) {
         console.error('Failed to load companies')
       } finally {
         setLoading(false)
       }
     })()
-  }, [searchQuery])
+  }, [])
 
   useEffect(() => {
     void loadCompanies()
-  }, [searchQuery, loadCompanies]) // Reload when search query changes
+  }, [loadCompanies])
 
   // Filter companies by search query (client-side fallback)
   const filteredCompanies = companies.filter(c => {

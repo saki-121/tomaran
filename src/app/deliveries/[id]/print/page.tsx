@@ -45,6 +45,14 @@ export default async function DeliveryPrintPage({
   const tenantId = (userTenant as any)?.tenant_id as string | undefined
   if (!tenantId) redirect('/onboarding')
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data: tenantRow } = await (supabase as any)
+    .from('tenants')
+    .select('logo_url')
+    .eq('id', tenantId)
+    .maybeSingle()
+  const logoUrl = (tenantRow as { logo_url: string | null } | null)?.logo_url ?? null
+
   const { deliveries } = await createRepositories(tenantId)
   const delivery = await deliveries.findById(id)
   if (!delivery) notFound()
@@ -74,6 +82,11 @@ export default async function DeliveryPrintPage({
           color: '#000',
         }}
       >
+        {logoUrl && (
+          <div style={{ marginBottom: 12 }}>
+            <img src={logoUrl} alt="会社ロゴ" style={{ maxHeight: 56, maxWidth: 160, objectFit: 'contain' }} />
+          </div>
+        )}
         <h1 style={{ textAlign: 'center', fontSize: 24, marginBottom: 4 }}>御納品書</h1>
         <p style={{ textAlign: 'right', color: '#555', marginTop: 0 }}>発行日: {today}</p>
 

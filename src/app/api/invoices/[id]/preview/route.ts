@@ -102,6 +102,15 @@ export async function GET(_req: NextRequest, { params }: Ctx) {
     .order('product_name')
   const items = (itemsData ?? []) as ItemRow[]
 
+  // ── Fetch tenant logo_url ──────────────────────────────────────────────────
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data: tenantRow } = await (supabase as any)
+    .from('tenants')
+    .select('logo_url')
+    .eq('id', tenantId)
+    .maybeSingle()
+  const logoUrl = (tenantRow as { logo_url: string | null } | null)?.logo_url ?? null
+
   // ── Fetch own company profile & default bank account ───────────────────────
   const [ownQuery, bankQuery] = await Promise.all([
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -143,6 +152,20 @@ export async function GET(_req: NextRequest, { params }: Ctx) {
     { width: 12 }, // E: 単価
     { width: 14 }, // F: 金額
   ]
+
+  // ── Embed logo (PNG/JPEG only — SVG not supported by ExcelJS) ────────────
+  if (logoUrl && !logoUrl.toLowerCase().includes('.svg')) {
+    try {
+      const imgRes = await fetch(logoUrl)
+      if (imgRes.ok) {
+        const imgBuf = Buffer.from(await imgRes.arrayBuffer())
+        const ext = logoUrl.toLowerCase().includes('.png') ? 'png' : 'jpeg'
+        const imgId = wb.addImage({ buffer: imgBuf, extension: ext as 'png' | 'jpeg' })
+        // Place at top-right (columns E–F, rows 1–3)
+        ws.addImage(imgId, { tl: { col: 4, row: 0 }, br: { col: 6, row: 2 }, editAs: 'oneCell' })
+      }
+    } catch (_) { /* logo errors are non-fatal */ }
+  }
 
   let rowNum = 1
 
