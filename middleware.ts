@@ -11,7 +11,8 @@ export const config = {
      * 以下を除くすべてのルートを対象：
      *   • Next.js 内部 (_next/static, _next/image)
      *   • 静的ファイル (svg, png, jpg, …)
+     *   • Stripe Webhook（署名検証済み・認証不要）
      */
-    '/((?!_next).*)',
+    '/((?!_next|api/stripe/webhook).*)',
   ],
 }
