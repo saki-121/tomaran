@@ -77,7 +77,8 @@ export default async function Page() {
       {/* ══════════════════════════════════════════════════════════
           1. ファーストビュー
       ══════════════════════════════════════════════════════════ */}
-      <section style={{ padding: '64px 20px 56px', maxWidth: MAX_W, margin: '0 auto', textAlign: 'center' }}>
+      <section style={{ padding: '64px 20px 56px', background: '#FFF8EE' }}>
+      <div style={{ maxWidth: MAX_W, margin: '0 auto', textAlign: 'center' }}>
         <p style={{ fontSize: 17, fontWeight: 700, color: AMBER, letterSpacing: '0.15em', marginBottom: 20 }}>
           資材屋の仕事を止めない道具
         </p>
@@ -124,7 +125,6 @@ export default async function Page() {
           borderLeft: '4px solid #C2710C',
           borderRadius: 8, padding: '24px 22px', marginBottom: 44,
           textAlign: 'left',
-          fontFamily: "'Georgia', '游明朝', 'YuMincho', '游明朝体', serif",
         }}>
           <p style={{ fontSize: 20, color: '#5D4037', lineHeight: 2.1, margin: 0 }}>
             ITツールでも<br />
@@ -167,10 +167,7 @@ export default async function Page() {
           </Link>
         </div>
 
-        <p style={{ fontSize: 16, color: TEXT3, lineHeight: 1.7 }}>
-          「使えねえな」と思ったら<br />
-          すぐ解約してください。笑
-        </p>
+      </div>
       </section>
 
       {/* ══════════════════════════════════════════════════════════
@@ -329,7 +326,6 @@ export default async function Page() {
               'IT知識　→　いりません',
               '研修　→　いりません',
               'Googleログイン　→　パスワード管理いりません',
-              '1社1ユーザー　→　アカウント管理ゼロ',
             ].map(line => (
               <div key={line} style={{
                 display: 'flex', alignItems: 'center', gap: 14,
@@ -415,10 +411,12 @@ export default async function Page() {
       <section style={{ background: BG2, padding: '64px 20px' }}>
         <div style={{ maxWidth: MAX_W, margin: '0 auto' }}>
           <h2 style={{ fontSize: 30, fontWeight: 900, marginBottom: 8, lineHeight: 1.4, color: TEXT }}>
-            導入は3分です。
+            導入は30分もかかりません。
           </h2>
-          <p style={{ color: TEXT3, fontSize: 18, marginBottom: 40 }}>
-            本当に3分です。
+          <p style={{ color: TEXT3, fontSize: 18, marginBottom: 40, lineHeight: 1.8 }}>
+            簡単にできるようにしました。<br />
+            だから初期費用もいりません。<br />
+            その分利益を最大化してください。
           </p>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
@@ -487,7 +485,6 @@ export default async function Page() {
               {[
                 { label: '初期費用', value: 'なし' },
                 { label: '従量課金', value: 'なし' },
-                { label: 'ユーザー課金', value: 'なし' },
               ].map(row => (
                 <div key={row.label} style={{
                   display: 'flex', justifyContent: 'space-between',
@@ -545,7 +542,11 @@ export default async function Page() {
               },
               {
                 q: '今使ってるExcelからデータを移すのが一番めんどくさい……',
-                a: 'そのExcel、そのまま私に投げてください。\n\nCSVとか難しいことは言いません。\n\n500件くらいなら5分で終わります。その間コーヒーでも飲んで待っててください。',
+                a: 'そのExcel、システムに投げてください。\n\nCSVとか難しいことは言いません。\n\n500件くらいなら5分で終わります。その間コーヒーでも飲んで待っててください。',
+              },
+              {
+                q: 'アカウントとかパスワードとか管理してられない…忘れたらどうするの？',
+                a: 'Googleログインで一社1アカウント制です。\n\nはじめに会社用のGoogleアカウントだけ作成してください。\n\nそのアカウントで、現場スタッフも事務も社長も、みんな共用で入れます。\n\nパスワードはGoogleが管理してくれるので、tomaranには関係ありません。',
               },
               {
                 q: 'マスタにない新商品が出たとき、入力エラーで止まるんじゃないの？',
@@ -622,10 +623,6 @@ export default async function Page() {
             </Link>
           </div>
 
-          <p style={{ fontSize: 17, color: TEXT3, lineHeight: 1.8 }}>
-            使えねえと思ったら<br />
-            すぐ解約してください。笑
-          </p>
         </div>
       </section>
 
