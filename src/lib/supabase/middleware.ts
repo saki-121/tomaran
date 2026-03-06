@@ -5,7 +5,7 @@ import { NextResponse, type NextRequest } from 'next/server'
 import type { Database } from '@/types/database'
 
 // ログイン不要なパス
-const PUBLIC_PREFIXES = ['/login', '/auth', '/api', '/_next', '/legal', '/privacy']
+const PUBLIC_PREFIXES = ['/login', '/signup', '/auth', '/api', '/_next', '/legal', '/privacy']
 const PUBLIC_EXACT    = ['/']
 
 function isPublic(pathname: string) {

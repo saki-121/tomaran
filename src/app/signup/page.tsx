@@ -1,9 +1,8 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
-import GoogleLoginButton from './_components/GoogleLoginButton'
-import LoginForm from './_components/LoginForm'
+import SignupForm from './_components/SignupForm'
 
-export default async function LoginPage() {
+export default async function SignupPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (user) redirect('/dashboard')
@@ -29,18 +28,10 @@ export default async function LoginPage() {
       }}>
         <p style={{ margin: '0 0 4px', fontSize: 14, color: '#A16207', letterSpacing: '0.12em', fontWeight: 700 }}>tomaran</p>
         <h1 style={{ margin: '0 0 28px', fontSize: 22, fontWeight: 700, color: '#333333' }}>
-          ログイン
+          新規登録
         </h1>
 
-        <LoginForm />
-
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, margin: '20px 0' }}>
-          <hr style={{ flex: 1, border: 'none', borderTop: '1px solid #E5E0DA' }} />
-          <span style={{ fontSize: 12, color: '#AAAAAA' }}>または</span>
-          <hr style={{ flex: 1, border: 'none', borderTop: '1px solid #E5E0DA' }} />
-        </div>
-
-        <GoogleLoginButton />
+        <SignupForm />
       </div>
     </div>
   )
