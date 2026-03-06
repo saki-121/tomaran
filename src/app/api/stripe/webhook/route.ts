@@ -90,11 +90,14 @@ async function dispatchEvent(event: Stripe.Event, supabase: AdminClient): Promis
 
     // ── 初回 Checkout 完了 ──────────────────────────────────────────────
     case 'checkout.session.completed': {
-      const session    = event.data.object as Stripe.Checkout.Session
-      const userId     = session.metadata?.user_id
-      const customerId = typeof session.customer === 'string'
+      const session        = event.data.object as Stripe.Checkout.Session
+      const userId         = session.metadata?.user_id
+      const customerId     = typeof session.customer === 'string'
         ? session.customer
         : (session.customer as Stripe.Customer | null)?.id ?? null
+      const subscriptionId = typeof session.subscription === 'string'
+        ? session.subscription
+        : (session.subscription as Stripe.Subscription | null)?.id ?? null
 
       if (!userId) {
         console.warn('[webhook] checkout.session.completed: metadata.user_id なし')
@@ -105,9 +108,10 @@ async function dispatchEvent(event: Stripe.Event, supabase: AdminClient): Promis
       const { error } = await (supabase as any)
         .from('profiles')
         .update({
-          is_paid:             true,
-          subscription_status: 'active',
-          ...(customerId ? { stripe_customer_id: customerId } : {}),
+          is_paid:                true,
+          subscription_status:    'active',
+          ...(customerId     ? { stripe_customer_id:      customerId     } : {}),
+          ...(subscriptionId ? { stripe_subscription_id: subscriptionId } : {}),
         })
         .eq('id', userId)
 
@@ -161,14 +165,15 @@ async function dispatchEvent(event: Stripe.Event, supabase: AdminClient): Promis
         ? sub.customer
         : (sub.customer as Stripe.Customer).id
 
-      const isPaid = sub.status === 'active'
+      const isPaid = sub.status === 'active' || sub.status === 'trialing'
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const { error } = await (supabase as any)
         .from('profiles')
         .update({
-          subscription_status: sub.status,
-          is_paid:             isPaid,
+          subscription_status:    sub.status,
+          is_paid:                isPaid,
+          stripe_subscription_id: sub.id,
         })
         .eq('stripe_customer_id', customerId)
 
@@ -177,7 +182,7 @@ async function dispatchEvent(event: Stripe.Event, supabase: AdminClient): Promis
     }
 
     // ── サブスク状態変化 ────────────────────────────────────────────────
-    // status: active | past_due | unpaid | canceled | incomplete | trialing
+    // status: active | trialing | past_due | unpaid | canceled | incomplete
     case 'customer.subscription.updated': {
       const sub        = event.data.object as Stripe.Subscription
       const customerId = typeof sub.customer === 'string'
@@ -190,8 +195,9 @@ async function dispatchEvent(event: Stripe.Event, supabase: AdminClient): Promis
       const { error } = await (supabase as any)
         .from('profiles')
         .update({
-          is_paid:             isPaid,
-          subscription_status: sub.status,
+          is_paid:                isPaid,
+          subscription_status:    sub.status,
+          stripe_subscription_id: sub.id,
         })
         .eq('stripe_customer_id', customerId)
 

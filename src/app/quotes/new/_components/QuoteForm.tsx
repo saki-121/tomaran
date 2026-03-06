@@ -209,7 +209,7 @@ export default function QuoteForm({ initialCompanies, initialProducts }: Props) 
   // ── master data ──────────────────────────────────────────────────────────
   const [companies, setCompanies] = useState<Company[]>(initialCompanies)
   const [sites,     setSites]     = useState<Site[]>([])
-  const [products,  setProducts]  = useState<Product[]>(initialProducts)
+  const products = initialProducts
   const [ownCompany, setOwnCompany] = useState<OwnCompany | null>(null)
 
   // ── on-the-fly registration state ────────────────────────────────────────

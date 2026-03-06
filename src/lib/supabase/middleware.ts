@@ -55,15 +55,19 @@ export async function updateSession(request: NextRequest) {
   }
 
   if (user && !isPublic(pathname)) {
-    // ── 未払いガード ────────────────────────────────────────────────────────
+    // ── サブスクリプションガード ────────────────────────────────────────────
+    // active / trialing のみ有料機能を許可。それ以外（inactive, canceled, past_due 等）はブロック。
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { data: profile } = await (supabase as any)
       .from('profiles')
-      .select('is_paid')
+      .select('subscription_status')
       .eq('id', user.id)
       .maybeSingle()
 
-    if (profile && !profile.is_paid) {
+    const status       = (profile?.subscription_status ?? '') as string
+    const isSubscribed = status === 'active' || status === 'trialing'
+
+    if (profile && !isSubscribed) {
       const url = request.nextUrl.clone()
       url.pathname = '/payment-required'
       return NextResponse.redirect(url)

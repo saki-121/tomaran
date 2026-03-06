@@ -40,10 +40,11 @@ export async function POST() {
     return NextResponse.json({ error: 'サブスクリプションが見つかりません' }, { status: 404 })
   }
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'
+  const siteUrl   = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'
+  const returnUrl = process.env.STRIPE_PORTAL_RETURN_URL ?? `${siteUrl}/admin`
   const portalSession = await stripe.billingPortal.sessions.create({
     customer:   customerId,
-    return_url: `${siteUrl}/admin`,
+    return_url: returnUrl,
   })
 
   return NextResponse.json({ url: portalSession.url })
