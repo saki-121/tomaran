@@ -451,6 +451,20 @@ export async function GET(_req: NextRequest, { params }: Ctx) {
     f3.getCell(6).value = inv.grand_total ?? 0
     f3.getCell(6).style = { ...bold, ...right, numFmt: '#,##0', ...border, ...gold }
     f3.commit()
+    rowNum++
+  }
+
+  // ── 作成ツール表記（最下部・小さめグレー） ────────────────────────────────
+  rowNum++ // blank
+  {
+    const r = ws.getRow(rowNum)
+    r.getCell(1).value = 'この請求書は tomaran.net で作成しました 🔍'
+    r.getCell(1).style = {
+      font: { size: 7, color: { argb: 'FFBDBDBD' } },
+      alignment: { horizontal: 'center' },
+    }
+    r.commit()
+    merge(rowNum, 'A', 'F')
   }
 
   // ── Build response ────────────────────────────────────────────────────────

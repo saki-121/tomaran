@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import type { CSSProperties } from 'react'
 
 type QuoteRow = {
   id: string
@@ -90,32 +91,21 @@ export default function QuotesPage() {
             {search ? '該当する見積書がありません' : 'まだ見積書はありません'}
           </p>
         ) : (
-          <ul style={{ listStyle: 'none', padding: 0, margin: '12px 0 0', display: 'flex', flexDirection: 'column', gap: 1 }}>
+          <ul style={{ listStyle: 'none', padding: 0, margin: '12px 0 0', display: 'flex', flexDirection: 'column', gap: 8 }}>
             {filtered.map(q => (
-              <li
-                key={q.id}
-                style={{
-                  background: '#111827',
-                  border: '1px solid rgba(255,255,255,0.08)',
-                  borderRadius: 8,
-                  padding: '14px 16px',
-                  marginBottom: 6,
-                }}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 4 }}>
-                  <span style={{ fontSize: 13, color: '#6b7280' }}>{formatDate(q.issued_date)}</span>
-                  <span style={{ fontSize: 15, fontWeight: 700, color: '#fff' }}>
-                    {q.recipient ? `${q.recipient}御中` : '宛先未設定'}
-                  </span>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 16 }}>
-                  <span style={{ fontSize: 13, color: '#9ca3af' }}>
-                    税抜: ¥{q.subtotal.toLocaleString('ja-JP')}
-                  </span>
-                  <span style={{ fontSize: 13, color: '#d1d5db', fontWeight: 600 }}>
-                    税込: ¥{q.grand_total.toLocaleString('ja-JP')}
-                  </span>
-                </div>
+              <li key={q.id}>
+                <Link href={`/quotes/${q.id}`} style={card.wrap}>
+                  <div style={card.left}>
+                    <p style={card.recipient}>
+                      {q.recipient ? `${q.recipient}御中` : '宛先未設定'}
+                    </p>
+                    <p style={card.date}>{formatDate(q.issued_date)}</p>
+                  </div>
+                  <div style={card.right}>
+                    <p style={card.amount}>¥{q.grand_total.toLocaleString('ja-JP')}</p>
+                    <p style={card.hint}>詳細・編集 ＞</p>
+                  </div>
+                </Link>
               </li>
             ))}
           </ul>
@@ -123,6 +113,60 @@ export default function QuotesPage() {
       </div>
     </main>
   )
+}
+
+const card: Record<string, CSSProperties> = {
+  wrap: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    gap: 12,
+    padding: '14px 16px',
+    minHeight: 64,
+    background: '#111827',
+    border: '1px solid rgba(255,255,255,0.08)',
+    borderRadius: 12,
+    textDecoration: 'none',
+    WebkitTapHighlightColor: 'transparent',
+    cursor: 'pointer',
+    userSelect: 'none',
+  },
+  left: {
+    minWidth: 0,
+    flex: 1,
+  },
+  right: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-end',
+    gap: 4,
+    flexShrink: 0,
+  },
+  recipient: {
+    fontSize: 15,
+    fontWeight: 600,
+    color: '#fff',
+    margin: 0,
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  date: {
+    fontSize: 12,
+    color: '#6b7280',
+    margin: '3px 0 0',
+  },
+  amount: {
+    fontSize: 15,
+    fontWeight: 700,
+    color: '#FFD700',
+    margin: 0,
+  },
+  hint: {
+    fontSize: 11,
+    color: '#6b7280',
+    margin: 0,
+  },
 }
 
 const mainStyle: React.CSSProperties = {

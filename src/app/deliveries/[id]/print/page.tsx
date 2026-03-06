@@ -125,9 +125,9 @@ export default async function DeliveryPrintPage({
           {/* 署名欄 */}
           <div style={{ marginTop: 48, borderTop: '1px solid #e5e7eb', paddingTop: 24 }}>
             <p style={{ fontSize: 12, color: '#6b7280', marginBottom: 8 }}>ご署名ください</p>
-            <div style={{ 
-              height: 60, 
-              border: '1px solid #d1d5db', 
+            <div style={{
+              height: 60,
+              border: '1px solid #d1d5db',
               borderRadius: 4,
               display: 'flex',
               alignItems: 'center',
@@ -140,6 +140,11 @@ export default async function DeliveryPrintPage({
             </div>
           </div>
         </div>
+
+        {/* 作成ツール表記 */}
+        <p style={{ marginTop: 32, fontSize: 8, color: '#d1d5db', textAlign: 'center', letterSpacing: '0.03em' }}>
+          この納品書は tomaran.net で作成しました 🔍
+        </p>
       </div>
     </>
   )

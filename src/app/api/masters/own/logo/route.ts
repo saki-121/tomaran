@@ -1,5 +1,17 @@
 // POST   /api/masters/own/logo  — 会社ロゴアップロード
 // DELETE /api/masters/own/logo  — 会社ロゴ削除
+//
+// ── 事前準備（本番環境）──────────────────────────────────────────────────
+// 1. Supabase マイグレーションを適用してください:
+//      supabase/migrations/20240101000014_company_logo.sql
+//    （tenants テーブルに logo_url TEXT カラムを追加）
+//
+// 2. Supabase Storage バケット「company-logos」はコード内で自動作成されます。
+//    手動で作成する場合は Supabase Dashboard > Storage > New bucket で
+//    「company-logos」を Public バケットとして作成してください。
+//
+// ── 対応ファイル形式 ──────────────────────────────────────────────────────
+//    PNG / JPEG / SVG（最大 2MB）
 
 import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
@@ -84,15 +96,19 @@ export async function POST(req: Request) {
   // ── 公開 URL 取得 ────────────────────────────────────────────────────
   const { data: { publicUrl } } = admin.storage.from(BUCKET).getPublicUrl(fileName)
 
-  // ── DB 更新（admin でないと RLS で弾かれる） ──────────────────────────
+  // ── DB 更新（service role で RLS をバイパス） ─────────────────────────
+  // 注意: tenants.logo_url カラムが存在しない場合（migration 014 未適用）は
+  //       ここで updateError が発生します。supabase db push を実行してください。
   const { error: updateError } = await admin
     .from('tenants')
     .update({ logo_url: publicUrl })
     .eq('id', tenantId)
 
   if (updateError) {
-    console.error('DB update error:', updateError)
-    return NextResponse.json({ error: 'ロゴURLの保存に失敗しました' }, { status: 500 })
+    console.error('DB update error:', updateError.message, updateError.details, updateError.hint)
+    return NextResponse.json({
+      error: `ロゴURLの保存に失敗しました: ${updateError.message}`,
+    }, { status: 500 })
   }
 
   return NextResponse.json({ success: true, logo_url: publicUrl })
@@ -129,8 +145,10 @@ export async function DELETE() {
     .eq('id', tenantId)
 
   if (updateError) {
-    console.error('DB update error:', updateError)
-    return NextResponse.json({ error: 'ロゴの削除に失敗しました' }, { status: 500 })
+    console.error('DB update error:', updateError.message, updateError.details)
+    return NextResponse.json({
+      error: `ロゴの削除に失敗しました: ${updateError.message}`,
+    }, { status: 500 })
   }
 
   return NextResponse.json({ success: true })

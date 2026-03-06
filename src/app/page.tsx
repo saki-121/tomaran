@@ -4,25 +4,37 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'tomaran（とまらん）| 中小工事資材屋の業務管理クラウド',
+  title: 'tomaran（とまらん）| 資材屋の仕事のStopを消す道具',
   description:
-    '「現場でスマホ入力 → 事務がボタン一つで請求書」。電話確認も手書き伝票も不要。中小の工事資材屋に特化した月額14,800円のクラウド業務管理システム。取引先・商品マスタはExcelで一括登録。今日から使えます。',
+    '手書き伝票も、月末バタバタも、事務の解読作業も。資材屋に起きる「仕事のStop」をスマホひとつで消す道具。月額14,800円、縛りなし。',
   alternates: {
     canonical: 'https://tomaran.net',
   },
   openGraph: {
     url: 'https://tomaran.net',
-    title: 'tomaran（とまらん）| 中小工事資材屋の業務管理クラウド',
+    title: 'tomaran（とまらん）| 資材屋の仕事のStopを消す道具',
     description:
-      '現場でスマホ入力 → 事務がボタン一つで請求書。月額14,800円、縛りなし。工事資材屋に特化した業務管理SaaS。',
+      '手書き伝票も、月末バタバタも、事務の解読作業も。資材屋に起きる「仕事のStop」をスマホひとつで消す道具。',
   },
 }
 
-const Y = '#FFD700'   // construction yellow
-const BG = '#0a0f1e'  // dark navy
-const BG2 = '#0f1629' // slightly lighter navy
+// ─────────────────────────────────────────────────────────────────────────────
+// Design tokens
+// ─────────────────────────────────────────────────────────────────────────────
+
+const Y    = '#FFD700'
+const BG   = '#0a0f1e'
+const BG2  = '#0f1629'
 const CARD = '#111827'
-const CARD2 = '#1a2035'
+const C2   = '#1a2035'
+
+const YT_URL   = 'https://youtube.com/@tomaran.net3?si=Ea5PJWp72erIRKHI'
+const MAX_W    = 480      // スマホ前提のコンテンツ幅
+const PX       = '20px'  // 左右パディング
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Page
+// ─────────────────────────────────────────────────────────────────────────────
 
 export default async function Page() {
   const supabase = await createClient()
@@ -32,12 +44,14 @@ export default async function Page() {
   return (
     <div style={{ fontFamily: 'system-ui, -apple-system, sans-serif', background: BG, color: '#fff', overflowX: 'hidden' }}>
 
-      {/* ── HEADER ──────────────────────────────────────────────────────────── */}
+      {/* ══════════════════════════════════════════════════════════
+          HEADER
+      ══════════════════════════════════════════════════════════ */}
       <header style={{
         position: 'sticky', top: 0, zIndex: 100,
-        background: 'rgba(10,15,30,0.95)', backdropFilter: 'blur(8px)',
+        background: 'rgba(10,15,30,0.97)', backdropFilter: 'blur(8px)',
         borderBottom: '1px solid rgba(255,215,0,0.15)',
-        padding: '0 24px', height: 60,
+        padding: `0 ${PX}`, height: 56,
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
       }}>
         <span style={{ fontWeight: 900, fontSize: 22, letterSpacing: '0.05em', color: Y }}>
@@ -46,461 +60,596 @@ export default async function Page() {
         <Link
           href="/login"
           style={{
-            background: Y, 
-            padding: '10px 20px',
-            fontSize: 14,
-            fontWeight: 700,
-            color: '#000',
-            textDecoration: 'none',
-            borderRadius: 6,
-            whiteSpace: 'nowrap',
+            background: Y, padding: '8px 18px',
+            fontSize: 13, fontWeight: 700,
+            color: '#000', textDecoration: 'none',
+            borderRadius: 6, whiteSpace: 'nowrap',
           }}
         >
-          Googleで利用開始 →
+          ログイン / 始める
         </Link>
       </header>
 
-      {/* ── HERO ────────────────────────────────────────────────────────────── */}
-      <section style={{ padding: '80px 24px 72px', textAlign: 'center', maxWidth: 840, margin: '0 auto' }}>
+      {/* ══════════════════════════════════════════════════════════
+          1. ファーストビュー
+      ══════════════════════════════════════════════════════════ */}
+      <section style={{
+        padding: '64px 20px 56px',
+        maxWidth: MAX_W, margin: '0 auto',
+        textAlign: 'center',
+      }}>
+        {/* メインキャッチ */}
         <p style={{
-          display: 'inline-block',
-          color: Y, fontSize: 12, fontWeight: 700, letterSpacing: '0.18em',
-          border: `1px solid ${Y}`, borderRadius: 4,
-          padding: '4px 14px', marginBottom: 32,
+          fontSize: 13, fontWeight: 700, color: Y,
+          letterSpacing: '0.15em', marginBottom: 20,
         }}>
-          業務改善SaaS for 中小工事資材屋
+          資材屋の仕事を止めない道具
         </p>
 
         <h1 style={{
-          fontSize: 'clamp(30px, 7vw, 56px)', fontWeight: 900,
-          lineHeight: 1.2, marginBottom: 28, letterSpacing: '-0.01em',
+          fontSize: 38, fontWeight: 900, lineHeight: 1.25,
+          marginBottom: 12, letterSpacing: '-0.01em',
         }}>
-          現場も、営業も、事務も。<br />
-          <span style={{ color: Y }}>もう、業務を止めない。</span>
+          仕事の<span style={{ color: Y }}>Stop</span>を<br />なくす。
         </h1>
 
-        <p style={{ fontSize: 'clamp(15px, 2.5vw, 18px)', color: '#9ca3af', lineHeight: 1.8, maxWidth: 560, margin: '0 auto 48px' }}>
-          スマホで納品を入力したら、事務はボタン一つでExcelに書き出せる。<br />
-          確認の電話も、手書き伝票の解読も、もう要らない。
+        <p style={{ fontSize: 19, fontWeight: 700, lineHeight: 1.7, marginBottom: 32, color: '#d1d5db' }}>
+          資材屋の<br />
+          納品・見積・請求を<br />
+          <span style={{ color: Y }}>スマホひとつで回す道具。</span>
         </p>
 
-        {/* Phone → Excel visual */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 20, marginBottom: 52, flexWrap: 'wrap' }}>
-          <div style={{
-            width: 130, height: 220,
-            background: CARD2, border: `3px solid ${Y}`,
-            borderRadius: 22, display: 'flex', alignItems: 'center', justifyContent: 'center',
-          }}>
-            <div style={{ textAlign: 'center' }}>
-              <p style={{ fontSize: 44, margin: 0 }}>📱</p>
-              <p style={{ fontSize: 12, color: '#9ca3af', marginTop: 10, lineHeight: 1.5 }}>
-                スマホで<br />納品入力
-              </p>
-            </div>
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
-            <span style={{ fontSize: 28, color: Y, fontWeight: 900 }}>→</span>
-            <span style={{ fontSize: 11, color: '#6b7280', letterSpacing: '0.1em' }}>即時反映</span>
-          </div>
-          <div style={{
-            width: 130, height: 220,
-            background: CARD2, border: '3px solid #34d399',
-            borderRadius: 22, display: 'flex', alignItems: 'center', justifyContent: 'center',
-          }}>
-            <div style={{ textAlign: 'center' }}>
-              <p style={{ fontSize: 44, margin: 0 }}>📊</p>
-              <p style={{ fontSize: 12, color: '#9ca3af', marginTop: 10, lineHeight: 1.5 }}>
-                Excel請求書<br />自動生成
-              </p>
-            </div>
-          </div>
+        <p style={{ fontSize: 14, color: '#6b7280', lineHeight: 1.9, marginBottom: 48 }}>
+          ITツールでも<br />
+          DXでもありません。<br />
+          <br />
+          ただの<br />
+          <strong style={{ color: '#9ca3af' }}>仕事のStopを消す道具</strong>です。
+        </p>
+
+        {/* CTA × 2 */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 20 }}>
+          <a
+            href={YT_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+              background: '#ff0000', color: '#fff',
+              padding: '16px 24px', borderRadius: 10,
+              fontWeight: 700, fontSize: 16, textDecoration: 'none',
+              boxShadow: '0 4px 20px rgba(255,0,0,0.3)',
+              minHeight: 56,
+            }}
+          >
+            <span style={{ fontSize: 22 }}>▶</span>
+            30秒でわかる動画を見る
+          </a>
+
+          <Link
+            href="/login"
+            style={{
+              display: 'block',
+              background: Y, color: '#000',
+              padding: '16px 24px', borderRadius: 10,
+              fontWeight: 900, fontSize: 18, textDecoration: 'none',
+              boxShadow: '0 0 32px rgba(255,215,0,0.25)',
+              minHeight: 56, lineHeight: '24px',
+            }}
+          >
+            今すぐ始める →
+          </Link>
         </div>
 
-        <Link
-          href="/login"
-          style={{
-            display: 'inline-block',
-            background: Y, color: '#000',
-            padding: '18px 44px', borderRadius: 8,
-            fontWeight: 900, fontSize: 18, textDecoration: 'none',
-            boxShadow: '0 0 32px rgba(255,215,0,0.25)',
-          }}
-        >
-          Googleで利用開始 →
-        </Link>
-        <p style={{ marginTop: 16, fontSize: 13, color: '#6b7280' }}>
-          月額 14,800円（税込）｜縛りなし｜今日から使える
+        <p style={{ fontSize: 12, color: '#4b5563', lineHeight: 1.7 }}>
+          「使えねえな」と思ったら<br />
+          すぐ解約してください。笑
         </p>
       </section>
 
-      {/* ── PROBLEM ─────────────────────────────────────────────────────────── */}
-      <section style={{ background: BG2, padding: '80px 24px' }}>
-        <div style={{ maxWidth: 920, margin: '0 auto' }}>
-          <p style={{ color: '#ef4444', fontWeight: 700, letterSpacing: '0.18em', fontSize: 12, marginBottom: 16 }}>
-            ⛔ STOP
-          </p>
-          <h2 style={{ fontSize: 'clamp(24px, 5vw, 42px)', fontWeight: 900, marginBottom: 16, lineHeight: 1.25 }}>
-            月末になると<br />事務所がバタバタする。<br />
-            <span style={{ color: Y }}>あれ、やめませんか。</span>
+      {/* ══════════════════════════════════════════════════════════
+          2. 向いている会社
+      ══════════════════════════════════════════════════════════ */}
+      <section style={{ background: BG2, padding: '64px 20px' }}>
+        <div style={{ maxWidth: MAX_W, margin: '0 auto' }}>
+          <h2 style={{ fontSize: 26, fontWeight: 900, marginBottom: 8, lineHeight: 1.4 }}>
+            この道具が<br />向いている資材屋
           </h2>
-          <p style={{ color: '#6b7280', marginBottom: 52, fontSize: 15 }}>
-            毎日起きている「小さなSTOP」が、月に換算すると何時間になるか、数えたことがあるか。
+          <p style={{ color: '#9ca3af', fontSize: 15, marginBottom: 32, lineHeight: 1.7 }}>
+            もし3つ以上当てはまるなら<br />たぶん役に立ちます。
           </p>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 20 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 36 }}>
             {[
-              {
-                icon: '📞',
-                title: '現場からの確認電話',
-                body: '「あの単価いくら？」「この商品、マスタにある？」—— 現場が止まり、事務も止まる。毎日来る。',
-              },
-              {
-                icon: '🚗',
-                title: '営業の帰社待ち',
-                body: '伝票は現場に置いてきた。データはない。事務は営業が戻るまで処理できない。夕方まで待つ。',
-              },
-              {
-                icon: '📝',
-                title: '読めない手書きメモ',
-                body: '丸まった紙切れ、消えかけた数字。事務が解読に使う30分は、業務ではなく謎解きだ。',
-              },
+              '納品書は手書き',
+              '月末の請求で毎回バタバタ',
+              '事務が納品書を解読している',
+              'Excelで単価管理している',
+              '現場→事務の連携が遅い',
+              '見積提出が遅れることがある',
             ].map(item => (
-              <div key={item.title} style={{
-                background: CARD2,
-                border: '1px solid rgba(239,68,68,0.4)',
-                borderRadius: 12, padding: 28,
+              <div key={item} style={{
+                display: 'flex', alignItems: 'center', gap: 14,
+                background: CARD, border: '1px solid rgba(255,215,0,0.15)',
+                borderRadius: 10, padding: '14px 18px',
               }}>
-                <p style={{ fontSize: 40, marginBottom: 14, marginTop: 0 }}>{item.icon}</p>
-                <h3 style={{ fontWeight: 700, marginBottom: 10, fontSize: 18, marginTop: 0 }}>{item.title}</h3>
-                <p style={{ color: '#9ca3af', fontSize: 15, lineHeight: 1.75, margin: 0 }}>{item.body}</p>
+                <span style={{
+                  width: 24, height: 24, border: `2px solid ${Y}`,
+                  borderRadius: 4, flexShrink: 0, display: 'flex',
+                  alignItems: 'center', justifyContent: 'center',
+                  color: Y, fontWeight: 900, fontSize: 15,
+                }}>☑</span>
+                <span style={{ fontSize: 15, color: '#d1d5db', fontWeight: 500 }}>{item}</span>
               </div>
             ))}
           </div>
-        </div>
-      </section>
 
-      {/* ── SOLUTION ────────────────────────────────────────────────────────── */}
-      <section style={{ padding: '80px 24px' }}>
-        <div style={{ maxWidth: 920, margin: '0 auto' }}>
-          <p style={{ color: Y, fontWeight: 700, letterSpacing: '0.18em', fontSize: 12, marginBottom: 16 }}>
-            ✓ SOLUTION
-          </p>
-          <h2 style={{ fontSize: 'clamp(24px, 5vw, 42px)', fontWeight: 900, marginBottom: 16, lineHeight: 1.25 }}>
-            全員が、自分の仕事に<br />集中できる環境をつくる。
-          </h2>
-          <p style={{ color: '#6b7280', marginBottom: 52, fontSize: 15 }}>
-            役割ごとに最適化。スマホ一台で全部つながる。
-          </p>
-
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 20 }}>
-            {[
-              {
-                role: '現場',
-                emoji: '🏗️',
-                color: Y,
-                desc: '商品を選んで、数量を入れる。単価は要らない。マスタになければ仮登録。それだけ。',
-                items: ['マスタから商品を選ぶだけ', '単価入力は不要', '仮登録で現場を止めない', 'スマホで60秒以内に完了', '納品書も即発行'],
-              },
-              {
-                role: '営業',
-                emoji: '📱',
-                color: '#60a5fa',
-                desc: 'スマホで見積書が作れる。単価は事務が管理するから、触らなくていい。',
-                items: ['スマホで即見積書作成', '単価は事務が管理（触らせない）', '移動中でも完結', '印刷・PDF保存まで一気に'],
-              },
-              {
-                role: '事務',
-                emoji: '🖥️',
-                color: '#34d399',
-                desc: '全部揃ったらボタンを押す。Excelが出てくる。確認の電話は来ない。',
-                items: ['ボタン一つでExcel出力', '電話が鳴らないオフィス', '取引先のExcel一括登録', '請求漏れがなくなる'],
-              },
-            ].map(item => (
-              <div key={item.role} style={{
-                background: CARD,
-                border: `1px solid ${item.color}33`,
-                borderTop: `3px solid ${item.color}`,
-                borderRadius: 12, padding: 28,
-              }}>
-                <p style={{ fontSize: 40, marginBottom: 14, marginTop: 0 }}>{item.emoji}</p>
-                <h3 style={{ color: item.color, fontWeight: 900, fontSize: 22, marginBottom: 10, marginTop: 0 }}>
-                  {item.role}
-                </h3>
-                <p style={{ color: '#9ca3af', fontSize: 14, lineHeight: 1.7, marginBottom: 20 }}>{item.desc}</p>
-                <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
-                  {item.items.map(i => (
-                    <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, fontSize: 14, color: '#d1d5db' }}>
-                      <span style={{ color: item.color, flexShrink: 0, fontWeight: 700 }}>▸</span>
-                      {i}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── YOUTUBE ─────────────────────────────────────────────────────────── */}
-      <section style={{ background: BG2, padding: '80px 24px' }}>
-        <div style={{ maxWidth: 920, margin: '0 auto' }}>
-          <p style={{ color: Y, fontWeight: 700, letterSpacing: '0.18em', fontSize: 12, marginBottom: 16 }}>
-            📹 HOW TO
-          </p>
-          <h2 style={{ fontSize: 'clamp(24px, 5vw, 42px)', fontWeight: 900, marginBottom: 16, lineHeight: 1.25 }}>
-            YouTubeで使い方<br />全部説明してます。
-          </h2>
-          <p style={{ color: '#9ca3af', fontSize: 15, marginBottom: 52, lineHeight: 1.8, maxWidth: 560 }}>
-            動画で全部わかります。読む時間も、説明を聞く時間も、無駄です。<br />
-            まずはチャンネルを登録して、気になった動画から見てください。
-          </p>
-
-          <div style={{ textAlign: 'center', marginBottom: 52 }}>
-            <a
-              href="https://youtube.com/@tomaran.net3?si=Ea5PJWp72erIRKHI"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 12,
-                background: '#ff0000',
-                color: '#fff',
-                padding: '16px 32px',
-                borderRadius: 8,
-                fontSize: 16,
-                fontWeight: 700,
-                textDecoration: 'none',
-                boxShadow: '0 4px 16px rgba(255,0,0,0.3)',
-                transition: 'transform 0.2s ease',
-              }}
-            >
-              <span style={{ fontSize: 24 }}>▶</span>
-              YouTubeチャンネルを見る
-            </a>
-          </div>
-
-          <div style={{ 
-            background: CARD2, 
-            border: '1px solid rgba(255,255,255,0.1)', 
-            borderRadius: 12, 
-            padding: '24px',
-            textAlign: 'center'
+          <div style={{
+            background: C2, border: '1px solid rgba(255,255,255,0.07)',
+            borderRadius: 10, padding: '18px 20px',
           }}>
-            <p style={{ color: Y, fontSize: 14, fontWeight: 700, marginBottom: 12 }}>
-              📺 主な動画内容
+            <p style={{ fontSize: 13, color: '#6b7280', margin: 0, lineHeight: 1.8 }}>
+              逆に——<br />
+              <strong style={{ color: '#4b5563' }}>完全デジタル化している会社には<br />たぶん必要ありません。</strong>
             </p>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16 }}>
-              {[
-                '納品入力の基本操作',
-                '請求書をExcelで出力',
-                '商品マスタの登録方法',
-                '取引先の一括登録',
-                '見積書の作成と印刷',
-              ].map((topic, i) => (
-                <div key={topic} style={{ 
-                  background: BG, 
-                  padding: '12px', 
-                  borderRadius: 8,
-                  fontSize: 13,
-                  color: '#9ca3af'
-                }}>
-                  {i + 1}. {topic}
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════════
+          3. 資材屋の1日（Stopが起きる瞬間）
+      ══════════════════════════════════════════════════════════ */}
+      <section style={{ padding: '64px 20px' }}>
+        <div style={{ maxWidth: MAX_W, margin: '0 auto' }}>
+          <h2 style={{ fontSize: 26, fontWeight: 900, marginBottom: 8, lineHeight: 1.4 }}>
+            資材屋の仕事は<br />
+            <span style={{ color: '#ef4444' }}>Stopが多すぎる。</span>
+          </h2>
+          <p style={{ color: '#6b7280', fontSize: 14, marginBottom: 48 }}>
+            毎日起きている「あるある」を<br />正直に書きます。
+          </p>
+
+          {/* ストーリータイムライン */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+            {[
+              {
+                time: '朝',
+                scene: '現場から電話',
+                detail: '「今日の納品これ追加して」',
+                stop: true,
+              },
+              {
+                time: '昼',
+                scene: '納品書 手書き',
+                detail: 'ボールペンで丁寧に書く。\n消えないように願いながら。',
+                stop: false,
+              },
+              {
+                time: '夕方',
+                scene: '事務所に戻る',
+                detail: '納品書の山。',
+                stop: false,
+              },
+              {
+                time: '───',
+                scene: '事務員\n「これなんて書いてます？」',
+                detail: '社長\n「うーん……」',
+                stop: true,
+              },
+              {
+                time: '月末',
+                scene: '請求書を作る',
+                detail: '確認→修正→また確認。\n\n仕事は忙しいのに\nなぜか\n流れが止まる。',
+                stop: true,
+              },
+            ].map((row, i) => (
+              <div key={i} style={{ display: 'flex', gap: 16, marginBottom: 8 }}>
+                {/* 時間軸 */}
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: 48, flexShrink: 0 }}>
+                  <div style={{
+                    width: 44, height: 44, borderRadius: '50%',
+                    background: row.stop ? 'rgba(239,68,68,0.15)' : C2,
+                    border: `2px solid ${row.stop ? '#ef4444' : 'rgba(255,255,255,0.08)'}`,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontSize: 11, fontWeight: 700,
+                    color: row.stop ? '#ef4444' : '#6b7280',
+                    flexShrink: 0, textAlign: 'center',
+                  }}>
+                    {row.time}
+                  </div>
+                  {i < 4 && <div style={{ width: 2, flex: 1, minHeight: 16, background: 'rgba(255,255,255,0.06)', margin: '4px 0' }} />}
                 </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
 
-      {/* ── ANTI-POLICY ─────────────────────────────────────────────────────── */}
-      <section style={{ padding: '80px 24px', background: BG }}>
-        <div style={{ maxWidth: 760, margin: '0 auto', textAlign: 'center' }}>
-          <p style={{ color: '#6b7280', fontWeight: 700, letterSpacing: '0.18em', fontSize: 12, marginBottom: 16 }}>
-            ✕ ANTI-POLICY
-          </p>
-          <h2 style={{ fontSize: 'clamp(24px, 5vw, 42px)', fontWeight: 900, marginBottom: 48, lineHeight: 1.25 }}>
-            あえて、やらないこと。
-          </h2>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 56, textAlign: 'left' }}>
-            {[
-              { label: '電話サポート', reason: 'お互いの時間をリアルタイムで止めるから。' },
-              { label: '個別カスタマイズ', reason: '1社のためにつくると、全員のサービスが遅くなるから。' },
-              { label: '導入支援・オンボーディング費用', reason: '30秒の動画で全部わかるように設計したから。' },
-              { label: '対面・オンライン説明会', reason: '「会いましょう」と言い始めたら、本質から逃げてる。' },
-            ].map(item => (
-              <div key={item.label} style={{
-                background: CARD2,
-                border: '1px solid rgba(255,255,255,0.06)',
-                borderLeft: '3px solid #ef4444',
-                borderRadius: 8, padding: '18px 24px',
-                display: 'flex', flexDirection: 'column', gap: 4,
-              }}>
-                <span style={{ fontWeight: 900, fontSize: 16 }}>✕ &nbsp;{item.label}</span>
-                <span style={{ color: '#6b7280', fontSize: 14 }}>{item.reason}</span>
+                {/* 内容 */}
+                <div style={{
+                  flex: 1, background: row.stop ? 'rgba(239,68,68,0.05)' : CARD,
+                  border: `1px solid ${row.stop ? 'rgba(239,68,68,0.2)' : 'rgba(255,255,255,0.06)'}`,
+                  borderRadius: 10, padding: '14px 16px', marginBottom: 0,
+                }}>
+                  <p style={{
+                    fontSize: 15, fontWeight: 700, margin: '0 0 6px',
+                    color: row.stop ? '#fca5a5' : '#fff',
+                    whiteSpace: 'pre-line',
+                  }}>
+                    {row.stop && <span style={{ fontSize: 12, background: '#ef4444', color: '#fff', borderRadius: 3, padding: '1px 6px', marginRight: 8 }}>STOP</span>}
+                    {row.scene}
+                  </p>
+                  <p style={{ fontSize: 13, color: '#6b7280', margin: 0, lineHeight: 1.8, whiteSpace: 'pre-line' }}>
+                    {row.detail}
+                  </p>
+                </div>
               </div>
             ))}
           </div>
 
           <div style={{
-            background: CARD2,
-            border: `1px solid ${Y}44`,
-            borderLeft: `4px solid ${Y}`,
-            borderRadius: 8, padding: '32px 36px',
-            textAlign: 'left',
+            marginTop: 32, background: C2,
+            border: `1px solid ${Y}33`, borderLeft: `4px solid ${Y}`,
+            borderRadius: 10, padding: '20px 18px',
           }}>
-            <p style={{ fontWeight: 900, fontSize: 20, marginBottom: 16, marginTop: 0, color: Y }}>
-              LINEで解決。
+            <p style={{ fontSize: 15, fontWeight: 700, margin: '0 0 6px', color: Y }}>
+              tomaranは
             </p>
-            <p style={{ color: '#d1d5db', fontSize: 16, lineHeight: 1.9, margin: 0 }}>
-              質問はLINEに送ってください。<br />
-              動画で答えます。それで95%解決します。<br />
-              <br />
-              <span style={{ color: '#9ca3af', fontSize: 14 }}>
-                お互いの時間を止めるのはやめましょう。
-              </span>
+            <p style={{ fontSize: 15, color: '#d1d5db', margin: 0, lineHeight: 1.8 }}>
+              このStopを消すための道具です。
             </p>
           </div>
         </div>
       </section>
 
-      {/* ── PRICING ─────────────────────────────────────────────────────────── */}
-      <section style={{ background: BG2, padding: '80px 24px' }}>
-        <div style={{ maxWidth: 560, margin: '0 auto', textAlign: 'center' }}>
-          <p style={{ color: Y, fontWeight: 700, letterSpacing: '0.18em', fontSize: 12, marginBottom: 16 }}>
-            💴 PRICING
-          </p>
-          <h2 style={{ fontSize: 'clamp(24px, 5vw, 40px)', fontWeight: 900, marginBottom: 48 }}>
-            業界標準は、一択。
+      {/* ══════════════════════════════════════════════════════════
+          4. tomaranとは
+      ══════════════════════════════════════════════════════════ */}
+      <section style={{ background: BG2, padding: '64px 20px' }}>
+        <div style={{ maxWidth: MAX_W, margin: '0 auto', textAlign: 'center' }}>
+          <h2 style={{ fontSize: 26, fontWeight: 900, marginBottom: 24, lineHeight: 1.5 }}>
+            仕事のStopを<br />消す道具。
           </h2>
+
+          <div style={{ display: 'flex', justifyContent: 'center', gap: 12, marginBottom: 32, flexWrap: 'wrap' }}>
+            {['現場', '事務所', '社長'].map(role => (
+              <span key={role} style={{
+                background: CARD, border: `1px solid ${Y}33`,
+                borderRadius: 20, padding: '8px 20px',
+                fontSize: 15, fontWeight: 700, color: Y,
+              }}>
+                {role}
+              </span>
+            ))}
+          </div>
+
+          <p style={{ fontSize: 16, color: '#d1d5db', lineHeight: 2, marginBottom: 40 }}>
+            この3つの仕事が<br />
+            <strong style={{ color: '#fff' }}>止まらないようにする。</strong><br />
+            <br />
+            それだけの道具です。
+          </p>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10, textAlign: 'left' }}>
+            {[
+              '難しい設定　→　いりません',
+              'IT知識　→　いりません',
+              '研修　→　いりません',
+            ].map(line => (
+              <div key={line} style={{
+                display: 'flex', alignItems: 'center', gap: 12,
+                background: CARD, borderRadius: 8, padding: '14px 18px',
+              }}>
+                <span style={{ color: '#34d399', fontWeight: 900, fontSize: 18, flexShrink: 0 }}>✓</span>
+                <span style={{ fontSize: 14, color: '#d1d5db' }}>{line}</span>
+              </div>
+            ))}
+          </div>
+
+          <p style={{ fontSize: 15, color: '#9ca3af', marginTop: 28, lineHeight: 1.8 }}>
+            二度手間を消すだけです。
+          </p>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════════
+          5. tomaranができること
+      ══════════════════════════════════════════════════════════ */}
+      <section style={{ padding: '64px 20px' }}>
+        <div style={{ maxWidth: MAX_W, margin: '0 auto' }}>
+          <h2 style={{ fontSize: 26, fontWeight: 900, marginBottom: 8, lineHeight: 1.4 }}>
+            tomaranが<br />できること
+          </h2>
+          <p style={{ color: '#6b7280', fontSize: 14, marginBottom: 40, lineHeight: 1.7 }}>
+            機能一覧ではなく<br />「どんなStopが消えるか」で説明します。
+          </p>
+
+          {[
+            {
+              num: '01',
+              title: '現場のスマホで完結。\n二度手間、禁止。',
+              body: '現場で納品登録したら、その場でPDFの納品書を発行。\nそのままスマホから送るなり、後で印刷するなり、お好きにどうぞ。\n\n「あとで事務所に戻ってから……」\n\nというStopを消します。',
+              color: Y,
+            },
+            {
+              num: '02',
+              title: '見積もりは\n「出せるもの」から送る。',
+              body: '全部揃うまで待つ必要、ありますか？\n\n決まっているものから送れば\nお客さんもあなたも仕事が早い。\n\n「とりあえず今すぐ」を大事にしました。',
+              color: '#60a5fa',
+            },
+            {
+              num: '03',
+              title: '請求書は解読ではなく\n確認だけ。',
+              body: '現場が入力したデータが\nそのまま請求書になります。\n\nあなたは単価が未設定のものだけ\nポチポチ直すだけ。\n\n確認して、確定。それだけです。',
+              color: '#34d399',
+            },
+            {
+              num: '04',
+              title: '最後はExcelに\nお返しします。',
+              body: '請求書はExcel形式で出力。\n\n端数調整でも書き換えでも\n好きにしてください。\n\n煮るなり焼くなりご自由に。笑',
+              color: '#f472b6',
+            },
+          ].map((item, i) => (
+            <div key={i} style={{
+              background: CARD,
+              borderTop: `3px solid ${item.color}`,
+              border: `1px solid rgba(255,255,255,0.06)`,
+              borderRadius: 12, padding: '24px 20px',
+              marginBottom: 12,
+            }}>
+              <p style={{ fontSize: 12, fontWeight: 700, color: item.color, letterSpacing: '0.15em', marginBottom: 10, marginTop: 0 }}>
+                {item.num}
+              </p>
+              <h3 style={{
+                fontSize: 18, fontWeight: 900, lineHeight: 1.5,
+                marginBottom: 14, marginTop: 0, whiteSpace: 'pre-line',
+                color: '#fff',
+              }}>
+                {item.title}
+              </h3>
+              <p style={{ fontSize: 14, color: '#9ca3af', lineHeight: 1.9, margin: 0, whiteSpace: 'pre-line' }}>
+                {item.body}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════════
+          6. 導入ステップ
+      ══════════════════════════════════════════════════════════ */}
+      <section style={{ background: BG2, padding: '64px 20px' }}>
+        <div style={{ maxWidth: MAX_W, margin: '0 auto' }}>
+          <h2 style={{ fontSize: 26, fontWeight: 900, marginBottom: 8, lineHeight: 1.4 }}>
+            導入は3分です。
+          </h2>
+          <p style={{ color: '#6b7280', fontSize: 14, marginBottom: 40 }}>
+            本当に3分です。
+          </p>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+            {[
+              { n: 'STEP 1', icon: '📊', title: '単価表ExcelをアップするかExcel内から登録', body: '今使っているExcelをそのまま投げてください。変換とか不要です。' },
+              { n: 'STEP 2', icon: '🏢', title: '取引先ExcelをアップするかExcel内から登録', body: '500件くらいなら5分で終わります。その間コーヒーでも飲んでください。' },
+              { n: 'STEP 3', icon: '📱', title: '現場がスマホで使う', body: 'アプリのインストール不要。ブラウザで開くだけ。' },
+            ].map((step, idx) => (
+              <div key={step.n} style={{ display: 'flex', gap: 16, marginBottom: 0 }}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: 48, flexShrink: 0 }}>
+                  <div style={{
+                    width: 44, height: 44, borderRadius: '50%',
+                    background: Y, color: '#000',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontWeight: 900, fontSize: 11, flexShrink: 0, textAlign: 'center',
+                  }}>
+                    {idx + 1}
+                  </div>
+                  {idx < 2 && <div style={{ width: 2, height: 32, background: `${Y}33`, margin: '4px 0' }} />}
+                </div>
+                <div style={{
+                  flex: 1, background: CARD, border: '1px solid rgba(255,255,255,0.06)',
+                  borderRadius: 10, padding: '16px 18px', marginBottom: 8,
+                }}>
+                  <p style={{ fontSize: 12, color: Y, fontWeight: 700, margin: '0 0 4px' }}>{step.n}</p>
+                  <p style={{ fontSize: 24, margin: '0 0 8px' }}>{step.icon}</p>
+                  <h3 style={{ fontSize: 15, fontWeight: 900, margin: '0 0 6px', color: '#fff' }}>{step.title}</h3>
+                  <p style={{ fontSize: 13, color: '#6b7280', margin: 0, lineHeight: 1.75 }}>{step.body}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <p style={{ fontSize: 18, fontWeight: 900, color: Y, textAlign: 'center', marginTop: 32 }}>
+            それだけです。
+          </p>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════════
+          7. 料金
+      ══════════════════════════════════════════════════════════ */}
+      <section style={{ padding: '64px 20px' }}>
+        <div style={{ maxWidth: MAX_W, margin: '0 auto', textAlign: 'center' }}>
+          <h2 style={{ fontSize: 26, fontWeight: 900, marginBottom: 8 }}>
+            料金はシンプルです。
+          </h2>
+          <p style={{ color: '#6b7280', fontSize: 14, marginBottom: 40 }}>
+            本当にシンプルです。
+          </p>
 
           <div style={{
             background: CARD, border: `2px solid ${Y}`,
-            borderRadius: 16, padding: '48px 40px',
+            borderRadius: 16, padding: '40px 24px',
+            marginBottom: 24,
           }}>
-            <p style={{ color: '#9ca3af', fontSize: 14, marginBottom: 8, marginTop: 0 }}>月額料金（税込）</p>
-            <p style={{ fontSize: 'clamp(48px, 10vw, 72px)', fontWeight: 900, color: Y, margin: '0 0 4px', lineHeight: 1 }}>
+            <p style={{ color: '#9ca3af', fontSize: 14, margin: '0 0 8px' }}>月額</p>
+            <p style={{ fontSize: 64, fontWeight: 900, color: Y, margin: '0 0 4px', lineHeight: 1 }}>
               ¥14,800
             </p>
-            <p style={{ color: '#6b7280', fontSize: 15, marginBottom: 36 }}>/ 月</p>
+            <p style={{ color: '#6b7280', fontSize: 13, marginBottom: 32 }}>（税込）</p>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginBottom: 40, textAlign: 'left' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
               {[
-                '縛りなし —— いつでも解約OK',
-                '初期費用なし',
-                '人数制限なし（テナント内のチーム利用）',
-                'アップデートは自動で反映',
-              ].map(f => (
-                <div key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, fontSize: 15, color: '#d1d5db' }}>
-                  <span style={{ color: '#34d399', fontWeight: 900, flexShrink: 0 }}>✓</span>
-                  {f}
+                { label: '初期費用', value: 'なし' },
+                { label: '従量課金', value: 'なし' },
+                { label: 'ユーザー課金', value: 'なし' },
+              ].map(row => (
+                <div key={row.label} style={{
+                  display: 'flex', justifyContent: 'space-between',
+                  padding: '14px 0', borderBottom: '1px solid rgba(255,255,255,0.06)',
+                  fontSize: 15,
+                }}>
+                  <span style={{ color: '#9ca3af' }}>{row.label}</span>
+                  <span style={{ fontWeight: 700, color: '#34d399' }}>{row.value}</span>
                 </div>
               ))}
             </div>
 
-            <div style={{
-              background: BG2, borderRadius: 8,
-              padding: '16px 20px', marginBottom: 36, textAlign: 'left',
-            }}>
-              <p style={{ color: Y, fontWeight: 700, fontSize: 13, marginBottom: 6, marginTop: 0 }}>
-                無料期間がない理由
-              </p>
-              <p style={{ color: '#9ca3af', fontSize: 14, lineHeight: 1.7, margin: 0 }}>
-                使い方動画を全部公開しています。迷うなら先に全部見てきてください。
-                業務を止めない仕組みは、試すものではなく導入するものだと考えています。
-              </p>
-            </div>
+            <p style={{ fontSize: 14, color: '#6b7280', marginTop: 28, marginBottom: 0, lineHeight: 1.8 }}>
+              資材屋の仕事のStopが減るなら<br />
+              <strong style={{ color: '#9ca3af' }}>安い道具だと思います。</strong>
+            </p>
+          </div>
+
+          <Link
+            href="/login"
+            style={{
+              display: 'block',
+              background: Y, color: '#000',
+              padding: '18px', borderRadius: 10,
+              fontWeight: 900, fontSize: 18, textDecoration: 'none',
+              boxShadow: '0 0 32px rgba(255,215,0,0.25)',
+            }}
+          >
+            今すぐ始める →
+          </Link>
+          <p style={{ marginTop: 12, fontSize: 11, color: '#4b5563' }}>
+            縛りなし｜使えないと思ったらすぐ解約OK
+          </p>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════════
+          8. FAQ
+      ══════════════════════════════════════════════════════════ */}
+      <section style={{ background: BG2, padding: '64px 20px' }}>
+        <div style={{ maxWidth: MAX_W, margin: '0 auto' }}>
+          <h2 style={{ fontSize: 26, fontWeight: 900, marginBottom: 40, lineHeight: 1.4 }}>
+            よくある質問
+          </h2>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            {[
+              {
+                q: '新しいシステム、覚えられる気がしないんだけど……',
+                a: '難しい操作はありません。\n\nガラケーの方はごめんけど、スマホが使えるなら誰でも使えます。\n\nそれでも不安な人のために、30秒でわかる動画（YouTube）を山ほど用意しました。',
+              },
+              {
+                q: '取引先ごとに締め日がバラバラだけど大丈夫？',
+                a: '全力で対応しました。\n\n締め日に合わせて発行して、内容がOKだったら確定。\n\n取引先の「わがまま」に、システムが柔軟に合わせます。',
+              },
+              {
+                q: '今使ってるExcelからデータを移すのが一番めんどくさい……',
+                a: 'そのExcel、そのまま私に投げてください。\n\nCSVとか難しいことは言いません。\n\n500件くらいなら5分で終わります。その間コーヒーでも飲んで待っててください。',
+              },
+              {
+                q: 'マスタにない新商品が出たとき、入力エラーで止まるんじゃないの？',
+                a: '止まりません。\n\n仮登録で進めてください。\n\n商品名だけ入れて納品書を出せます。単価はあとで事務で直せばOK。\n\n現場のスピード優先です。',
+              },
+            ].map((item, i) => (
+              <div key={i} style={{
+                background: CARD, border: '1px solid rgba(255,255,255,0.06)',
+                borderRadius: 12, overflow: 'hidden',
+              }}>
+                <div style={{
+                  padding: '18px 20px',
+                  borderLeft: `4px solid ${Y}`,
+                }}>
+                  <p style={{ fontSize: 13, fontWeight: 700, color: Y, margin: '0 0 4px' }}>Q.</p>
+                  <p style={{ fontSize: 15, fontWeight: 700, color: '#fff', margin: 0, lineHeight: 1.6 }}>
+                    {item.q}
+                  </p>
+                </div>
+                <div style={{
+                  padding: '18px 20px',
+                  background: C2,
+                  borderTop: '1px solid rgba(255,255,255,0.04)',
+                }}>
+                  <p style={{ fontSize: 13, fontWeight: 700, color: '#9ca3af', margin: '0 0 6px' }}>A.</p>
+                  <p style={{ fontSize: 14, color: '#d1d5db', margin: 0, lineHeight: 1.9, whiteSpace: 'pre-line' }}>
+                    {item.a}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════════
+          9. 最終 CTA
+      ══════════════════════════════════════════════════════════ */}
+      <section style={{ padding: '72px 20px', textAlign: 'center' }}>
+        <div style={{ maxWidth: MAX_W, margin: '0 auto' }}>
+          <p style={{ fontSize: 14, color: '#6b7280', marginBottom: 16 }}>
+            仕事のStopを減らしたいなら
+          </p>
+          <h2 style={{ fontSize: 28, fontWeight: 900, marginBottom: 8, lineHeight: 1.4 }}>
+            この道具<br />
+            <span style={{ color: Y }}>たぶん役に立ちます。</span>
+          </h2>
+          <p style={{ fontSize: 14, color: '#4b5563', marginBottom: 40 }}>
+            「たぶん」と言うのは<br />資材屋さんに正直でいたいからです。
+          </p>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 20 }}>
+            <a
+              href={YT_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+                background: '#ff0000', color: '#fff',
+                padding: '16px 24px', borderRadius: 10,
+                fontWeight: 700, fontSize: 16, textDecoration: 'none',
+                boxShadow: '0 4px 20px rgba(255,0,0,0.3)',
+                minHeight: 56,
+              }}
+            >
+              <span style={{ fontSize: 22 }}>▶</span>
+              30秒動画を見る
+            </a>
 
             <Link
               href="/login"
               style={{
                 display: 'block',
                 background: Y, color: '#000',
-                padding: '18px', borderRadius: 8,
+                padding: '18px 24px', borderRadius: 10,
                 fontWeight: 900, fontSize: 18, textDecoration: 'none',
-                textAlign: 'center',
+                boxShadow: '0 0 32px rgba(255,215,0,0.25)',
+                minHeight: 56, lineHeight: '20px',
               }}
             >
-              Googleで利用開始 →
+              今すぐ始める →
             </Link>
           </div>
+
+          <p style={{ fontSize: 13, color: '#374151', lineHeight: 1.8 }}>
+            使えねえと思ったら<br />
+            すぐ解約してください。笑
+          </p>
         </div>
       </section>
 
-      {/* ── ONBOARDING ──────────────────────────────────────────────────────── */}
-      <section style={{ padding: '80px 24px' }}>
-        <div style={{ maxWidth: 760, margin: '0 auto' }}>
-          <p style={{ color: Y, fontWeight: 700, letterSpacing: '0.18em', fontSize: 12, marginBottom: 16, textAlign: 'center' }}>
-            🚀 ONBOARDING
-          </p>
-          <h2 style={{ fontSize: 'clamp(24px, 5vw, 40px)', fontWeight: 900, marginBottom: 16, lineHeight: 1.25, textAlign: 'center' }}>
-            今日から使える。<br />設定は3ステップ。
-          </h2>
-          <p style={{ color: '#6b7280', fontSize: 15, marginBottom: 52, textAlign: 'center' }}>
-            電話も、書類も、来社も要りません。
-          </p>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-            {[
-              { n: '01', icon: '🔑', title: 'Googleアカウントで登録', body: 'パスワード不要。持っているGoogleアカウントで即登録。30秒で完了。' },
-              { n: '02', icon: '💳', title: '決済する', body: 'クレジットカードを登録したら全機能が使えます。Stripeで安全に処理。' },
-              { n: '03', icon: '🏢', title: '会社名を登録して開始！', body: '会社名を入力するだけ。取引先・商品マスタはあとからExcelで一括登録できます。' },
-            ].map((step, idx) => (
-              <div key={step.n} style={{ display: 'flex', gap: 0, alignItems: 'stretch' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: 48, flexShrink: 0 }}>
-                  <div style={{
-                    width: 44, height: 44, borderRadius: '50%',
-                    background: Y, color: '#000',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontWeight: 900, fontSize: 14, flexShrink: 0,
-                  }}>
-                    {step.n}
-                  </div>
-                  {idx < 2 && <div style={{ width: 2, flex: 1, background: `${Y}33`, margin: '4px 0' }} />}
-                </div>
-                <div style={{
-                  background: CARD2, borderRadius: 10, padding: '20px 24px',
-                  marginLeft: 16, marginBottom: idx < 2 ? 8 : 0, flex: 1,
-                }}>
-                  <p style={{ fontSize: 28, marginBottom: 8, marginTop: 0 }}>{step.icon}</p>
-                  <h3 style={{ fontWeight: 900, fontSize: 17, marginBottom: 6, marginTop: 0 }}>{step.title}</h3>
-                  <p style={{ color: '#9ca3af', fontSize: 14, lineHeight: 1.7, margin: 0 }}>{step.body}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div style={{ textAlign: 'center', marginTop: 56 }}>
-            <Link
-              href="/login"
-              style={{
-                display: 'inline-block',
-                background: Y, color: '#000',
-                padding: '18px 48px', borderRadius: 8,
-                fontWeight: 900, fontSize: 18, textDecoration: 'none',
-                boxShadow: '0 0 32px rgba(255,215,0,0.2)',
-              }}
-            >
-              Googleで利用開始 →
-            </Link>
-            <p style={{ marginTop: 14, fontSize: 13, color: '#6b7280' }}>
-              月額 14,800円（税込）｜縛りなし
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* ── FOOTER ──────────────────────────────────────────────────────────── */}
+      {/* ══════════════════════════════════════════════════════════
+          FOOTER
+      ══════════════════════════════════════════════════════════ */}
       <footer style={{
         background: '#05080f',
         borderTop: '1px solid rgba(255,215,0,0.1)',
-        padding: '48px 24px',
+        padding: '48px 20px 40px',
         textAlign: 'center',
       }}>
-        <p style={{ fontWeight: 900, fontSize: 20, color: Y, marginBottom: 24, marginTop: 0 }}>tomaran</p>
+        <p style={{ fontWeight: 900, fontSize: 22, color: Y, marginBottom: 20, marginTop: 0, letterSpacing: '0.05em' }}>
+          tomaran
+        </p>
         <p style={{ color: '#6b7280', fontSize: 13, marginBottom: 24, lineHeight: 1.9 }}>
-          導入ご検討の相談はメールにて。<br />
+          ご相談・お問い合わせはメールにて。<br />
           <a href="mailto:support@tomaran.net" style={{ color: '#9ca3af', textDecoration: 'underline' }}>
             support@tomaran.net
           </a>
@@ -512,11 +661,15 @@ export default async function Page() {
           <Link href="/privacy" style={{ color: '#6b7280', fontSize: 13, textDecoration: 'underline' }}>
             プライバシーポリシー
           </Link>
+          <Link href="/login" style={{ color: '#6b7280', fontSize: 13, textDecoration: 'underline' }}>
+            ログイン
+          </Link>
         </div>
         <p style={{ color: '#374151', fontSize: 12, margin: 0 }}>
           © 2025 tomaran. All rights reserved.
         </p>
       </footer>
+
     </div>
   )
 }

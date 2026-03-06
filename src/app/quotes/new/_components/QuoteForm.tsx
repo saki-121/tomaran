@@ -464,6 +464,11 @@ export default function QuoteForm({ initialCompanies, initialProducts }: Props) 
             </p>
           </div>
           <p style={{ color: '#9ca3af', fontSize: 12, marginTop: 32 }}>有効期限：発行日より30日</p>
+
+          {/* 作成ツール表記 */}
+          <p style={{ marginTop: 24, fontSize: 8, color: '#d1d5db', textAlign: 'center', letterSpacing: '0.03em' }}>
+            この見積書は tomaran.net で作成しました 🔍
+          </p>
         </div>
       </>
     )
