@@ -43,7 +43,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         {/* Chrome / Edge 向け翻訳ブロック（二重対策） */}
         <meta name="google" content="notranslate" />
       </head>
-      <body className="notranslate" style={{ background: '#0a0f1e', margin: 0 }}>
+      <body className="notranslate" style={{ background: '#FDFCFB', margin: 0 }}>
         <style>{`
           a, button { transition: opacity 0.12s, transform 0.1s; }
           a:active, button:active { opacity: 0.6 !important; transform: scale(0.96) !important; }

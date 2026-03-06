@@ -42,7 +42,7 @@ export default function QuotesPage() {
       <div style={{ padding: '12px 16px 120px' }}>
         {/* ヘッダー */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-          <h1 style={{ margin: 0, fontSize: 20, fontWeight: 700, color: '#fff' }}>見積書一覧</h1>
+          <h1 style={{ margin: 0, fontSize: 20, fontWeight: 700, color: '#333333' }}>見積書一覧</h1>
           <Link
             href="/quotes/new"
             aria-label="見積書を作成"
@@ -85,9 +85,9 @@ export default function QuotesPage() {
 
         {/* 一覧 */}
         {loading ? (
-          <p style={{ textAlign: 'center', color: '#9ca3af', padding: '32px 0' }}>読み込み中…</p>
+          <p style={{ textAlign: 'center', color: '#888888', padding: '32px 0' }}>読み込み中…</p>
         ) : filtered.length === 0 ? (
-          <p style={{ textAlign: 'center', color: '#9ca3af', padding: '32px 0' }}>
+          <p style={{ textAlign: 'center', color: '#888888', padding: '32px 0' }}>
             {search ? '該当する見積書がありません' : 'まだ見積書はありません'}
           </p>
         ) : (
@@ -123,13 +123,14 @@ const card: Record<string, CSSProperties> = {
     gap: 12,
     padding: '14px 16px',
     minHeight: 64,
-    background: '#111827',
-    border: '1px solid rgba(255,255,255,0.08)',
+    background: '#FFFFFF',
+    border: '1px solid #E5E0DA',
     borderRadius: 12,
     textDecoration: 'none',
     WebkitTapHighlightColor: 'transparent',
     cursor: 'pointer',
     userSelect: 'none',
+    boxShadow: '2px 2px 0 #E5E0DA',
   },
   left: {
     minWidth: 0,
@@ -145,7 +146,7 @@ const card: Record<string, CSSProperties> = {
   recipient: {
     fontSize: 15,
     fontWeight: 600,
-    color: '#fff',
+    color: '#333333',
     margin: 0,
     overflow: 'hidden',
     textOverflow: 'ellipsis',
@@ -153,18 +154,18 @@ const card: Record<string, CSSProperties> = {
   },
   date: {
     fontSize: 12,
-    color: '#6b7280',
+    color: '#888888',
     margin: '3px 0 0',
   },
   amount: {
     fontSize: 15,
     fontWeight: 700,
-    color: '#FFD700',
+    color: '#A16207',
     margin: 0,
   },
   hint: {
     fontSize: 11,
-    color: '#6b7280',
+    color: '#888888',
     margin: 0,
   },
 }
@@ -174,16 +175,17 @@ const mainStyle: React.CSSProperties = {
   margin: '0 auto',
   fontFamily: 'system-ui, -apple-system, sans-serif',
   minHeight: '100dvh',
+  backgroundColor: '#FDFCFB',
 }
 
 const inputStyle: React.CSSProperties = {
   width: '100%',
   padding: '10px 12px',
   fontSize: 15,
-  border: '1px solid rgba(255,255,255,0.1)',
+  border: '1px solid #D0CAC3',
   borderRadius: 6,
-  background: '#1a2035',
-  color: '#fff',
+  background: '#FFFFFF',
+  color: '#333333',
   boxSizing: 'border-box',
 }
 
@@ -193,14 +195,14 @@ const s: Record<string, React.CSSProperties> = {
     alignItems: 'center',
     gap: 8,
     padding: '8px 12px',
-    background: 'rgba(0, 200, 0, 0.1)',
-    border: '1px solid rgba(0, 200, 0, 0.3)',
+    background: 'rgba(0, 195, 0, 0.07)',
+    border: '1px solid rgba(0, 195, 0, 0.25)',
     borderRadius: 6,
     marginBottom: 12,
   },
   lineText: {
     fontSize: 13,
-    color: '#9ca3af',
+    color: '#555555',
     fontWeight: 500,
   },
   lineButton: {

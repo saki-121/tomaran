@@ -1,28 +1,28 @@
 import Link from 'next/link'
 
-const BG = '#0a0f1e'
-const CARD = '#111827'
-const CARD2 = '#1a2035'
-const Y = '#FFD700'
+const BG = '#FDFCFB'
+const CARD = '#FFFFFF'
+const CARD2 = '#F5F0EB'
+const Y = '#A16207'
 
 const rows: { label: string; value: React.ReactNode }[] = [
   {
     label: '販売業者',
-    value: <>請求があった場合は遅延なく開示いたします<sup style={{ color: '#9ca3af', fontSize: 11 }}>（※1）</sup></>,
+    value: <>請求があった場合は遅延なく開示いたします<sup style={{ color: '#777777', fontSize: 11 }}>（※1）</sup></>,
   },
   { label: '運営責任者', value: '場集田　早希' },
   {
     label: '所在地',
-    value: <>請求があった場合は遅延なく開示いたします<sup style={{ color: '#9ca3af', fontSize: 11 }}>（※1）</sup></>,
+    value: <>請求があった場合は遅延なく開示いたします<sup style={{ color: '#777777', fontSize: 11 }}>（※1）</sup></>,
   },
   {
     label: '連絡先',
     value: (
       <>
         メール：<a href="mailto:support@tomaran.net" style={{ color: Y, textDecoration: 'underline' }}>support@tomaran.net</a>
-        <br />電話：請求があった場合は遅延なく開示いたします<sup style={{ color: '#9ca3af', fontSize: 11 }}>（※1）</sup>
-        <br /><span style={{ color: '#9ca3af', fontSize: 13 }}>電話開示後の受付時間（平日10:00〜17:00）</span>
-        <br /><span style={{ color: '#6b7280', fontSize: 13 }}>※ 日常のサポートはLINEで対応しています</span>
+        <br />電話：請求があった場合は遅延なく開示いたします<sup style={{ color: '#777777', fontSize: 11 }}>（※1）</sup>
+        <br /><span style={{ color: '#777777', fontSize: 13 }}>電話開示後の受付時間（平日10:00〜17:00）</span>
+        <br /><span style={{ color: '#888888', fontSize: 13 }}>※ 日常のサポートはLINEで対応しています</span>
       </>
     ),
   },
@@ -37,7 +37,7 @@ const rows: { label: string; value: React.ReactNode }[] = [
     value: (
       <>
         クレジットカード（Visa・Mastercard・American Express・JCB）<br />
-        <span style={{ color: '#9ca3af', fontSize: 13 }}>決済代行：Stripe, Inc.</span>
+        <span style={{ color: '#777777', fontSize: 13 }}>決済代行：Stripe, Inc.</span>
       </>
     ),
   },
@@ -46,7 +46,7 @@ const rows: { label: string; value: React.ReactNode }[] = [
     value: (
       <>
         決済日に初回請求が発生します。以降は<strong>決済日の翌月同日</strong>に自動更新されます。<br />
-        <span style={{ color: '#9ca3af', fontSize: 13 }}>
+        <span style={{ color: '#777777', fontSize: 13 }}>
           例：3月5日に決済した場合、次回は4月5日に自動更新されます。
         </span>
       </>
@@ -74,7 +74,7 @@ const rows: { label: string; value: React.ReactNode }[] = [
       <>
         管理画面右上の「<strong style={{ color: '#ef4444' }}>解約</strong>」よりいつでも解約可能です。<br />
         お問い合わせ不要で即時反映されます。
-        <br /><span style={{ color: '#9ca3af', fontSize: 13 }}>電話での解約手続きは受け付けておりません。</span>
+        <br /><span style={{ color: '#777777', fontSize: 13 }}>電話での解約手続きは受け付けておりません。</span>
       </>
     ),
   },
@@ -82,17 +82,17 @@ const rows: { label: string; value: React.ReactNode }[] = [
 
 export default function LegalPage() {
   return (
-    <div style={{ fontFamily: 'system-ui, -apple-system, sans-serif', background: BG, color: '#fff', minHeight: '100vh' }}>
+    <div style={{ fontFamily: 'system-ui, -apple-system, sans-serif', background: BG, color: '#333333', minHeight: '100vh' }}>
       {/* Header */}
       <header style={{
-        borderBottom: '1px solid rgba(255,215,0,0.15)',
+        borderBottom: '1px solid #E5E0DA',
         padding: '0 24px', height: 60,
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
       }}>
         <Link href="/" style={{ fontWeight: 900, fontSize: 20, color: Y, textDecoration: 'none' }}>
           tomaran
         </Link>
-        <Link href="/" style={{ color: '#9ca3af', fontSize: 13, textDecoration: 'none' }}>
+        <Link href="/" style={{ color: '#777777', fontSize: 13, textDecoration: 'none' }}>
           ← トップへ
         </Link>
       </header>
@@ -108,7 +108,7 @@ export default function LegalPage() {
         <h1 style={{ fontSize: 'clamp(22px, 5vw, 32px)', fontWeight: 900, marginBottom: 8, lineHeight: 1.25 }}>
           特定商取引法に基づく表記
         </h1>
-        <p style={{ color: '#6b7280', fontSize: 13, marginBottom: 48, lineHeight: 1.7 }}>
+        <p style={{ color: '#888888', fontSize: 13, marginBottom: 48, lineHeight: 1.7 }}>
           法律に基づき、販売条件を明記します。<br />
           シンプルに書きます。読んでください。
         </p>
@@ -121,7 +121,7 @@ export default function LegalPage() {
           <p style={{ color: Y, fontWeight: 900, fontSize: 14, marginBottom: 8, marginTop: 0 }}>
             tomaranの基本スタンス
           </p>
-          <p style={{ color: '#9ca3af', fontSize: 14, lineHeight: 1.75, margin: 0 }}>
+          <p style={{ color: '#777777', fontSize: 14, lineHeight: 1.75, margin: 0 }}>
             初期費用なし、縛りなし、解約はいつでも自分でできます。
             サポートは電話ではなくLINEで対応します。
             合わないと思ったらすぐ解約してください。引き止めません。
@@ -134,12 +134,12 @@ export default function LegalPage() {
             <div key={row.label} style={{
               display: 'grid',
               gridTemplateColumns: 'minmax(140px, 200px) 1fr',
-              background: CARD, border: '1px solid rgba(255,255,255,0.05)',
+              background: CARD, border: '1px solid #E5E0DA',
               borderRadius: 8, overflow: 'hidden',
             }}>
               <div style={{
                 background: CARD2, padding: '18px 20px',
-                fontSize: 13, fontWeight: 700, color: '#9ca3af',
+                fontSize: 13, fontWeight: 700, color: '#777777',
                 display: 'flex', alignItems: 'flex-start',
               }}>
                 {row.label}
@@ -156,13 +156,13 @@ export default function LegalPage() {
 
         {/* ※1 注釈 */}
         <div style={{
-          background: CARD2, border: '1px solid rgba(255,255,255,0.06)',
+          background: CARD2, border: '1px solid #E5E0DA',
           borderRadius: 8, padding: '20px 24px', marginTop: 32,
         }}>
-          <p style={{ color: '#9ca3af', fontWeight: 700, fontSize: 13, marginBottom: 8, marginTop: 0 }}>
+          <p style={{ color: '#777777', fontWeight: 700, fontSize: 13, marginBottom: 8, marginTop: 0 }}>
             （※1）表示の省略について
           </p>
-          <p style={{ color: '#6b7280', fontSize: 13, lineHeight: 1.75, margin: 0 }}>
+          <p style={{ color: '#888888', fontSize: 13, lineHeight: 1.75, margin: 0 }}>
             特定商取引法に基づき、氏名・住所・電話番号等の詳細は、ご請求いただいた場合に遅延なくメール（
             <a href="mailto:support@tomaran.net" style={{ color: Y, textDecoration: 'underline' }}>
               support@tomaran.net
@@ -172,10 +172,10 @@ export default function LegalPage() {
         </div>
 
         <div style={{
-          background: CARD2, border: '1px solid rgba(255,255,255,0.06)',
+          background: CARD2, border: '1px solid #E5E0DA',
           borderRadius: 8, padding: '20px 24px', marginTop: 12,
         }}>
-          <p style={{ color: '#6b7280', fontSize: 13, lineHeight: 1.75, margin: 0 }}>
+          <p style={{ color: '#888888', fontSize: 13, lineHeight: 1.75, margin: 0 }}>
             ※ 本表記は特定商取引法第11条に基づくものです。内容に疑義がある場合は
             <a href="mailto:support@tomaran.net" style={{ color: Y, textDecoration: 'underline', marginLeft: 4 }}>
               support@tomaran.net
@@ -185,14 +185,14 @@ export default function LegalPage() {
       </div>
 
       <footer style={{
-        background: '#05080f', borderTop: '1px solid rgba(255,215,0,0.1)',
+        background: '#F5F0EB', borderTop: '1px solid #E5E0DA',
         padding: '32px 24px', textAlign: 'center',
       }}>
         <div style={{ display: 'flex', justifyContent: 'center', gap: 24, marginBottom: 16, flexWrap: 'wrap' }}>
-          <Link href="/privacy" style={{ color: '#6b7280', fontSize: 13, textDecoration: 'underline' }}>
+          <Link href="/privacy" style={{ color: '#888888', fontSize: 13, textDecoration: 'underline' }}>
             プライバシーポリシー
           </Link>
-          <Link href="/" style={{ color: '#6b7280', fontSize: 13, textDecoration: 'underline' }}>
+          <Link href="/" style={{ color: '#888888', fontSize: 13, textDecoration: 'underline' }}>
             トップへ戻る
           </Link>
         </div>

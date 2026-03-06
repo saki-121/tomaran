@@ -13,20 +13,21 @@ export default async function LoginPage() {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      background: '#0a0f1e',
+      background: '#FDFCFB',
       fontFamily: 'system-ui, -apple-system, sans-serif',
       padding: '16px',
     }}>
       <div style={{
         width: '100%',
         maxWidth: 400,
-        background: '#111827',
-        borderRadius: 12,
+        background: '#FFFFFF',
+        borderRadius: 14,
         padding: '40px 32px',
-        border: '1px solid rgba(255,215,0,0.15)',
+        border: '1px solid #E5E0DA',
+        boxShadow: '4px 4px 0 #E5E0DA',
       }}>
-        <p style={{ margin: '0 0 4px', fontSize: 12, color: '#FFD700', letterSpacing: '0.12em', fontWeight: 700 }}>tomaran</p>
-        <h1 style={{ margin: '0 0 28px', fontSize: 22, fontWeight: 700, color: '#fff' }}>
+        <p style={{ margin: '0 0 4px', fontSize: 14, color: '#A16207', letterSpacing: '0.12em', fontWeight: 700 }}>tomaran</p>
+        <h1 style={{ margin: '0 0 28px', fontSize: 22, fontWeight: 700, color: '#333333' }}>
           ログイン / 新規登録
         </h1>
 
@@ -35,11 +36,11 @@ export default async function LoginPage() {
         <div style={{
           marginTop: 20,
           padding: '14px 16px',
-          background: '#1a2035',
+          background: '#F5F0EB',
           borderRadius: 8,
-          border: '1px solid rgba(255,255,255,0.06)',
-          fontSize: 12,
-          color: '#6b7280',
+          border: '1px solid #E5E0DA',
+          fontSize: 13,
+          color: '#777777',
           lineHeight: 1.75,
         }}>
           <p style={{ margin: '0 0 6px' }}>

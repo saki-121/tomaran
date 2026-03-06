@@ -1,23 +1,23 @@
 import Link from 'next/link'
 
-const BG = '#0a0f1e'
-const CARD = '#111827'
-const CARD2 = '#1a2035'
-const Y = '#FFD700'
+const BG = '#FDFCFB'
+const CARD = '#FFFFFF'
+const CARD2 = '#F5F0EB'
+const Y = '#A16207'
 
 export default function PrivacyPage() {
   return (
-    <div style={{ fontFamily: 'system-ui, -apple-system, sans-serif', background: BG, color: '#fff', minHeight: '100vh' }}>
+    <div style={{ fontFamily: 'system-ui, -apple-system, sans-serif', background: BG, color: '#333333', minHeight: '100vh' }}>
       {/* Header */}
       <header style={{
-        borderBottom: '1px solid rgba(255,215,0,0.15)',
+        borderBottom: '1px solid #E5E0DA',
         padding: '0 24px', height: 60,
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
       }}>
         <Link href="/" style={{ fontWeight: 900, fontSize: 20, color: Y, textDecoration: 'none' }}>
           tomaran
         </Link>
-        <Link href="/" style={{ color: '#9ca3af', fontSize: 13, textDecoration: 'none' }}>
+        <Link href="/" style={{ color: '#777777', fontSize: 13, textDecoration: 'none' }}>
           ← トップへ
         </Link>
       </header>
@@ -33,7 +33,7 @@ export default function PrivacyPage() {
         <h1 style={{ fontSize: 'clamp(24px, 5vw, 36px)', fontWeight: 900, marginBottom: 8, lineHeight: 1.2 }}>
           プライバシーポリシー
         </h1>
-        <p style={{ color: '#6b7280', fontSize: 13, marginBottom: 56 }}>最終更新日：2025年1月1日</p>
+        <p style={{ color: '#888888', fontSize: 13, marginBottom: 56 }}>最終更新日：2025年1月1日</p>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
 
@@ -66,7 +66,7 @@ export default function PrivacyPage() {
                       </li>
                     ))}
                   </ul>
-                  <p style={{ marginTop: 12, color: '#9ca3af', fontSize: 14 }}>
+                  <p style={{ marginTop: 12, color: '#777777', fontSize: 14 }}>
                     パスワードは当サービスでは一切保存・管理しません。
                   </p>
                 </>
@@ -98,7 +98,7 @@ export default function PrivacyPage() {
                   <p style={{ color: '#d1d5db', fontSize: 15, lineHeight: 1.75, marginBottom: 16 }}>
                     法令に基づく場合を除き、取得した個人情報を第三者に提供・販売・貸与することはありません。
                   </p>
-                  <p style={{ color: '#9ca3af', fontSize: 14, marginBottom: 12 }}>
+                  <p style={{ color: '#777777', fontSize: 14, marginBottom: 12 }}>
                     当サービスは以下の外部サービスを利用しており、それぞれのポリシーに従い処理されます。
                   </p>
                   <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -108,7 +108,7 @@ export default function PrivacyPage() {
                       'Google LLC —— OAuth認証',
                     ].map(i => (
                       <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, color: '#d1d5db', fontSize: 15 }}>
-                        <span style={{ color: '#6b7280', flexShrink: 0 }}>—</span>{i}
+                        <span style={{ color: '#888888', flexShrink: 0 }}>—</span>{i}
                       </li>
                     ))}
                   </ul>
@@ -161,7 +161,7 @@ export default function PrivacyPage() {
               ),
             },
           ].map(sec => (
-            <div key={sec.n} style={{ background: CARD, border: '1px solid rgba(255,255,255,0.05)', borderRadius: 10, padding: '28px 28px', marginBottom: 12 }}>
+            <div key={sec.n} style={{ background: CARD, border: '1px solid #E5E0DA', borderRadius: 10, padding: '28px 28px', marginBottom: 12 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 16 }}>
                 <span style={{
                   background: Y, color: '#000', fontWeight: 900, fontSize: 11,
@@ -178,14 +178,14 @@ export default function PrivacyPage() {
       </div>
 
       <footer style={{
-        background: '#05080f', borderTop: '1px solid rgba(255,215,0,0.1)',
+        background: '#F5F0EB', borderTop: '1px solid #E5E0DA',
         padding: '32px 24px', textAlign: 'center',
       }}>
         <div style={{ display: 'flex', justifyContent: 'center', gap: 24, marginBottom: 16, flexWrap: 'wrap' }}>
-          <Link href="/legal" style={{ color: '#6b7280', fontSize: 13, textDecoration: 'underline' }}>
+          <Link href="/legal" style={{ color: '#888888', fontSize: 13, textDecoration: 'underline' }}>
             特定商取引法に基づく表記
           </Link>
-          <Link href="/" style={{ color: '#6b7280', fontSize: 13, textDecoration: 'underline' }}>
+          <Link href="/" style={{ color: '#888888', fontSize: 13, textDecoration: 'underline' }}>
             トップへ戻る
           </Link>
         </div>

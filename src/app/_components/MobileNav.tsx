@@ -13,8 +13,9 @@ export default function MobileNav() {
 
   return (
     <nav className="no-print" style={{
-      background: '#05080f',
-      borderBottom: '1px solid rgba(255,215,0,0.12)',
+      background: '#FDFCFB',
+      borderBottom: '1px solid #E5E0DA',
+      boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
       display: 'flex',
       alignItems: 'center',
       padding: '0 16px',
@@ -26,7 +27,7 @@ export default function MobileNav() {
     }}>
       <Link href="/deliveries" style={{
         fontWeight: 900, marginRight: 16, fontSize: 15,
-        letterSpacing: 1, color: '#FFD700', textDecoration: 'none',
+        letterSpacing: 1, color: '#A16207', textDecoration: 'none',
         whiteSpace: 'nowrap',
       }}>
         tomaran
@@ -36,7 +37,7 @@ export default function MobileNav() {
         const isActive = path === tab.href || path.startsWith(tab.href + '/')
         return (
           <Link key={tab.href} href={tab.href} style={{
-            color: isActive ? '#FFD700' : '#9ca3af',
+            color: isActive ? '#A16207' : '#888888',
             textDecoration: 'none',
             padding: '0 12px',
             height: 48,
@@ -44,7 +45,7 @@ export default function MobileNav() {
             alignItems: 'center',
             fontSize: 14,
             fontWeight: isActive ? 700 : 500,
-            borderBottom: isActive ? '2px solid #FFD700' : '2px solid transparent',
+            borderBottom: isActive ? '2px solid #A16207' : '2px solid transparent',
             whiteSpace: 'nowrap',
           }}>
             {tab.label}
@@ -55,14 +56,14 @@ export default function MobileNav() {
       <span style={{ marginLeft: 'auto' }} />
 
       <Link href="/admin" aria-label="管理画面" style={{
-        color: '#6b7280',
+        color: '#888888',
         textDecoration: 'none',
         padding: '0 8px',
         height: 48,
         display: 'flex',
         alignItems: 'center',
         fontSize: 14,
-        borderLeft: '1px solid rgba(255,255,255,0.06)',
+        borderLeft: '1px solid #E5E0DA',
       }}>
         ⚙️
       </Link>

@@ -193,6 +193,8 @@ export async function GET(_req: NextRequest, { params }: Ctx) {
     rowNum++
   }
 
+  rowNum += 2 // logo clearance: keep rows 2-3 free so logo (rows 1-3) doesn't overlap
+
   // ── Issue info ────────────────────────────────────────────────────────────
   {
     const r = ws.getRow(rowNum)

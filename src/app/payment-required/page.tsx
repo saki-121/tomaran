@@ -2,8 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import PaymentActions from './_components/PaymentActions'
 
-const BG   = '#0a0f1e'
-const CARD = '#111827'
+const BG   = '#FDFCFB'
+const CARD = '#FFFFFF'
 const Y    = '#FFD700'
 
 export default async function PaymentRequiredPage() {
@@ -32,7 +32,7 @@ export default async function PaymentRequiredPage() {
       padding: '16px',
     }}>
       {/* ロゴ */}
-      <p style={{ fontWeight: 900, fontSize: 22, color: Y, letterSpacing: 1, marginBottom: 32 }}>
+      <p style={{ fontWeight: 900, fontSize: 22, color: '#A16207', letterSpacing: 1, marginBottom: 32 }}>
         tomaran
       </p>
 
@@ -42,12 +42,13 @@ export default async function PaymentRequiredPage() {
         background: CARD,
         borderRadius: 12,
         padding: '40px 32px',
-        border: '1px solid rgba(255,215,0,0.15)',
+        border: '1px solid #E5E0DA',
+        boxShadow: '4px 4px 0 #E5E0DA',
       }}>
-        <h1 style={{ margin: '0 0 10px', fontSize: 20, fontWeight: 700, color: '#fff' }}>
+        <h1 style={{ margin: '0 0 10px', fontSize: 20, fontWeight: 700, color: '#333333' }}>
           {isCanceled ? 'サブスクリプションが解約されています' : 'サービスの利用を開始する'}
         </h1>
-        <p style={{ margin: '0 0 28px', fontSize: 13, color: '#9ca3af', lineHeight: 1.75 }}>
+        <p style={{ margin: '0 0 28px', fontSize: 13, color: '#777777', lineHeight: 1.75 }}>
           {isCanceled
             ? 'このアカウントのサブスクリプションは解約済みです。再度ご利用の場合は再購入してください。'
             : '以下のプランでサービスをご利用いただけます。'}
@@ -55,18 +56,18 @@ export default async function PaymentRequiredPage() {
 
         {/* プランカード */}
         <div style={{
-          background: '#1a2035',
-          border: `1px solid rgba(255,215,0,0.2)`,
+          background: '#F5F0EB',
+          border: '1px solid #E5E0DA',
           borderRadius: 10,
           padding: '20px 20px',
           marginBottom: 24,
         }}>
-          <p style={{ margin: '0 0 4px', fontSize: 12, fontWeight: 700, color: Y, letterSpacing: '0.1em' }}>
+          <p style={{ margin: '0 0 4px', fontSize: 12, fontWeight: 700, color: '#A16207', letterSpacing: '0.1em' }}>
             STANDARD PLAN
           </p>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: 6, marginBottom: 16 }}>
-            <span style={{ fontSize: 36, fontWeight: 900, color: '#fff' }}>¥14,800</span>
-            <span style={{ fontSize: 14, color: '#9ca3af' }}>/ 月（税込）</span>
+            <span style={{ fontSize: 36, fontWeight: 900, color: '#333333' }}>¥14,800</span>
+            <span style={{ fontSize: 14, color: '#777777' }}>/ 月（税込）</span>
           </div>
 
           <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -77,8 +78,8 @@ export default async function PaymentRequiredPage() {
               '見積書PDF出力',
               'LINEサポート付き',
             ].map(f => (
-              <li key={f} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 14, color: '#d1d5db' }}>
-                <span style={{ color: Y, fontWeight: 700, flexShrink: 0 }}>✓</span>
+              <li key={f} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 14, color: '#555555' }}>
+                <span style={{ color: '#A16207', fontWeight: 700, flexShrink: 0 }}>✓</span>
                 {f}
               </li>
             ))}
@@ -87,25 +88,25 @@ export default async function PaymentRequiredPage() {
 
         {/* 課金サイクル説明 */}
         <div style={{
-          background: 'rgba(255,215,0,0.05)',
-          border: '1px solid rgba(255,215,0,0.12)',
+          background: '#FFFBEB',
+          border: '1px solid #FDE68A',
           borderRadius: 8,
           padding: '12px 16px',
           marginBottom: 24,
           fontSize: 12,
-          color: '#9ca3af',
+          color: '#777777',
           lineHeight: 1.8,
         }}>
           <p style={{ margin: 0 }}>
-            🗓️ <strong style={{ color: '#d1d5db' }}>決済タイミング</strong><br />
-            決済日に初回請求が発生します。以降は<strong style={{ color: '#d1d5db' }}>決済日の翌月同日</strong>に自動更新されます。<br />
-            <span style={{ fontSize: 11, color: '#6b7280' }}>例：3月5日に決済 → 次回は4月5日に自動更新</span>
+            🗓️ <strong style={{ color: '#555555' }}>決済タイミング</strong><br />
+            決済日に初回請求が発生します。以降は<strong style={{ color: '#555555' }}>決済日の翌月同日</strong>に自動更新されます。<br />
+            <span style={{ fontSize: 11, color: '#888888' }}>例：3月5日に決済 → 次回は4月5日に自動更新</span>
           </p>
         </div>
 
         <PaymentActions isCanceled={isCanceled} />
 
-        <p style={{ marginTop: 16, fontSize: 11, color: '#6b7280', textAlign: 'center', lineHeight: 1.7 }}>
+        <p style={{ marginTop: 16, fontSize: 11, color: '#888888', textAlign: 'center', lineHeight: 1.7 }}>
           解約は管理画面からいつでも可能。<br />
           決済はStripeにより安全に処理されます。
         </p>

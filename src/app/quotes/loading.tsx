@@ -2,7 +2,7 @@ import type { CSSProperties } from 'react'
 
 const skBlock = (w: number | string, h: number): CSSProperties => ({
   width: w, height: h, borderRadius: 6,
-  background: 'rgba(255,255,255,0.08)',
+  background: '#E5E0DA',
 })
 
 export default function Loading() {

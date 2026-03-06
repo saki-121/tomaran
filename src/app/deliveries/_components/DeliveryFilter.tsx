@@ -32,7 +32,6 @@ export default function DeliveryFilter({
   return (
     <div style={s.wrap}>
       <div style={s.row}>
-        {/* 取引先フィルタ */}
         <select
           value={currentCompanyId}
           onChange={e => update('company_id', e.target.value)}
@@ -45,7 +44,6 @@ export default function DeliveryFilter({
           ))}
         </select>
 
-        {/* ステータスフィルタ */}
         <select
           value={currentStatus}
           onChange={e => update('status', e.target.value)}
@@ -58,7 +56,6 @@ export default function DeliveryFilter({
         </select>
       </div>
 
-      {/* フィルタ適用中のみクリアを表示 */}
       {isFiltering && (
         <button onClick={() => router.push('/deliveries')} style={s.clear}>
           × フィルタをクリア
@@ -83,11 +80,11 @@ const s: Record<string, CSSProperties> = {
     flex: 1,
     minWidth: 0,
     padding: '10px 8px',
-    border: '1px solid rgba(255,255,255,0.1)',
+    border: '1px solid #D0CAC3',
     borderRadius: 8,
     fontSize: 14,
-    backgroundColor: '#1a2035',
-    color: '#d1d5db',
+    backgroundColor: '#FFFFFF',
+    color: '#333333',
     minHeight: 44,
   },
   clear: {
@@ -95,7 +92,7 @@ const s: Record<string, CSSProperties> = {
     background: 'none',
     border: 'none',
     fontSize: 13,
-    color: '#9ca3af',
+    color: '#888888',
     cursor: 'pointer',
     padding: '4px 0',
     textDecoration: 'underline',

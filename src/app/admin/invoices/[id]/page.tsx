@@ -92,30 +92,30 @@ export default function InvoiceDetailPage() {
 
   const isDraft = invoice.status === 'draft'
   const statusLabel = invoice.status === 'draft' ? '下書き' : '確定済み'
-  const statusColor = isDraft ? { bg: '#fff3cd', color: '#856404' } : { bg: '#d4edda', color: '#155724' }
+  const statusColor = isDraft ? { bg: '#FEF9C3', color: '#A16207' } : { bg: '#DCFCE7', color: '#16A34A' }
 
   return (
     <div>
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20, flexWrap: 'wrap' }}>
-        <Link href="/admin/invoices" style={{ fontSize: 13, color: '#555', textDecoration: 'none' }}>← 一覧</Link>
-        <h2 style={{ margin: 0, flexGrow: 1 }}>
+        <Link href="/admin/invoices" style={{ fontSize: 13, color: '#A16207', textDecoration: 'none' }}>← 一覧</Link>
+        <h2 style={{ margin: 0, flexGrow: 1, color: '#333333' }}>
           請求書
           {invoice.invoice_number ? ` #${invoice.invoice_number}` : '（下書き）'}
         </h2>
-        <span style={{ fontSize: 13, padding: '3px 10px', borderRadius: 10, background: statusColor.bg, color: statusColor.color }}>
+        <span style={{ fontSize: 13, padding: '3px 10px', borderRadius: 10, background: statusColor.bg, color: statusColor.color, fontWeight: 600 }}>
           {statusLabel}
         </span>
 
-        <button onClick={preview} style={btn('#555')}>📥 Excelダウンロード</button>
+        <button onClick={preview} style={btn('#888888')}>📥 Excelダウンロード</button>
         {isDraft && (
-          <button onClick={confirmInvoice} disabled={confirming} style={btn('#c00')}>
+          <button onClick={confirmInvoice} disabled={confirming} style={btn('#DC2626')}>
             {confirming ? '確定中…' : '✓ 確定する'}
           </button>
         )}
       </div>
 
-      {err && <div style={{ background: '#fee', border: '1px solid #c00', borderRadius: 6, padding: '10px 14px', marginBottom: 16, color: '#c00', fontSize: 14 }}>{err}</div>}
+      {err && <div style={{ background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: 6, padding: '10px 14px', marginBottom: 16, color: '#DC2626', fontSize: 14 }}>{err}</div>}
 
       {/* Summary */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 24 }}>
@@ -133,54 +133,54 @@ export default function InvoiceDetailPage() {
       </div>
 
       {/* Totals box */}
-      <div style={{ background: '#fff', border: '2px solid #1a1a2e', borderRadius: 8, padding: 20, marginBottom: 24, maxWidth: 380 }}>
+      <div style={{ background: '#FFFFFF', border: '1px solid #E5E0DA', borderRadius: 8, padding: 20, marginBottom: 24, maxWidth: 380, boxShadow: '2px 2px 0 #E5E0DA' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-          <span style={{ color: '#555' }}>小計（税抜）</span>
-          <span>{fmtNum(invoice.total_amount)}</span>
+          <span style={{ color: '#777777' }}>小計（税抜）</span>
+          <span style={{ color: '#555555' }}>{fmtNum(invoice.total_amount)}</span>
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12 }}>
-          <span style={{ color: '#555' }}>消費税（10%）</span>
-          <span>{fmtNum(invoice.tax_amount)}</span>
+          <span style={{ color: '#777777' }}>消費税（10%）</span>
+          <span style={{ color: '#555555' }}>{fmtNum(invoice.tax_amount)}</span>
         </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '2px solid #1a1a2e', paddingTop: 10 }}>
-          <span style={{ fontWeight: 700, fontSize: 16 }}>合計（税込）</span>
-          <span style={{ fontWeight: 700, fontSize: 18 }}>{fmtNum(invoice.grand_total)}</span>
+        <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid #E5E0DA', paddingTop: 10 }}>
+          <span style={{ fontWeight: 700, fontSize: 16, color: '#333333' }}>合計（税込）</span>
+          <span style={{ fontWeight: 700, fontSize: 18, color: '#A16207' }}>{fmtNum(invoice.grand_total)}</span>
         </div>
       </div>
 
       {/* Items grouped by site */}
-      <h3 style={{ marginBottom: 12 }}>明細</h3>
+      <h3 style={{ marginBottom: 12, color: '#333333' }}>明細</h3>
       {siteMap.size === 0 ? (
-        <p style={{ color: '#888' }}>明細がありません（締め日に一致する納品がない場合、生成されません）</p>
+        <p style={{ color: '#888888' }}>明細がありません（締め日に一致する納品がない場合、生成されません）</p>
       ) : (
         Array.from(siteMap.entries()).map(([siteName, siteItems]) => {
           const siteTotal = siteItems.reduce((s, i) => s + i.amount, 0)
           return (
             <div key={siteName} style={{ marginBottom: 24 }}>
-              <div style={{ background: '#d9e1f2', padding: '8px 14px', borderRadius: '6px 6px 0 0', fontWeight: 600, fontSize: 14 }}>
+              <div style={{ background: '#E8F0FE', padding: '8px 14px', borderRadius: '6px 6px 0 0', fontWeight: 600, fontSize: 14, color: '#333333' }}>
                 ■ {siteName}
               </div>
-              <table style={{ width: '100%', borderCollapse: 'collapse', background: '#fff', boxShadow: '0 1px 4px rgba(0,0,0,0.08)' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', background: '#FFFFFF', border: '1px solid #E5E0DA', boxShadow: '2px 2px 0 #E5E0DA' }}>
                 <thead>
-                  <tr style={{ background: '#f5f5f5' }}>
+                  <tr style={{ background: '#F5F0EB' }}>
                     {['日付', '品名', '数量', '単価', '金額'].map(h => (
-                      <th key={h} style={{ padding: '8px 10px', textAlign: h === '日付' || h === '品名' ? 'left' : 'right', fontSize: 12, fontWeight: 600, borderBottom: '1px solid #ddd' }}>{h}</th>
+                      <th key={h} style={{ padding: '8px 10px', textAlign: h === '日付' || h === '品名' ? 'left' : 'right', fontSize: 12, fontWeight: 600, borderBottom: '1px solid #E5E0DA', color: '#777777' }}>{h}</th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
                   {siteItems.map(item => (
-                    <tr key={item.id} style={{ borderBottom: '1px solid #eee' }}>
+                    <tr key={item.id} style={{ borderBottom: '1px solid #F0EDE8' }}>
                       <td style={itd}>{fmtDate(item.delivery_date)}</td>
                       <td style={itd}>{item.product_name}</td>
                       <td style={{ ...itd, textAlign: 'right' }}>{item.quantity}</td>
                       <td style={{ ...itd, textAlign: 'right' }}>{fmtNum(item.unit_price)}</td>
-                      <td style={{ ...itd, textAlign: 'right' }}>{fmtNum(item.amount)}</td>
+                      <td style={{ ...itd, textAlign: 'right', color: '#A16207', fontWeight: 600 }}>{fmtNum(item.amount)}</td>
                     </tr>
                   ))}
-                  <tr style={{ background: '#f5f5f5', fontWeight: 600 }}>
-                    <td colSpan={4} style={{ padding: '8px 10px', textAlign: 'right', fontSize: 13 }}>小計</td>
-                    <td style={{ padding: '8px 10px', textAlign: 'right', fontSize: 13 }}>{fmtNum(siteTotal)}</td>
+                  <tr style={{ background: '#F5F0EB', fontWeight: 600 }}>
+                    <td colSpan={4} style={{ padding: '8px 10px', textAlign: 'right', fontSize: 13, color: '#777777' }}>小計</td>
+                    <td style={{ padding: '8px 10px', textAlign: 'right', fontSize: 13, color: '#A16207' }}>{fmtNum(siteTotal)}</td>
                   </tr>
                 </tbody>
               </table>
@@ -191,7 +191,7 @@ export default function InvoiceDetailPage() {
 
       {/* Confirm warning */}
       {isDraft && items.length > 0 && (
-        <div style={{ background: '#fff3cd', border: '1px solid #ffc107', borderRadius: 6, padding: '12px 16px', marginTop: 8, fontSize: 13 }}>
+        <div style={{ background: '#FFFBEB', border: '1px solid #FDE68A', borderRadius: 6, padding: '12px 16px', marginTop: 8, fontSize: 13, color: '#92400E' }}>
           ⚠️ 確定後は納品データが「請求済み」に変わり、この請求書・納品の編集・削除が不可になります。
           納品漏れがあっても次回締めで請求してください（例外ルートなし）。
         </div>
@@ -201,7 +201,7 @@ export default function InvoiceDetailPage() {
 }
 
 const btn = (bg: string): React.CSSProperties => ({ padding: '8px 18px', background: bg, color: '#fff', border: 'none', borderRadius: 4, cursor: 'pointer', fontSize: 13 })
-const card: React.CSSProperties = { background: '#fff', borderRadius: 8, padding: 16, boxShadow: '0 1px 4px rgba(0,0,0,0.08)' }
-const cardTitle: React.CSSProperties = { margin: '0 0 10px', fontSize: 13, fontWeight: 600, color: '#555', borderBottom: '1px solid #eee', paddingBottom: 6 }
-const cardLine: React.CSSProperties = { margin: '4px 0', fontSize: 14 }
-const itd: React.CSSProperties = { padding: '8px 10px', fontSize: 14 }
+const card: React.CSSProperties = { background: '#FFFFFF', borderRadius: 8, padding: 16, border: '1px solid #E5E0DA', boxShadow: '2px 2px 0 #E5E0DA' }
+const cardTitle: React.CSSProperties = { margin: '0 0 10px', fontSize: 13, fontWeight: 600, color: '#777777', borderBottom: '1px solid #F0EDE8', paddingBottom: 6 }
+const cardLine: React.CSSProperties = { margin: '4px 0', fontSize: 14, color: '#555555' }
+const itd: React.CSSProperties = { padding: '8px 10px', fontSize: 14, color: '#555555' }

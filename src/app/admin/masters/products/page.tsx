@@ -139,14 +139,14 @@ export default function ProductsPage() {
 
   const inp = (label: string, key: keyof FormData, type = 'text') => (
     <div style={{ marginBottom: 12 }}>
-      <label style={{ display: 'block', fontSize: 12, fontWeight: 600, marginBottom: 3, color: '#9ca3af' }}>{label}</label>
+      <label style={{ display: 'block', fontSize: 12, fontWeight: 600, marginBottom: 3, color: '#777777' }}>{label}</label>
       <input
         type={type}
         value={form[key]}
         onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))}
         min={type === 'number' ? '0' : undefined}
         step={type === 'number' ? '1' : undefined}
-        style={{ width: '100%', padding: '7px 10px', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 4, fontSize: 14, boxSizing: 'border-box', background: '#1a2035', color: '#fff' }}
+        style={{ width: '100%', padding: '7px 10px', border: '1px solid #D0CAC3', borderRadius: 4, fontSize: 14, boxSizing: 'border-box', background: '#FFFFFF', color: '#333333' }}
       />
     </div>
   )
@@ -154,7 +154,7 @@ export default function ProductsPage() {
   return (
     <div style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20, flexWrap: 'wrap' }}>
-        <h2 style={{ margin: 0, color: '#fff' }}>商品マスタ</h2>
+        <h2 style={{ margin: 0, color: '#333333' }}>商品マスタ</h2>
         <button onClick={startNew} style={btnPrimary}>＋ 新規追加</button>
 
         {/* LINEお問い合わせリンク */}
@@ -176,13 +176,13 @@ export default function ProductsPage() {
           placeholder="商品名・規格で検索"
           value={searchQuery}
           onChange={e => setSearchQuery(e.target.value)}
-          style={{ 
-            padding: '6px 12px', 
-            border: '1px solid rgba(255,255,255,0.1)', 
-            borderRadius: 6, 
-            fontSize: 14, 
-            background: '#1a2035', 
-            color: '#fff',
+          style={{
+            padding: '6px 12px',
+            border: '1px solid #D0CAC3',
+            borderRadius: 6,
+            fontSize: 14,
+            background: '#FFFFFF',
+            color: '#333333',
             width: 200,
             minWidth: 150
           }}
@@ -204,9 +204,9 @@ export default function ProductsPage() {
         <div style={{ marginLeft: 'auto', display: 'flex', gap: 6 }}>
           {(['all', 'active', 'provisional'] as const).map(f => (
             <button key={f} onClick={() => setFilter(f)} style={{
-              padding: '5px 12px', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 6, cursor: 'pointer', fontSize: 13,
-              background: filter === f ? '#FFD700' : '#1a2035',
-              color:      filter === f ? '#000' : '#9ca3af',
+              padding: '5px 12px', border: '1px solid #D0CAC3', borderRadius: 6, cursor: 'pointer', fontSize: 13,
+              background: filter === f ? '#FFD700' : '#FFFFFF',
+              color:      filter === f ? '#000' : '#777777',
               fontWeight: filter === f ? 700 : 400,
             }}>
               {f === 'all' ? '全て' : f === 'active' ? '有効' : '単価未設定'}
@@ -216,8 +216,8 @@ export default function ProductsPage() {
       </div>
 
       {pendingFile && (
-        <div style={{ background: 'rgba(255,215,0,0.05)', border: '1px solid rgba(255,215,0,0.2)', borderRadius: 6, padding: '12px 16px', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
-          <span style={{ fontSize: 13, color: '#d1d5db' }}>📄 <strong>{pendingFile.name}</strong> を取り込みますか？</span>
+        <div style={{ background: '#FFFBEB', border: '1px solid #FDE68A', borderRadius: 6, padding: '12px 16px', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
+          <span style={{ fontSize: 13, color: '#555555' }}>📄 <strong>{pendingFile.name}</strong> を取り込みますか？</span>
           <div style={{ display: 'flex', gap: 8 }}>
             <button onClick={() => void confirmImport()} disabled={importing} style={btnGreen}>
               {importing ? '取り込み中…' : '取り込む'}
@@ -228,20 +228,20 @@ export default function ProductsPage() {
       )}
 
       {importMsg && (
-        <div style={{ background: importMsg.startsWith('エラー') ? 'rgba(239,68,68,0.1)' : 'rgba(52,211,153,0.1)', border: '1px solid', borderColor: importMsg.startsWith('エラー') ? 'rgba(239,68,68,0.3)' : 'rgba(52,211,153,0.3)', borderRadius: 6, padding: '10px 14px', marginBottom: 16, fontSize: 13, whiteSpace: 'pre-wrap', color: importMsg.startsWith('エラー') ? '#ef4444' : '#34d399' }}>
+        <div style={{ background: importMsg.startsWith('エラー') ? '#FEF2F2' : '#F0FDF4', border: '1px solid', borderColor: importMsg.startsWith('エラー') ? '#FECACA' : '#BBF7D0', borderRadius: 6, padding: '10px 14px', marginBottom: 16, fontSize: 13, whiteSpace: 'pre-wrap', color: importMsg.startsWith('エラー') ? '#DC2626' : '#16A34A' }}>
           {importMsg}
         </div>
       )}
 
       {/* Import format guide */}
       {showFormat && (
-        <div style={{ background: '#111827', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 6, padding: '12px 16px', marginBottom: 16 }}>
+        <div style={{ background: '#FFFFFF', border: '1px solid #E5E0DA', borderRadius: 6, padding: '12px 16px', marginBottom: 16, boxShadow: '2px 2px 0 #E5E0DA' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-            <p style={{ margin: 0, fontWeight: 600, fontSize: 13, color: '#fff' }}>取込Excelのレイアウト</p>
+            <p style={{ margin: 0, fontWeight: 600, fontSize: 13, color: '#333333' }}>取込Excelのレイアウト</p>
             <a
               href="/api/masters/products/template"
               download
-              style={{ fontSize: 12, color: '#34d399', textDecoration: 'none', fontWeight: 600, whiteSpace: 'nowrap', marginLeft: 12 }}
+              style={{ fontSize: 12, color: '#16A34A', textDecoration: 'none', fontWeight: 600, whiteSpace: 'nowrap', marginLeft: 12 }}
             >
               📥 テンプレートをDL
             </a>
@@ -263,7 +263,7 @@ export default function ProductsPage() {
                 <tr>
                   <td style={xlRowNum}>1</td>
                   {['品名（規格込み）', '単価'].map((v, i) => (
-                    <td key={i} style={{ ...xlCell, background: 'rgba(255,215,0,0.18)', color: '#FFD700', fontWeight: 700 }}>{v}</td>
+                    <td key={i} style={{ ...xlCell, background: '#FFFBEB', color: '#A16207', fontWeight: 700 }}>{v}</td>
                   ))}
                 </tr>
                 {/* Row 2 */}
@@ -276,7 +276,7 @@ export default function ProductsPage() {
                 <tr>
                   <td style={xlRowNum}>3</td>
                   <td style={xlCell}>単管パイプ3m</td>
-                  <td style={{ ...xlCell, color: '#6b7280' }}>（省略可＝仮登録）</td>
+                  <td style={{ ...xlCell, color: '#888888' }}>（省略可＝仮登録）</td>
                 </tr>
                 {/* Row 4 */}
                 <tr>
@@ -288,24 +288,24 @@ export default function ProductsPage() {
             </table>
           </div>
 
-          <p style={{ margin: '0 0 4px', fontSize: 11, color: '#9ca3af' }}>
+          <p style={{ margin: '0 0 4px', fontSize: 11, color: '#777777' }}>
             1行目はヘッダー行です。2行目からデータを入力してください。単価は省略すると「仮登録（単価未設定）」になります。
           </p>
-          <p style={{ margin: 0, fontSize: 11, color: '#ef4444' }}>
+          <p style={{ margin: 0, fontSize: 11, color: '#DC2626' }}>
             ⚠️ A列の品名が完全一致する場合は既存データを上書き更新します。
           </p>
         </div>
       )}
 
       {editing && (
-        <div style={{ background: '#111827', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 8, padding: 20, marginBottom: 24, maxWidth: 440 }}>
-          <h3 style={{ marginTop: 0, marginBottom: 14, color: '#fff' }}>{editing === 'new' ? '新規商品' : '商品を編集'}</h3>
+        <div style={{ background: '#FFFFFF', border: '1px solid #E5E0DA', borderRadius: 8, padding: 20, marginBottom: 24, maxWidth: 440, boxShadow: '2px 2px 0 #E5E0DA' }}>
+          <h3 style={{ marginTop: 0, marginBottom: 14, color: '#333333' }}>{editing === 'new' ? '新規商品' : '商品を編集'}</h3>
           {inp('品名（規格込み） *', 'name')}
           {inp('単価（空白 = 仮登録）', 'unit_price', 'number')}
           <div style={{ marginBottom: 12 }}>
-            <label style={{ display: 'block', fontSize: 12, fontWeight: 600, marginBottom: 3, color: '#9ca3af' }}>ステータス</label>
+            <label style={{ display: 'block', fontSize: 12, fontWeight: 600, marginBottom: 3, color: '#777777' }}>ステータス</label>
             <select value={form.status} onChange={e => setForm(f => ({ ...f, status: e.target.value }))}
-              style={{ width: '100%', padding: '7px 10px', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 4, fontSize: 14, background: '#1a2035', color: '#fff' }}>
+              style={{ width: '100%', padding: '7px 10px', border: '1px solid #D0CAC3', borderRadius: 4, fontSize: 14, background: '#FFFFFF', color: '#333333' }}>
               <option value="active">有効（請求対象）</option>
               <option value="provisional">仮登録（単価未設定）</option>
             </select>
@@ -318,41 +318,41 @@ export default function ProductsPage() {
         </div>
       )}
 
-      {loading ? <p style={{ color: '#9ca3af' }}>読み込み中…</p> : (
+      {loading ? <p style={{ color: '#888888' }}>読み込み中…</p> : (
         <>
-          <p style={{ fontSize: 13, color: '#9ca3af', marginBottom: 8 }}>
+          <p style={{ fontSize: 13, color: '#888888', marginBottom: 8 }}>
             {filtered.length}件表示
             {filter !== 'all' && ` / 全${products.length}件`}
           </p>
-          <table style={{ width: '100%', borderCollapse: 'collapse', background: '#111827', borderRadius: 8, overflow: 'hidden' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', background: '#FFFFFF', border: '1px solid #E5E0DA', borderRadius: 8, overflow: 'hidden', boxShadow: '2px 2px 0 #E5E0DA' }}>
             <thead>
-              <tr style={{ background: '#1a2035' }}>
+              <tr style={{ background: '#F5F0EB' }}>
                 {['品名', '単価（税抜）', 'ステータス', ''].map(h => (
-                  <th key={h} style={{ padding: '10px 12px', textAlign: 'left', fontSize: 13, fontWeight: 600, borderBottom: '1px solid rgba(255,255,255,0.08)', color: '#9ca3af' }}>{h}</th>
+                  <th key={h} style={{ padding: '10px 12px', textAlign: 'left', fontSize: 13, fontWeight: 600, borderBottom: '1px solid #E5E0DA', color: '#777777' }}>{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {filtered.map(p => (
-                <tr key={p.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', opacity: p.active_flag ? 1 : 0.5 }}>
-                  <td style={{ padding: '10px 12px', fontSize: 14, color: '#d1d5db' }}>{p.name}</td>
-                  <td style={{ padding: '10px 12px', fontSize: 14, color: '#d1d5db' }}>
+                <tr key={p.id} style={{ borderBottom: '1px solid #F0EDE8', opacity: p.active_flag ? 1 : 0.5 }}>
+                  <td style={{ padding: '10px 12px', fontSize: 14, color: '#555555' }}>{p.name}</td>
+                  <td style={{ padding: '10px 12px', fontSize: 14, color: '#555555' }}>
                     {p.unit_price !== null
                       ? `¥${p.unit_price.toLocaleString('ja-JP')}`
-                      : <span style={{ color: '#ef4444' }}>未設定</span>}
+                      : <span style={{ color: '#DC2626' }}>未設定</span>}
                   </td>
                   <td style={{ padding: '10px 12px' }}>
                     <span style={{
                       fontSize: 12, padding: '2px 8px', borderRadius: 10,
-                      background: p.status === 'active' ? 'rgba(52,211,153,0.1)' : 'rgba(255,215,0,0.1)',
-                      color:      p.status === 'active' ? '#34d399' : '#FFD700',
+                      background: p.status === 'active' ? '#DCFCE7' : '#FEF9C3',
+                      color:      p.status === 'active' ? '#16A34A' : '#A16207',
                       fontWeight: 600,
                     }}>
                       {p.status === 'active' ? '有効' : '仮登録'}
                     </span>
                   </td>
                   <td style={{ padding: '8px 12px', whiteSpace: 'nowrap' }}>
-                    <button onClick={() => startEdit(p)} style={btnSmall('#6b7280')}>編集</button>
+                    <button onClick={() => startEdit(p)} style={btnSmall('#888888')}>編集</button>
                     {p.active_flag && (
                       <button onClick={() => remove(p.id, p.name)} style={{ ...btnSmall('#ef4444'), marginLeft: 6 }}>無効化</button>
                     )}
@@ -360,7 +360,7 @@ export default function ProductsPage() {
                 </tr>
               ))}
               {filtered.length === 0 && (
-                <tr><td colSpan={4} style={{ padding: 24, textAlign: 'center', color: '#6b7280' }}>商品がありません</td></tr>
+                <tr><td colSpan={4} style={{ padding: 24, textAlign: 'center', color: '#888888' }}>商品がありません</td></tr>
               )}
             </tbody>
           </table>
@@ -371,8 +371,8 @@ export default function ProductsPage() {
 }
 
 const btnPrimary: React.CSSProperties   = { padding: '8px 18px', background: '#FFD700', color: '#000', border: 'none', borderRadius: 6, cursor: 'pointer', fontSize: 13, fontWeight: 700 }
-const btnGreen: React.CSSProperties     = { padding: '8px 18px', background: '#34d399', color: '#000', border: 'none', borderRadius: 6, cursor: 'pointer', fontSize: 13, fontWeight: 700 }
-const btnSecondary: React.CSSProperties = { padding: '8px 18px', background: '#1a2035', color: '#9ca3af', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 6, cursor: 'pointer', fontSize: 13 }
+const btnGreen: React.CSSProperties     = { padding: '8px 18px', background: '#16A34A', color: '#fff', border: 'none', borderRadius: 6, cursor: 'pointer', fontSize: 13, fontWeight: 700 }
+const btnSecondary: React.CSSProperties = { padding: '8px 18px', background: '#F0EDE8', color: '#777777', border: '1px solid #D0CAC3', borderRadius: 6, cursor: 'pointer', fontSize: 13 }
 
 const s: Record<string, React.CSSProperties> = {
   lineSupport: {
@@ -380,14 +380,14 @@ const s: Record<string, React.CSSProperties> = {
     alignItems: 'center',
     gap: 8,
     padding: '6px 12px',
-    background: 'rgba(0, 200, 0, 0.1)',
-    border: '1px solid rgba(0, 200, 0, 0.3)',
+    background: 'rgba(0, 195, 0, 0.07)',
+    border: '1px solid rgba(0, 195, 0, 0.25)',
     borderRadius: 6,
     marginLeft: 'auto',
   },
   lineText: {
     fontSize: 12,
-    color: '#9ca3af',
+    color: '#555555',
     fontWeight: 500,
   },
   lineButton: {
@@ -404,6 +404,6 @@ const s: Record<string, React.CSSProperties> = {
 const btnSmall = (bg: string): React.CSSProperties => ({ padding: '4px 10px', background: bg, color: '#fff', border: 'none', borderRadius: 4, cursor: 'pointer', fontSize: 12 })
 
 // Excel preview styles
-const xlRowNum: React.CSSProperties = { padding: '4px 8px', textAlign: 'center', border: '1px solid rgba(255,255,255,0.1)', color: '#6b7280', fontSize: 11, background: '#0f1629', width: 28, minWidth: 28 }
-const xlColHead: React.CSSProperties = { padding: '4px 10px', textAlign: 'left', border: '1px solid rgba(255,255,255,0.1)', color: '#9ca3af', fontSize: 11, background: '#0f1629', fontWeight: 600, whiteSpace: 'nowrap' }
-const xlCell: React.CSSProperties = { padding: '5px 10px', border: '1px solid rgba(255,255,255,0.1)', color: '#d1d5db', fontSize: 12, background: '#111827' }
+const xlRowNum: React.CSSProperties = { padding: '4px 8px', textAlign: 'center', border: '1px solid #E5E0DA', color: '#888888', fontSize: 11, background: '#F5F0EB', width: 28, minWidth: 28 }
+const xlColHead: React.CSSProperties = { padding: '4px 10px', textAlign: 'left', border: '1px solid #E5E0DA', color: '#777777', fontSize: 11, background: '#F5F0EB', fontWeight: 600, whiteSpace: 'nowrap' }
+const xlCell: React.CSSProperties = { padding: '5px 10px', border: '1px solid #E5E0DA', color: '#555555', fontSize: 12, background: '#FFFFFF' }

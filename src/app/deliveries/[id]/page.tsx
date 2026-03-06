@@ -103,7 +103,7 @@ export default async function DeliveryDetailPage({
 
       {/* ── 商品一覧 ─────────────────────────────── */}
       <h2 style={s.sectionTitle}>
-        商品{isEditable && <span style={{ fontSize: 11, fontWeight: 400, color: '#6b7280', marginLeft: 6 }}>編集・削除できます</span>}
+        商品{isEditable && <span style={{ fontSize: 11, fontWeight: 400, color: '#888888', marginLeft: 6 }}>編集・削除できます</span>}
       </h2>
 
       <DeliveryItemList
@@ -143,7 +143,7 @@ const s: Record<string, CSSProperties> = {
     margin: '0 auto',
     padding: '16px 16px 48px',
     fontFamily: 'system-ui, -apple-system, sans-serif',
-    backgroundColor: '#0a0f1e',
+    backgroundColor: '#FDFCFB',
     minHeight: '100dvh',
   },
   header: {
@@ -154,7 +154,7 @@ const s: Record<string, CSSProperties> = {
   },
   backLink: {
     fontSize: 14,
-    color: '#FFD700',
+    color: '#A16207',
     textDecoration: 'none',
     padding: '8px 0',
     minHeight: 44,
@@ -164,32 +164,33 @@ const s: Record<string, CSSProperties> = {
   heading: {
     fontSize: 18,
     fontWeight: 700,
-    color: '#fff',
+    color: '#333333',
     margin: 0,
   },
   card: {
-    background: '#111827',
-    border: '1px solid rgba(255,255,255,0.08)',
+    background: '#FFFFFF',
+    border: '1px solid #E5E0DA',
     borderRadius: 12,
     padding: '4px 16px',
     marginBottom: 16,
+    boxShadow: '2px 2px 0 #E5E0DA',
   },
   row: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: '12px 0',
-    borderBottom: '1px solid rgba(255,255,255,0.05)',
+    borderBottom: '1px solid #F0EDE8',
   },
   rowLabel: {
     fontSize: 13,
-    color: '#9ca3af',
+    color: '#777777',
     flexShrink: 0,
   },
   rowValue: {
     fontSize: 15,
     fontWeight: 600,
-    color: '#fff',
+    color: '#333333',
     textAlign: 'right',
     marginLeft: 16,
   },
@@ -201,28 +202,28 @@ const s: Record<string, CSSProperties> = {
   },
   statusLabel: {
     fontSize: 13,
-    color: '#9ca3af',
+    color: '#777777',
   },
   badgeEditable: {
     fontSize: 12,
     fontWeight: 600,
-    color: '#34d399',
-    background: 'rgba(52,211,153,0.1)',
+    color: '#16A34A',
+    background: '#DCFCE7',
     padding: '3px 10px',
     borderRadius: 20,
   },
   badgeInvoiced: {
     fontSize: 12,
     fontWeight: 600,
-    color: '#9ca3af',
-    background: 'rgba(255,255,255,0.05)',
+    color: '#777777',
+    background: '#F0EDE8',
     padding: '3px 10px',
     borderRadius: 20,
   },
   sectionTitle: {
     fontSize: 13,
     fontWeight: 600,
-    color: '#9ca3af',
+    color: '#888888',
     margin: '0 0 8px 4px',
     letterSpacing: '0.05em',
   },
@@ -231,9 +232,9 @@ const s: Record<string, CSSProperties> = {
     padding: '10px 16px',
     fontSize: 14,
     fontWeight: 600,
-    background: 'rgba(255,215,0,0.15)',
-    color: '#FFD700',
-    border: '1px solid rgba(255,215,0,0.4)',
+    background: '#F5F0EB',
+    color: '#A16207',
+    border: '1px solid #D0CAC3',
     borderRadius: 8,
     textDecoration: 'none',
   },

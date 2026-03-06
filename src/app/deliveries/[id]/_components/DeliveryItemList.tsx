@@ -69,7 +69,7 @@ export default function DeliveryItemList({ deliveryId, initialItems, isEditable 
   if (items.length === 0) {
     return (
       <div style={s.card}>
-        <p style={{ textAlign: 'center', color: '#6b7280', padding: '16px 0', margin: 0, fontSize: 14 }}>
+        <p style={{ textAlign: 'center', color: '#888888', padding: '16px 0', margin: 0, fontSize: 14 }}>
           商品がありません
         </p>
       </div>
@@ -147,14 +147,15 @@ export default function DeliveryItemList({ deliveryId, initialItems, isEditable 
 
 const s: Record<string, CSSProperties> = {
   card: {
-    background: '#111827',
-    border: '1px solid rgba(255,255,255,0.08)',
+    background: '#FFFFFF',
+    border: '1px solid #E5E0DA',
     borderRadius: 12,
     padding: '4px 16px',
     marginBottom: 16,
+    boxShadow: '2px 2px 0 #E5E0DA',
   },
   divider: {
-    borderTop: '1px solid rgba(255,255,255,0.05)',
+    borderTop: '1px solid #F0EDE8',
   },
   itemRow: {
     display: 'flex',
@@ -175,7 +176,7 @@ const s: Record<string, CSSProperties> = {
   },
   itemName: {
     fontSize: 14,
-    color: '#d1d5db',
+    color: '#555555',
     flex: 1,
     marginRight: 8,
   },
@@ -188,7 +189,7 @@ const s: Record<string, CSSProperties> = {
   itemQty: {
     fontSize: 15,
     fontWeight: 600,
-    color: '#9ca3af',
+    color: '#777777',
     minWidth: 24,
     textAlign: 'right',
   },
@@ -203,10 +204,10 @@ const s: Record<string, CSSProperties> = {
     padding: '6px 8px',
     fontSize: 15,
     fontWeight: 600,
-    background: '#1a2035',
-    border: '1px solid rgba(255,215,0,0.4)',
+    background: '#FFFFFF',
+    border: '1px solid #A16207',
     borderRadius: 6,
-    color: '#fff',
+    color: '#333333',
     textAlign: 'center',
   },
   btn: {
@@ -219,19 +220,19 @@ const s: Record<string, CSSProperties> = {
     minHeight: 32,
   },
   btnEdit: {
-    background: 'rgba(255,215,0,0.12)',
-    color: '#FFD700',
+    background: '#FEF9C3',
+    color: '#A16207',
   },
   btnDel: {
-    background: 'rgba(239,68,68,0.12)',
+    background: '#FEF2F2',
     color: '#ef4444',
   },
   btnSave: {
-    background: 'rgba(52,211,153,0.15)',
-    color: '#34d399',
+    background: '#DCFCE7',
+    color: '#16A34A',
   },
   btnCancel: {
-    background: 'rgba(255,255,255,0.06)',
-    color: '#9ca3af',
+    background: '#F0EDE8',
+    color: '#777777',
   },
 }

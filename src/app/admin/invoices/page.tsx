@@ -28,8 +28,8 @@ function fmtNum(n: number | null | undefined) {
 
 const STATUS_LABEL: Record<string, string> = { draft: '下書き', confirmed: '確定済み' }
 const STATUS_COLOR: Record<string, { bg: string; color: string }> = {
-  draft:     { bg: 'rgba(255,215,0,0.1)',    color: '#FFD700' },
-  confirmed: { bg: 'rgba(52,211,153,0.1)',   color: '#34d399' },
+  draft:     { bg: '#FEF9C3',  color: '#A16207' },
+  confirmed: { bg: '#DCFCE7',  color: '#16A34A' },
 }
 
 export default function InvoicesPage() {
@@ -76,7 +76,7 @@ export default function InvoicesPage() {
   return (
     <div style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20, flexWrap: 'wrap' }}>
-        <h2 style={{ margin: 0, color: '#fff' }}>請求書一覧</h2>
+        <h2 style={{ margin: 0, color: '#333333' }}>請求書一覧</h2>
 
         {/* LINEお問い合わせリンク */}
         <div style={s.lineSupport}>
@@ -97,7 +97,7 @@ export default function InvoicesPage() {
             type="date"
             value={genDate}
             onChange={e => setGenDate(e.target.value)}
-            style={{ padding: '7px 10px', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 6, fontSize: 13, background: '#1a2035', color: '#d1d5db' }}
+            style={{ padding: '7px 10px', border: '1px solid #D0CAC3', borderRadius: 6, fontSize: 13, background: '#FFFFFF', color: '#333333' }}
           />
           <button onClick={generate} disabled={generating} style={btnGreen}>
             {generating ? '生成中…' : '請求書を生成'}
@@ -107,11 +107,11 @@ export default function InvoicesPage() {
 
       {genMsg && (
         <div style={{
-          background: genMsg.startsWith('エラー') ? 'rgba(239,68,68,0.1)' : 'rgba(52,211,153,0.1)',
+          background: genMsg.startsWith('エラー') ? '#FEF2F2' : '#F0FDF4',
           border: '1px solid',
-          borderColor: genMsg.startsWith('エラー') ? 'rgba(239,68,68,0.3)' : 'rgba(52,211,153,0.3)',
+          borderColor: genMsg.startsWith('エラー') ? '#FECACA' : '#BBF7D0',
           borderRadius: 6, padding: '10px 14px', marginBottom: 16, fontSize: 13,
-          color: genMsg.startsWith('エラー') ? '#ef4444' : '#34d399',
+          color: genMsg.startsWith('エラー') ? '#DC2626' : '#16A34A',
         }}>
           {genMsg}
         </div>
@@ -121,9 +121,9 @@ export default function InvoicesPage() {
       <div style={{ display: 'flex', gap: 6, marginBottom: 16 }}>
         {(['all', 'draft', 'confirmed'] as const).map(f => (
           <button key={f} onClick={() => setFilter(f)} style={{
-            padding: '5px 14px', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 6, cursor: 'pointer', fontSize: 13,
-            background: filter === f ? '#FFD700' : '#1a2035',
-            color:      filter === f ? '#000' : '#9ca3af',
+            padding: '5px 14px', border: '1px solid #D0CAC3', borderRadius: 6, cursor: 'pointer', fontSize: 13,
+            background: filter === f ? '#FFD700' : '#FFFFFF',
+            color:      filter === f ? '#000' : '#777777',
             fontWeight: filter === f ? 700 : 400,
           }}>
             {f === 'all' ? '全て' : STATUS_LABEL[f]}
@@ -131,33 +131,33 @@ export default function InvoicesPage() {
         ))}
       </div>
 
-      {loading ? <p style={{ color: '#9ca3af' }}>読み込み中…</p> : (
-        <table style={{ width: '100%', borderCollapse: 'collapse', background: '#111827', borderRadius: 10, overflow: 'hidden' }}>
+      {loading ? <p style={{ color: '#888888' }}>読み込み中…</p> : (
+        <table style={{ width: '100%', borderCollapse: 'collapse', background: '#FFFFFF', border: '1px solid #E5E0DA', borderRadius: 10, overflow: 'hidden', boxShadow: '2px 2px 0 #E5E0DA' }}>
           <thead>
-            <tr style={{ background: '#1a2035' }}>
+            <tr style={{ background: '#F5F0EB' }}>
               {['会社名', '対象期間', '締め日', '合計（税込）', '状態', ''].map(h => (
-                <th key={h} style={{ padding: '10px 12px', textAlign: 'left', fontSize: 13, fontWeight: 600, borderBottom: '1px solid rgba(255,255,255,0.08)', color: '#9ca3af' }}>{h}</th>
+                <th key={h} style={{ padding: '10px 12px', textAlign: 'left', fontSize: 13, fontWeight: 600, borderBottom: '1px solid #E5E0DA', color: '#777777' }}>{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {filtered.map(inv => {
-              const sc = STATUS_COLOR[inv.status] ?? { bg: 'rgba(255,255,255,0.05)', color: '#9ca3af' }
+              const sc = STATUS_COLOR[inv.status] ?? { bg: '#F0EDE8', color: '#777777' }
               return (
-                <tr key={inv.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                <tr key={inv.id} style={{ borderBottom: '1px solid #F0EDE8' }}>
                   <td style={td}>{inv.company?.name ?? '—'}</td>
                   <td style={td}>
                     {inv.period_from ? `${fmtDate(inv.period_from)} ～ ${fmtDate(inv.period_to)}` : '—'}
                   </td>
                   <td style={td}>{fmtDate(inv.closing_date)}</td>
-                  <td style={{ ...td, fontWeight: 600, color: '#FFD700' }}>{fmtNum(inv.grand_total)}</td>
+                  <td style={{ ...td, fontWeight: 600, color: '#A16207' }}>{fmtNum(inv.grand_total)}</td>
                   <td style={td}>
                     <span style={{ fontSize: 12, padding: '2px 8px', borderRadius: 10, background: sc.bg, color: sc.color, fontWeight: 600 }}>
                       {STATUS_LABEL[inv.status] ?? inv.status}
                     </span>
                   </td>
                   <td style={{ padding: '8px 12px' }}>
-                    <Link href={`/admin/invoices/${inv.id}`} style={{ fontSize: 13, color: '#FFD700', textDecoration: 'none', padding: '4px 10px', border: '1px solid rgba(255,215,0,0.3)', borderRadius: 4 }}>
+                    <Link href={`/admin/invoices/${inv.id}`} style={{ fontSize: 13, color: '#A16207', textDecoration: 'none', padding: '4px 10px', border: '1px solid #D0CAC3', borderRadius: 4 }}>
                       詳細
                     </Link>
                   </td>
@@ -165,7 +165,7 @@ export default function InvoicesPage() {
               )
             })}
             {filtered.length === 0 && (
-              <tr><td colSpan={6} style={{ padding: 24, textAlign: 'center', color: '#6b7280' }}>請求書がありません</td></tr>
+              <tr><td colSpan={6} style={{ padding: 24, textAlign: 'center', color: '#888888' }}>請求書がありません</td></tr>
             )}
           </tbody>
         </table>
@@ -174,8 +174,8 @@ export default function InvoicesPage() {
   )
 }
 
-const td  = { padding: '10px 12px', fontSize: 14, verticalAlign: 'middle' as const, color: '#d1d5db' }
-const btnGreen: React.CSSProperties = { padding: '8px 18px', background: '#34d399', color: '#000', border: 'none', borderRadius: 6, cursor: 'pointer', fontSize: 13, fontWeight: 700 }
+const td  = { padding: '10px 12px', fontSize: 14, verticalAlign: 'middle' as const, color: '#555555' }
+const btnGreen: React.CSSProperties = { padding: '8px 18px', background: '#16A34A', color: '#fff', border: 'none', borderRadius: 6, cursor: 'pointer', fontSize: 13, fontWeight: 700 }
 
 const s: Record<string, React.CSSProperties> = {
   lineSupport: {
@@ -190,7 +190,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   lineText: {
     fontSize: 12,
-    color: '#9ca3af',
+    color: '#555555',
     fontWeight: 500,
   },
   lineButton: {

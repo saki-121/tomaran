@@ -182,13 +182,13 @@ const s: Record<string, CSSProperties> = {
     margin: '0 auto',
     padding: '24px 16px 100px',
     fontFamily: 'system-ui, -apple-system, sans-serif',
-    backgroundColor: '#0a0f1e',
+    backgroundColor: '#FDFCFB',
     minHeight: '100dvh',
   },
   heading: {
     fontSize: 20,
     fontWeight: 700,
-    color: '#fff',
+    color: '#333333',
     margin: '0 0 16px',
   },
   section: {
@@ -197,13 +197,13 @@ const s: Record<string, CSSProperties> = {
   label: {
     fontSize: 12,
     fontWeight: 600,
-    color: '#6b7280',
+    color: '#888888',
     letterSpacing: '0.05em',
     margin: '0 0 8px',
   },
   empty: {
     fontSize: 14,
-    color: '#6b7280',
+    color: '#888888',
     textAlign: 'center',
     padding: '32px 0',
     margin: 0,
@@ -217,7 +217,7 @@ const s: Record<string, CSSProperties> = {
     gap: 8,
   },
   details: {
-    borderTop: '1px solid rgba(255,255,255,0.08)',
+    borderTop: '1px solid #E5E0DA',
     paddingTop: 4,
   },
   summary: {
@@ -227,14 +227,14 @@ const s: Record<string, CSSProperties> = {
     padding: '10px 0',
     fontSize: 13,
     fontWeight: 600,
-    color: '#9ca3af',
+    color: '#777777',
     cursor: 'pointer',
     listStyle: 'none',
     userSelect: 'none',
   },
   arrow: {
     fontSize: 10,
-    color: '#6b7280',
+    color: '#888888',
   },
   fab: {
     position: 'fixed',
@@ -250,21 +250,21 @@ const s: Record<string, CSSProperties> = {
     justifyContent: 'center',
     fontSize: 28,
     textDecoration: 'none',
-    boxShadow: '0 4px 14px rgba(255,215,0,0.4)',
+    boxShadow: '0 4px 14px rgba(255,215,0,0.35)',
   },
   lineSupport: {
     display: 'flex',
     alignItems: 'center',
     gap: 8,
     padding: '8px 12px',
-    background: 'rgba(0, 200, 0, 0.1)',
-    border: '1px solid rgba(0, 200, 0, 0.3)',
-    borderRadius: 6,
+    background: 'rgba(0, 195, 0, 0.07)',
+    border: '1px solid rgba(0, 195, 0, 0.25)',
+    borderRadius: 8,
     margin: '24px 0',
   },
   lineText: {
     fontSize: 13,
-    color: '#9ca3af',
+    color: '#555555',
     fontWeight: 500,
   },
   lineButton: {
@@ -274,7 +274,7 @@ const s: Record<string, CSSProperties> = {
     background: '#00C300',
     color: '#fff',
     textDecoration: 'none',
-    borderRadius: 4,
+    borderRadius: 6,
     whiteSpace: 'nowrap',
   },
 }

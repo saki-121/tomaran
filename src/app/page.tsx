@@ -19,18 +19,22 @@ export const metadata: Metadata = {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Design tokens
+// Design tokens — 暖かみのある紙テーマ
 // ─────────────────────────────────────────────────────────────────────────────
 
-const Y    = '#FFD700'
-const BG   = '#0a0f1e'
-const BG2  = '#0f1629'
-const CARD = '#111827'
-const C2   = '#1a2035'
+const Y      = '#FFD700'   // brand yellow（CTAボタン背景のみ）
+const AMBER  = '#A16207'   // dark amber（テキストアクセント）
+const GREEN  = '#166534'   // trust green（動画CTAボタン）
+const BG     = '#FDFCFB'   // 温かみのある紙
+const BG2    = '#F5F0EB'   // 少し濃いベージュ
+const CARD   = '#FFFFFF'   // 白カード
+const TEXT   = '#333333'   // スミブラック
+const TEXT2  = '#555555'   // セカンダリテキスト
+const TEXT3  = '#777777'   // 補足テキスト
 
-const YT_URL   = 'https://youtube.com/@tomaran.net3?si=Ea5PJWp72erIRKHI'
-const MAX_W    = 480      // スマホ前提のコンテンツ幅
-const PX       = '20px'  // 左右パディング
+const YT_URL = 'https://youtube.com/@tomaran.net3?si=Ea5PJWp72erIRKHI'
+const MAX_W  = 480
+const PX     = '20px'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Page
@@ -42,28 +46,28 @@ export default async function Page() {
   if (user) redirect('/deliveries')
 
   return (
-    <div style={{ fontFamily: 'system-ui, -apple-system, sans-serif', background: BG, color: '#fff', overflowX: 'hidden' }}>
+    <div style={{ fontFamily: 'system-ui, -apple-system, sans-serif', background: BG, color: TEXT, overflowX: 'hidden' }}>
 
       {/* ══════════════════════════════════════════════════════════
-          HEADER
+          HEADER — 見やすさのためダークのまま
       ══════════════════════════════════════════════════════════ */}
       <header style={{
         position: 'sticky', top: 0, zIndex: 100,
         background: 'rgba(10,15,30,0.97)', backdropFilter: 'blur(8px)',
         borderBottom: '1px solid rgba(255,215,0,0.15)',
-        padding: `0 ${PX}`, height: 56,
+        padding: `0 ${PX}`, height: 60,
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
       }}>
-        <span style={{ fontWeight: 900, fontSize: 22, letterSpacing: '0.05em', color: Y }}>
+        <span style={{ fontWeight: 900, fontSize: 26, letterSpacing: '0.05em', color: Y }}>
           tomaran
         </span>
         <Link
           href="/login"
           style={{
-            background: Y, padding: '8px 18px',
-            fontSize: 13, fontWeight: 700,
+            background: Y, padding: '10px 22px',
+            fontSize: 17, fontWeight: 700,
             color: '#000', textDecoration: 'none',
-            borderRadius: 6, whiteSpace: 'nowrap',
+            borderRadius: 12, whiteSpace: 'nowrap',
           }}
         >
           ログイン / 始める
@@ -73,56 +77,79 @@ export default async function Page() {
       {/* ══════════════════════════════════════════════════════════
           1. ファーストビュー
       ══════════════════════════════════════════════════════════ */}
-      <section style={{
-        padding: '64px 20px 56px',
-        maxWidth: MAX_W, margin: '0 auto',
-        textAlign: 'center',
-      }}>
-        {/* メインキャッチ */}
-        <p style={{
-          fontSize: 13, fontWeight: 700, color: Y,
-          letterSpacing: '0.15em', marginBottom: 20,
-        }}>
+      <section style={{ padding: '64px 20px 56px', maxWidth: MAX_W, margin: '0 auto', textAlign: 'center' }}>
+        <p style={{ fontSize: 17, fontWeight: 700, color: AMBER, letterSpacing: '0.15em', marginBottom: 20 }}>
           資材屋の仕事を止めない道具
         </p>
 
-        <h1 style={{
-          fontSize: 38, fontWeight: 900, lineHeight: 1.25,
-          marginBottom: 12, letterSpacing: '-0.01em',
-        }}>
-          仕事の<span style={{ color: Y }}>Stop</span>を<br />なくす。
+        <h1 style={{ fontSize: 42, fontWeight: 900, lineHeight: 1.25, marginBottom: 16, letterSpacing: '-0.01em', color: TEXT }}>
+          仕事の<span style={{ color: AMBER }}>Stop</span>を<br />なくす。
         </h1>
 
-        <p style={{ fontSize: 19, fontWeight: 700, lineHeight: 1.7, marginBottom: 32, color: '#d1d5db' }}>
+        <p style={{ fontSize: 23, fontWeight: 700, lineHeight: 1.7, marginBottom: 32, color: '#444' }}>
           資材屋の<br />
           納品・見積・請求を<br />
-          <span style={{ color: Y }}>スマホひとつで回す道具。</span>
+          <span style={{ color: AMBER }}>スマホひとつで回す道具。</span>
         </p>
 
-        <p style={{ fontSize: 14, color: '#6b7280', lineHeight: 1.9, marginBottom: 48 }}>
-          ITツールでも<br />
-          DXでもありません。<br />
-          <br />
-          ただの<br />
-          <strong style={{ color: '#9ca3af' }}>仕事のStopを消す道具</strong>です。
-        </p>
+        {/* デモ画面（即実利を示す） */}
+        <div style={{
+          background: CARD, border: '1px solid #E5E0DA',
+          borderRadius: 14, padding: '20px 18px', marginBottom: 32,
+          boxShadow: '3px 3px 0 #E5E0DA', textAlign: 'left',
+        }}>
+          <p style={{ fontSize: 15, color: TEXT3, margin: '0 0 12px', fontWeight: 700 }}>
+            ▶ 単価表 Excel 取込デモ
+          </p>
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            {[
+              { bg: '#F0FDF4', border: '#BBF7D0', color: '#166534', label: '✓ 500件 → 5分' },
+              { bg: '#FFF7ED', border: '#FED7AA', color: '#C2410C', label: '✓ CSV変換不要' },
+              { bg: '#EFF6FF', border: '#BFDBFE', color: '#1D4ED8', label: '✓ 今のExcelそのまま' },
+            ].map(t => (
+              <div key={t.label} style={{
+                background: t.bg, border: `1px solid ${t.border}`,
+                borderRadius: 10, padding: '10px 16px',
+                fontSize: 17, color: t.color, fontWeight: 700,
+              }}>
+                {t.label}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* 「本音」ボックス — 明朝体・薄ベージュで思想でなく本音の演出 */}
+        <div style={{
+          background: '#FFF8F0', border: '1px solid #E5D5C0',
+          borderLeft: '4px solid #C2710C',
+          borderRadius: 8, padding: '24px 22px', marginBottom: 44,
+          textAlign: 'left',
+          fontFamily: "'Georgia', '游明朝', 'YuMincho', '游明朝体', serif",
+        }}>
+          <p style={{ fontSize: 20, color: '#5D4037', lineHeight: 2.1, margin: 0 }}>
+            ITツールでも<br />
+            DXでもありません。<br />
+            <br />
+            ただの<br />
+            <strong style={{ color: '#C2710C' }}>仕事のStopを消す道具</strong>です。
+          </p>
+        </div>
 
         {/* CTA × 2 */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 20 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginBottom: 24 }}>
           <a
             href={YT_URL}
             target="_blank"
             rel="noopener noreferrer"
             style={{
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
-              background: '#ff0000', color: '#fff',
-              padding: '16px 24px', borderRadius: 10,
-              fontWeight: 700, fontSize: 16, textDecoration: 'none',
-              boxShadow: '0 4px 20px rgba(255,0,0,0.3)',
-              minHeight: 56,
+              background: GREEN, color: '#fff',
+              padding: '18px 24px', borderRadius: 14,
+              fontWeight: 700, fontSize: 20, textDecoration: 'none',
+              boxShadow: '3px 3px 0 #0F4620', minHeight: 60,
             }}
           >
-            <span style={{ fontSize: 22 }}>▶</span>
+            <span style={{ fontSize: 24 }}>▶</span>
             30秒でわかる動画を見る
           </a>
 
@@ -131,17 +158,16 @@ export default async function Page() {
             style={{
               display: 'block',
               background: Y, color: '#000',
-              padding: '16px 24px', borderRadius: 10,
-              fontWeight: 900, fontSize: 18, textDecoration: 'none',
-              boxShadow: '0 0 32px rgba(255,215,0,0.25)',
-              minHeight: 56, lineHeight: '24px',
+              padding: '18px 24px', borderRadius: 14,
+              fontWeight: 900, fontSize: 22, textDecoration: 'none',
+              boxShadow: '3px 3px 0 #B8860B', minHeight: 60, lineHeight: '24px',
             }}
           >
             今すぐ始める →
           </Link>
         </div>
 
-        <p style={{ fontSize: 12, color: '#4b5563', lineHeight: 1.7 }}>
+        <p style={{ fontSize: 16, color: TEXT3, lineHeight: 1.7 }}>
           「使えねえな」と思ったら<br />
           すぐ解約してください。笑
         </p>
@@ -152,10 +178,10 @@ export default async function Page() {
       ══════════════════════════════════════════════════════════ */}
       <section style={{ background: BG2, padding: '64px 20px' }}>
         <div style={{ maxWidth: MAX_W, margin: '0 auto' }}>
-          <h2 style={{ fontSize: 26, fontWeight: 900, marginBottom: 8, lineHeight: 1.4 }}>
+          <h2 style={{ fontSize: 30, fontWeight: 900, marginBottom: 8, lineHeight: 1.4, color: TEXT }}>
             この道具が<br />向いている資材屋
           </h2>
-          <p style={{ color: '#9ca3af', fontSize: 15, marginBottom: 32, lineHeight: 1.7 }}>
+          <p style={{ color: TEXT2, fontSize: 19, marginBottom: 32, lineHeight: 1.7 }}>
             もし3つ以上当てはまるなら<br />たぶん役に立ちます。
           </p>
 
@@ -170,27 +196,25 @@ export default async function Page() {
             ].map(item => (
               <div key={item} style={{
                 display: 'flex', alignItems: 'center', gap: 14,
-                background: CARD, border: '1px solid rgba(255,215,0,0.15)',
-                borderRadius: 10, padding: '14px 18px',
+                background: CARD, border: '1px solid #E5E0DA',
+                borderRadius: 12, padding: '16px 18px',
+                boxShadow: '2px 2px 0 #E5E0DA',
               }}>
                 <span style={{
-                  width: 24, height: 24, border: `2px solid ${Y}`,
+                  width: 26, height: 26, border: `2px solid ${AMBER}`,
                   borderRadius: 4, flexShrink: 0, display: 'flex',
                   alignItems: 'center', justifyContent: 'center',
-                  color: Y, fontWeight: 900, fontSize: 15,
+                  color: AMBER, fontWeight: 900, fontSize: 17,
                 }}>☑</span>
-                <span style={{ fontSize: 15, color: '#d1d5db', fontWeight: 500 }}>{item}</span>
+                <span style={{ fontSize: 19, color: TEXT, fontWeight: 500 }}>{item}</span>
               </div>
             ))}
           </div>
 
-          <div style={{
-            background: C2, border: '1px solid rgba(255,255,255,0.07)',
-            borderRadius: 10, padding: '18px 20px',
-          }}>
-            <p style={{ fontSize: 13, color: '#6b7280', margin: 0, lineHeight: 1.8 }}>
+          <div style={{ background: '#F5F1EC', border: '1px solid #E5E0DA', borderRadius: 10, padding: '20px 20px' }}>
+            <p style={{ fontSize: 17, color: TEXT3, margin: 0, lineHeight: 1.8 }}>
               逆に——<br />
-              <strong style={{ color: '#4b5563' }}>完全デジタル化している会社には<br />たぶん必要ありません。</strong>
+              <strong style={{ color: TEXT2 }}>完全デジタル化している会社には<br />たぶん必要ありません。</strong>
             </p>
           </div>
         </div>
@@ -199,82 +223,55 @@ export default async function Page() {
       {/* ══════════════════════════════════════════════════════════
           3. 資材屋の1日（Stopが起きる瞬間）
       ══════════════════════════════════════════════════════════ */}
-      <section style={{ padding: '64px 20px' }}>
+      <section style={{ padding: '64px 20px', background: BG }}>
         <div style={{ maxWidth: MAX_W, margin: '0 auto' }}>
-          <h2 style={{ fontSize: 26, fontWeight: 900, marginBottom: 8, lineHeight: 1.4 }}>
+          <h2 style={{ fontSize: 30, fontWeight: 900, marginBottom: 8, lineHeight: 1.4, color: TEXT }}>
             資材屋の仕事は<br />
-            <span style={{ color: '#ef4444' }}>Stopが多すぎる。</span>
+            <span style={{ color: '#DC2626' }}>Stopが多すぎる。</span>
           </h2>
-          <p style={{ color: '#6b7280', fontSize: 14, marginBottom: 48 }}>
+          <p style={{ color: TEXT3, fontSize: 18, marginBottom: 48 }}>
             毎日起きている「あるある」を<br />正直に書きます。
           </p>
 
-          {/* ストーリータイムライン */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
             {[
-              {
-                time: '朝',
-                scene: '現場から電話',
-                detail: '「今日の納品これ追加して」',
-                stop: true,
-              },
-              {
-                time: '昼',
-                scene: '納品書 手書き',
-                detail: 'ボールペンで丁寧に書く。\n消えないように願いながら。',
-                stop: false,
-              },
-              {
-                time: '夕方',
-                scene: '事務所に戻る',
-                detail: '納品書の山。',
-                stop: false,
-              },
-              {
-                time: '───',
-                scene: '事務員\n「これなんて書いてます？」',
-                detail: '社長\n「うーん……」',
-                stop: true,
-              },
-              {
-                time: '月末',
-                scene: '請求書を作る',
-                detail: '確認→修正→また確認。\n\n仕事は忙しいのに\nなぜか\n流れが止まる。',
-                stop: true,
-              },
+              { time: '朝',   scene: '現場から電話',                    detail: '「今日の納品これ追加して」',                                                        stop: true  },
+              { time: '昼',   scene: '納品書 手書き',                   detail: 'ボールペンで丁寧に書く。\n消えないように願いながら。',                                stop: false },
+              { time: '夕方', scene: '事務所に戻る',                    detail: '納品書の山。',                                                                        stop: false },
+              { time: '───', scene: '事務員\n「これなんて書いてます？」', detail: '社長\n「うーん……」',                                                              stop: true  },
+              { time: '月末', scene: '請求書を作る',                    detail: '確認→修正→また確認。\n\n仕事は忙しいのに\nなぜか\n流れが止まる。',                   stop: true  },
             ].map((row, i) => (
               <div key={i} style={{ display: 'flex', gap: 16, marginBottom: 8 }}>
-                {/* 時間軸 */}
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: 48, flexShrink: 0 }}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: 52, flexShrink: 0 }}>
                   <div style={{
-                    width: 44, height: 44, borderRadius: '50%',
-                    background: row.stop ? 'rgba(239,68,68,0.15)' : C2,
-                    border: `2px solid ${row.stop ? '#ef4444' : 'rgba(255,255,255,0.08)'}`,
+                    width: 48, height: 48, borderRadius: '50%',
+                    background: row.stop ? 'rgba(220,38,38,0.08)' : '#F0EDE8',
+                    border: `2px solid ${row.stop ? '#DC2626' : '#E5E0DA'}`,
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: 11, fontWeight: 700,
-                    color: row.stop ? '#ef4444' : '#6b7280',
+                    fontSize: 13, fontWeight: 700,
+                    color: row.stop ? '#DC2626' : TEXT3,
                     flexShrink: 0, textAlign: 'center',
                   }}>
                     {row.time}
                   </div>
-                  {i < 4 && <div style={{ width: 2, flex: 1, minHeight: 16, background: 'rgba(255,255,255,0.06)', margin: '4px 0' }} />}
+                  {i < 4 && <div style={{ width: 2, flex: 1, minHeight: 16, background: '#E5E0DA', margin: '4px 0' }} />}
                 </div>
 
-                {/* 内容 */}
                 <div style={{
-                  flex: 1, background: row.stop ? 'rgba(239,68,68,0.05)' : CARD,
-                  border: `1px solid ${row.stop ? 'rgba(239,68,68,0.2)' : 'rgba(255,255,255,0.06)'}`,
-                  borderRadius: 10, padding: '14px 16px', marginBottom: 0,
+                  flex: 1,
+                  background: row.stop ? '#FFF5F5' : CARD,
+                  border: `1px solid ${row.stop ? '#FECACA' : '#E5E0DA'}`,
+                  borderRadius: 12, padding: '16px 18px',
+                  boxShadow: '2px 2px 0 #E5E0DA',
                 }}>
                   <p style={{
-                    fontSize: 15, fontWeight: 700, margin: '0 0 6px',
-                    color: row.stop ? '#fca5a5' : '#fff',
-                    whiteSpace: 'pre-line',
+                    fontSize: 19, fontWeight: 700, margin: '0 0 6px',
+                    color: row.stop ? '#DC2626' : TEXT, whiteSpace: 'pre-line',
                   }}>
-                    {row.stop && <span style={{ fontSize: 12, background: '#ef4444', color: '#fff', borderRadius: 3, padding: '1px 6px', marginRight: 8 }}>STOP</span>}
+                    {row.stop && <span style={{ fontSize: 13, background: '#DC2626', color: '#fff', borderRadius: 4, padding: '2px 7px', marginRight: 8 }}>STOP</span>}
                     {row.scene}
                   </p>
-                  <p style={{ fontSize: 13, color: '#6b7280', margin: 0, lineHeight: 1.8, whiteSpace: 'pre-line' }}>
+                  <p style={{ fontSize: 17, color: TEXT3, margin: 0, lineHeight: 1.8, whiteSpace: 'pre-line' }}>
                     {row.detail}
                   </p>
                 </div>
@@ -283,14 +280,14 @@ export default async function Page() {
           </div>
 
           <div style={{
-            marginTop: 32, background: C2,
-            border: `1px solid ${Y}33`, borderLeft: `4px solid ${Y}`,
-            borderRadius: 10, padding: '20px 18px',
+            marginTop: 32, background: '#FFFBEB',
+            border: `1px solid ${AMBER}55`, borderLeft: `4px solid ${AMBER}`,
+            borderRadius: 12, padding: '22px 20px',
           }}>
-            <p style={{ fontSize: 15, fontWeight: 700, margin: '0 0 6px', color: Y }}>
+            <p style={{ fontSize: 19, fontWeight: 700, margin: '0 0 6px', color: AMBER }}>
               tomaranは
             </p>
-            <p style={{ fontSize: 15, color: '#d1d5db', margin: 0, lineHeight: 1.8 }}>
+            <p style={{ fontSize: 19, color: TEXT, margin: 0, lineHeight: 1.8 }}>
               このStopを消すための道具です。
             </p>
           </div>
@@ -302,25 +299,26 @@ export default async function Page() {
       ══════════════════════════════════════════════════════════ */}
       <section style={{ background: BG2, padding: '64px 20px' }}>
         <div style={{ maxWidth: MAX_W, margin: '0 auto', textAlign: 'center' }}>
-          <h2 style={{ fontSize: 26, fontWeight: 900, marginBottom: 24, lineHeight: 1.5 }}>
+          <h2 style={{ fontSize: 30, fontWeight: 900, marginBottom: 24, lineHeight: 1.5, color: TEXT }}>
             仕事のStopを<br />消す道具。
           </h2>
 
           <div style={{ display: 'flex', justifyContent: 'center', gap: 12, marginBottom: 32, flexWrap: 'wrap' }}>
             {['現場', '事務所', '社長'].map(role => (
               <span key={role} style={{
-                background: CARD, border: `1px solid ${Y}33`,
-                borderRadius: 20, padding: '8px 20px',
-                fontSize: 15, fontWeight: 700, color: Y,
+                background: CARD, border: `1px solid ${AMBER}44`,
+                borderRadius: 20, padding: '10px 24px',
+                fontSize: 19, fontWeight: 700, color: AMBER,
+                boxShadow: '2px 2px 0 #E5E0DA',
               }}>
                 {role}
               </span>
             ))}
           </div>
 
-          <p style={{ fontSize: 16, color: '#d1d5db', lineHeight: 2, marginBottom: 40 }}>
+          <p style={{ fontSize: 20, color: TEXT2, lineHeight: 2, marginBottom: 40 }}>
             この3つの仕事が<br />
-            <strong style={{ color: '#fff' }}>止まらないようにする。</strong><br />
+            <strong style={{ color: TEXT }}>止まらないようにする。</strong><br />
             <br />
             それだけの道具です。
           </p>
@@ -330,18 +328,22 @@ export default async function Page() {
               '難しい設定　→　いりません',
               'IT知識　→　いりません',
               '研修　→　いりません',
+              'Googleログイン　→　パスワード管理いりません',
+              '1社1ユーザー　→　アカウント管理ゼロ',
             ].map(line => (
               <div key={line} style={{
-                display: 'flex', alignItems: 'center', gap: 12,
-                background: CARD, borderRadius: 8, padding: '14px 18px',
+                display: 'flex', alignItems: 'center', gap: 14,
+                background: CARD, border: '1px solid #E5E0DA',
+                borderRadius: 10, padding: '16px 18px',
+                boxShadow: '2px 2px 0 #E5E0DA',
               }}>
-                <span style={{ color: '#34d399', fontWeight: 900, fontSize: 18, flexShrink: 0 }}>✓</span>
-                <span style={{ fontSize: 14, color: '#d1d5db' }}>{line}</span>
+                <span style={{ color: '#16A34A', fontWeight: 900, fontSize: 22, flexShrink: 0 }}>✓</span>
+                <span style={{ fontSize: 18, color: TEXT }}>{line}</span>
               </div>
             ))}
           </div>
 
-          <p style={{ fontSize: 15, color: '#9ca3af', marginTop: 28, lineHeight: 1.8 }}>
+          <p style={{ fontSize: 19, color: TEXT2, marginTop: 28, lineHeight: 1.8 }}>
             二度手間を消すだけです。
           </p>
         </div>
@@ -350,12 +352,12 @@ export default async function Page() {
       {/* ══════════════════════════════════════════════════════════
           5. tomaranができること
       ══════════════════════════════════════════════════════════ */}
-      <section style={{ padding: '64px 20px' }}>
+      <section style={{ padding: '64px 20px', background: BG }}>
         <div style={{ maxWidth: MAX_W, margin: '0 auto' }}>
-          <h2 style={{ fontSize: 26, fontWeight: 900, marginBottom: 8, lineHeight: 1.4 }}>
+          <h2 style={{ fontSize: 30, fontWeight: 900, marginBottom: 8, lineHeight: 1.4, color: TEXT }}>
             tomaranが<br />できること
           </h2>
-          <p style={{ color: '#6b7280', fontSize: 14, marginBottom: 40, lineHeight: 1.7 }}>
+          <p style={{ color: TEXT3, fontSize: 18, marginBottom: 40, lineHeight: 1.7 }}>
             機能一覧ではなく<br />「どんなStopが消えるか」で説明します。
           </p>
 
@@ -364,45 +366,42 @@ export default async function Page() {
               num: '01',
               title: '現場のスマホで完結。\n二度手間、禁止。',
               body: '現場で納品登録したら、その場でPDFの納品書を発行。\nそのままスマホから送るなり、後で印刷するなり、お好きにどうぞ。\n\n「あとで事務所に戻ってから……」\n\nというStopを消します。',
-              color: Y,
+              color: AMBER,
             },
             {
               num: '02',
               title: '見積もりは\n「出せるもの」から送る。',
               body: '全部揃うまで待つ必要、ありますか？\n\n決まっているものから送れば\nお客さんもあなたも仕事が早い。\n\n「とりあえず今すぐ」を大事にしました。',
-              color: '#60a5fa',
+              color: '#2563EB',
             },
             {
               num: '03',
               title: '請求書は解読ではなく\n確認だけ。',
               body: '現場が入力したデータが\nそのまま請求書になります。\n\nあなたは単価が未設定のものだけ\nポチポチ直すだけ。\n\n確認して、確定。それだけです。',
-              color: '#34d399',
+              color: '#16A34A',
             },
             {
               num: '04',
               title: '最後はExcelに\nお返しします。',
               body: '請求書はExcel形式で出力。\n\n端数調整でも書き換えでも\n好きにしてください。\n\n煮るなり焼くなりご自由に。笑',
-              color: '#f472b6',
+              color: '#9333EA',
             },
           ].map((item, i) => (
             <div key={i} style={{
               background: CARD,
               borderTop: `3px solid ${item.color}`,
-              border: `1px solid rgba(255,255,255,0.06)`,
-              borderRadius: 12, padding: '24px 20px',
-              marginBottom: 12,
+              border: `1px solid #E5E0DA`,
+              borderRadius: 14, padding: '26px 22px',
+              marginBottom: 14,
+              boxShadow: '3px 3px 0 #E5E0DA',
             }}>
-              <p style={{ fontSize: 12, fontWeight: 700, color: item.color, letterSpacing: '0.15em', marginBottom: 10, marginTop: 0 }}>
+              <p style={{ fontSize: 16, fontWeight: 700, color: item.color, letterSpacing: '0.15em', marginBottom: 10, marginTop: 0 }}>
                 {item.num}
               </p>
-              <h3 style={{
-                fontSize: 18, fontWeight: 900, lineHeight: 1.5,
-                marginBottom: 14, marginTop: 0, whiteSpace: 'pre-line',
-                color: '#fff',
-              }}>
+              <h3 style={{ fontSize: 22, fontWeight: 900, lineHeight: 1.5, marginBottom: 14, marginTop: 0, whiteSpace: 'pre-line', color: TEXT }}>
                 {item.title}
               </h3>
-              <p style={{ fontSize: 14, color: '#9ca3af', lineHeight: 1.9, margin: 0, whiteSpace: 'pre-line' }}>
+              <p style={{ fontSize: 18, color: TEXT2, lineHeight: 1.9, margin: 0, whiteSpace: 'pre-line' }}>
                 {item.body}
               </p>
             </div>
@@ -415,10 +414,10 @@ export default async function Page() {
       ══════════════════════════════════════════════════════════ */}
       <section style={{ background: BG2, padding: '64px 20px' }}>
         <div style={{ maxWidth: MAX_W, margin: '0 auto' }}>
-          <h2 style={{ fontSize: 26, fontWeight: 900, marginBottom: 8, lineHeight: 1.4 }}>
+          <h2 style={{ fontSize: 30, fontWeight: 900, marginBottom: 8, lineHeight: 1.4, color: TEXT }}>
             導入は3分です。
           </h2>
-          <p style={{ color: '#6b7280', fontSize: 14, marginBottom: 40 }}>
+          <p style={{ color: TEXT3, fontSize: 18, marginBottom: 40 }}>
             本当に3分です。
           </p>
 
@@ -429,31 +428,33 @@ export default async function Page() {
               { n: 'STEP 3', icon: '📱', title: '現場がスマホで使う', body: 'アプリのインストール不要。ブラウザで開くだけ。' },
             ].map((step, idx) => (
               <div key={step.n} style={{ display: 'flex', gap: 16, marginBottom: 0 }}>
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: 48, flexShrink: 0 }}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: 52, flexShrink: 0 }}>
                   <div style={{
-                    width: 44, height: 44, borderRadius: '50%',
+                    width: 48, height: 48, borderRadius: '50%',
                     background: Y, color: '#000',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontWeight: 900, fontSize: 11, flexShrink: 0, textAlign: 'center',
+                    fontWeight: 900, fontSize: 20, flexShrink: 0, textAlign: 'center',
+                    boxShadow: '2px 2px 0 #B8860B',
                   }}>
                     {idx + 1}
                   </div>
-                  {idx < 2 && <div style={{ width: 2, height: 32, background: `${Y}33`, margin: '4px 0' }} />}
+                  {idx < 2 && <div style={{ width: 2, height: 32, background: '#E5E0DA', margin: '4px 0' }} />}
                 </div>
                 <div style={{
-                  flex: 1, background: CARD, border: '1px solid rgba(255,255,255,0.06)',
-                  borderRadius: 10, padding: '16px 18px', marginBottom: 8,
+                  flex: 1, background: CARD, border: '1px solid #E5E0DA',
+                  borderRadius: 12, padding: '18px 20px', marginBottom: 10,
+                  boxShadow: '2px 2px 0 #E5E0DA',
                 }}>
-                  <p style={{ fontSize: 12, color: Y, fontWeight: 700, margin: '0 0 4px' }}>{step.n}</p>
-                  <p style={{ fontSize: 24, margin: '0 0 8px' }}>{step.icon}</p>
-                  <h3 style={{ fontSize: 15, fontWeight: 900, margin: '0 0 6px', color: '#fff' }}>{step.title}</h3>
-                  <p style={{ fontSize: 13, color: '#6b7280', margin: 0, lineHeight: 1.75 }}>{step.body}</p>
+                  <p style={{ fontSize: 16, color: AMBER, fontWeight: 700, margin: '0 0 4px' }}>{step.n}</p>
+                  <p style={{ fontSize: 28, margin: '0 0 8px' }}>{step.icon}</p>
+                  <h3 style={{ fontSize: 19, fontWeight: 900, margin: '0 0 6px', color: TEXT }}>{step.title}</h3>
+                  <p style={{ fontSize: 17, color: TEXT2, margin: 0, lineHeight: 1.75 }}>{step.body}</p>
                 </div>
               </div>
             ))}
           </div>
 
-          <p style={{ fontSize: 18, fontWeight: 900, color: Y, textAlign: 'center', marginTop: 32 }}>
+          <p style={{ fontSize: 22, fontWeight: 900, color: AMBER, textAlign: 'center', marginTop: 32 }}>
             それだけです。
           </p>
         </div>
@@ -462,25 +463,25 @@ export default async function Page() {
       {/* ══════════════════════════════════════════════════════════
           7. 料金
       ══════════════════════════════════════════════════════════ */}
-      <section style={{ padding: '64px 20px' }}>
+      <section style={{ padding: '64px 20px', background: BG }}>
         <div style={{ maxWidth: MAX_W, margin: '0 auto', textAlign: 'center' }}>
-          <h2 style={{ fontSize: 26, fontWeight: 900, marginBottom: 8 }}>
+          <h2 style={{ fontSize: 30, fontWeight: 900, marginBottom: 8, color: TEXT }}>
             料金はシンプルです。
           </h2>
-          <p style={{ color: '#6b7280', fontSize: 14, marginBottom: 40 }}>
+          <p style={{ color: TEXT3, fontSize: 18, marginBottom: 40 }}>
             本当にシンプルです。
           </p>
 
           <div style={{
-            background: CARD, border: `2px solid ${Y}`,
-            borderRadius: 16, padding: '40px 24px',
-            marginBottom: 24,
+            background: CARD, border: `2px solid ${AMBER}`,
+            borderRadius: 18, padding: '40px 26px',
+            marginBottom: 24, boxShadow: '4px 4px 0 #E5D5C0',
           }}>
-            <p style={{ color: '#9ca3af', fontSize: 14, margin: '0 0 8px' }}>月額</p>
-            <p style={{ fontSize: 64, fontWeight: 900, color: Y, margin: '0 0 4px', lineHeight: 1 }}>
+            <p style={{ color: TEXT2, fontSize: 18, margin: '0 0 8px' }}>月額</p>
+            <p style={{ fontSize: 68, fontWeight: 900, color: AMBER, margin: '0 0 4px', lineHeight: 1 }}>
               ¥14,800
             </p>
-            <p style={{ color: '#6b7280', fontSize: 13, marginBottom: 32 }}>（税込）</p>
+            <p style={{ color: TEXT3, fontSize: 17, marginBottom: 32 }}>（税込）</p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
               {[
@@ -490,18 +491,18 @@ export default async function Page() {
               ].map(row => (
                 <div key={row.label} style={{
                   display: 'flex', justifyContent: 'space-between',
-                  padding: '14px 0', borderBottom: '1px solid rgba(255,255,255,0.06)',
-                  fontSize: 15,
+                  padding: '16px 0', borderBottom: '1px solid #E5E0DA',
+                  fontSize: 19,
                 }}>
-                  <span style={{ color: '#9ca3af' }}>{row.label}</span>
-                  <span style={{ fontWeight: 700, color: '#34d399' }}>{row.value}</span>
+                  <span style={{ color: TEXT2 }}>{row.label}</span>
+                  <span style={{ fontWeight: 700, color: '#16A34A' }}>{row.value}</span>
                 </div>
               ))}
             </div>
 
-            <p style={{ fontSize: 14, color: '#6b7280', marginTop: 28, marginBottom: 0, lineHeight: 1.8 }}>
+            <p style={{ fontSize: 18, color: TEXT2, marginTop: 28, marginBottom: 0, lineHeight: 1.8 }}>
               資材屋の仕事のStopが減るなら<br />
-              <strong style={{ color: '#9ca3af' }}>安い道具だと思います。</strong>
+              <strong style={{ color: TEXT }}>安い道具だと思います。</strong>
             </p>
           </div>
 
@@ -510,14 +511,14 @@ export default async function Page() {
             style={{
               display: 'block',
               background: Y, color: '#000',
-              padding: '18px', borderRadius: 10,
-              fontWeight: 900, fontSize: 18, textDecoration: 'none',
-              boxShadow: '0 0 32px rgba(255,215,0,0.25)',
+              padding: '20px', borderRadius: 14,
+              fontWeight: 900, fontSize: 22, textDecoration: 'none',
+              boxShadow: '3px 3px 0 #B8860B',
             }}
           >
             今すぐ始める →
           </Link>
-          <p style={{ marginTop: 12, fontSize: 11, color: '#4b5563' }}>
+          <p style={{ marginTop: 14, fontSize: 17, color: TEXT3 }}>
             縛りなし｜使えないと思ったらすぐ解約OK
           </p>
         </div>
@@ -528,15 +529,15 @@ export default async function Page() {
       ══════════════════════════════════════════════════════════ */}
       <section style={{ background: BG2, padding: '64px 20px' }}>
         <div style={{ maxWidth: MAX_W, margin: '0 auto' }}>
-          <h2 style={{ fontSize: 26, fontWeight: 900, marginBottom: 40, lineHeight: 1.4 }}>
+          <h2 style={{ fontSize: 30, fontWeight: 900, marginBottom: 40, lineHeight: 1.4, color: TEXT }}>
             よくある質問
           </h2>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
             {[
               {
                 q: '新しいシステム、覚えられる気がしないんだけど……',
-                a: '難しい操作はありません。\n\nガラケーの方はごめんけど、スマホが使えるなら誰でも使えます。\n\nそれでも不安な人のために、30秒でわかる動画（YouTube）を山ほど用意しました。',
+                a: '難しい操作はありません。\n\nスマホが使えるなら誰でも使えます。\n\nそれでも不安な人のために、30秒でわかる動画（YouTube）を山ほど用意しました。',
               },
               {
                 q: '取引先ごとに締め日がバラバラだけど大丈夫？',
@@ -552,25 +553,19 @@ export default async function Page() {
               },
             ].map((item, i) => (
               <div key={i} style={{
-                background: CARD, border: '1px solid rgba(255,255,255,0.06)',
-                borderRadius: 12, overflow: 'hidden',
+                background: CARD, border: '1px solid #E5E0DA',
+                borderRadius: 14, overflow: 'hidden',
+                boxShadow: '2px 2px 0 #E5E0DA',
               }}>
-                <div style={{
-                  padding: '18px 20px',
-                  borderLeft: `4px solid ${Y}`,
-                }}>
-                  <p style={{ fontSize: 13, fontWeight: 700, color: Y, margin: '0 0 4px' }}>Q.</p>
-                  <p style={{ fontSize: 15, fontWeight: 700, color: '#fff', margin: 0, lineHeight: 1.6 }}>
+                <div style={{ padding: '20px 22px', borderLeft: `4px solid ${AMBER}` }}>
+                  <p style={{ fontSize: 17, fontWeight: 700, color: AMBER, margin: '0 0 4px' }}>Q.</p>
+                  <p style={{ fontSize: 19, fontWeight: 700, color: TEXT, margin: 0, lineHeight: 1.6 }}>
                     {item.q}
                   </p>
                 </div>
-                <div style={{
-                  padding: '18px 20px',
-                  background: C2,
-                  borderTop: '1px solid rgba(255,255,255,0.04)',
-                }}>
-                  <p style={{ fontSize: 13, fontWeight: 700, color: '#9ca3af', margin: '0 0 6px' }}>A.</p>
-                  <p style={{ fontSize: 14, color: '#d1d5db', margin: 0, lineHeight: 1.9, whiteSpace: 'pre-line' }}>
+                <div style={{ padding: '20px 22px', background: '#FFFBF7', borderTop: '1px solid #E5E0DA' }}>
+                  <p style={{ fontSize: 17, fontWeight: 700, color: TEXT2, margin: '0 0 6px' }}>A.</p>
+                  <p style={{ fontSize: 18, color: TEXT2, margin: 0, lineHeight: 1.9, whiteSpace: 'pre-line' }}>
                     {item.a}
                   </p>
                 </div>
@@ -583,34 +578,33 @@ export default async function Page() {
       {/* ══════════════════════════════════════════════════════════
           9. 最終 CTA
       ══════════════════════════════════════════════════════════ */}
-      <section style={{ padding: '72px 20px', textAlign: 'center' }}>
+      <section style={{ padding: '72px 20px', textAlign: 'center', background: BG }}>
         <div style={{ maxWidth: MAX_W, margin: '0 auto' }}>
-          <p style={{ fontSize: 14, color: '#6b7280', marginBottom: 16 }}>
+          <p style={{ fontSize: 18, color: TEXT2, marginBottom: 16 }}>
             仕事のStopを減らしたいなら
           </p>
-          <h2 style={{ fontSize: 28, fontWeight: 900, marginBottom: 8, lineHeight: 1.4 }}>
+          <h2 style={{ fontSize: 32, fontWeight: 900, marginBottom: 8, lineHeight: 1.4, color: TEXT }}>
             この道具<br />
-            <span style={{ color: Y }}>たぶん役に立ちます。</span>
+            <span style={{ color: AMBER }}>たぶん役に立ちます。</span>
           </h2>
-          <p style={{ fontSize: 14, color: '#4b5563', marginBottom: 40 }}>
+          <p style={{ fontSize: 18, color: TEXT3, marginBottom: 40 }}>
             「たぶん」と言うのは<br />資材屋さんに正直でいたいからです。
           </p>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 20 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginBottom: 24 }}>
             <a
               href={YT_URL}
               target="_blank"
               rel="noopener noreferrer"
               style={{
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
-                background: '#ff0000', color: '#fff',
-                padding: '16px 24px', borderRadius: 10,
-                fontWeight: 700, fontSize: 16, textDecoration: 'none',
-                boxShadow: '0 4px 20px rgba(255,0,0,0.3)',
-                minHeight: 56,
+                background: GREEN, color: '#fff',
+                padding: '18px 24px', borderRadius: 14,
+                fontWeight: 700, fontSize: 20, textDecoration: 'none',
+                boxShadow: '3px 3px 0 #0F4620', minHeight: 60,
               }}
             >
-              <span style={{ fontSize: 22 }}>▶</span>
+              <span style={{ fontSize: 24 }}>▶</span>
               30秒動画を見る
             </a>
 
@@ -619,17 +613,16 @@ export default async function Page() {
               style={{
                 display: 'block',
                 background: Y, color: '#000',
-                padding: '18px 24px', borderRadius: 10,
-                fontWeight: 900, fontSize: 18, textDecoration: 'none',
-                boxShadow: '0 0 32px rgba(255,215,0,0.25)',
-                minHeight: 56, lineHeight: '20px',
+                padding: '20px 24px', borderRadius: 14,
+                fontWeight: 900, fontSize: 22, textDecoration: 'none',
+                boxShadow: '3px 3px 0 #B8860B', minHeight: 60, lineHeight: '24px',
               }}
             >
               今すぐ始める →
             </Link>
           </div>
 
-          <p style={{ fontSize: 13, color: '#374151', lineHeight: 1.8 }}>
+          <p style={{ fontSize: 17, color: TEXT3, lineHeight: 1.8 }}>
             使えねえと思ったら<br />
             すぐ解約してください。笑
           </p>
@@ -645,27 +638,27 @@ export default async function Page() {
         padding: '48px 20px 40px',
         textAlign: 'center',
       }}>
-        <p style={{ fontWeight: 900, fontSize: 22, color: Y, marginBottom: 20, marginTop: 0, letterSpacing: '0.05em' }}>
+        <p style={{ fontWeight: 900, fontSize: 26, color: Y, marginBottom: 20, marginTop: 0, letterSpacing: '0.05em' }}>
           tomaran
         </p>
-        <p style={{ color: '#6b7280', fontSize: 13, marginBottom: 24, lineHeight: 1.9 }}>
+        <p style={{ color: '#9ca3af', fontSize: 17, marginBottom: 24, lineHeight: 1.9 }}>
           ご相談・お問い合わせはメールにて。<br />
-          <a href="mailto:support@tomaran.net" style={{ color: '#9ca3af', textDecoration: 'underline' }}>
+          <a href="mailto:support@tomaran.net" style={{ color: '#d1d5db', textDecoration: 'underline' }}>
             support@tomaran.net
           </a>
         </p>
         <div style={{ display: 'flex', justifyContent: 'center', gap: 24, marginBottom: 24, flexWrap: 'wrap' }}>
-          <Link href="/legal" style={{ color: '#6b7280', fontSize: 13, textDecoration: 'underline' }}>
+          <Link href="/legal" style={{ color: '#9ca3af', fontSize: 17, textDecoration: 'underline' }}>
             特定商取引法に基づく表記
           </Link>
-          <Link href="/privacy" style={{ color: '#6b7280', fontSize: 13, textDecoration: 'underline' }}>
+          <Link href="/privacy" style={{ color: '#9ca3af', fontSize: 17, textDecoration: 'underline' }}>
             プライバシーポリシー
           </Link>
-          <Link href="/login" style={{ color: '#6b7280', fontSize: 13, textDecoration: 'underline' }}>
+          <Link href="/login" style={{ color: '#9ca3af', fontSize: 17, textDecoration: 'underline' }}>
             ログイン
           </Link>
         </div>
-        <p style={{ color: '#374151', fontSize: 12, margin: 0 }}>
+        <p style={{ color: '#4b5563', fontSize: 16, margin: 0 }}>
           © 2025 tomaran. All rights reserved.
         </p>
       </footer>

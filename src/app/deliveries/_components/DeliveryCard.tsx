@@ -26,7 +26,7 @@ function formatDate(iso: string): string {
 }
 
 // ---------------------------------------------------------------------------
-// DeliveryCard — タップ即時フィードバック（① 修正）
+// DeliveryCard
 // ---------------------------------------------------------------------------
 
 export default function DeliveryCard({ delivery }: { delivery: DeliveryCardRow }) {
@@ -42,7 +42,6 @@ export default function DeliveryCard({ delivery }: { delivery: DeliveryCardRow }
         </div>
         <div style={s.cardRight}>
           <p style={s.date}>{delivery.delivery_date ? formatDate(delivery.delivery_date) : '—'}</p>
-          {/* ④ タップ可能である視覚ヒント */}
           <p style={s.tapHint}>詳細確認 ＞</p>
         </div>
       </Link>
@@ -62,14 +61,14 @@ const s: Record<string, CSSProperties> = {
     gap: 12,
     padding: '14px 16px',
     minHeight: 64,
-    background: '#111827',
-    border: '1px solid rgba(255,255,255,0.08)',
+    background: '#FFFFFF',
+    border: '1px solid #E5E0DA',
     borderRadius: 12,
     textDecoration: 'none',
     WebkitTapHighlightColor: 'transparent',
     cursor: 'pointer',
     userSelect: 'none',
-    transition: 'transform 100ms ease, box-shadow 100ms ease',
+    boxShadow: '2px 2px 0 #E5E0DA',
   },
   cardLeft: {
     minWidth: 0,
@@ -78,7 +77,7 @@ const s: Record<string, CSSProperties> = {
   siteName: {
     fontSize: 15,
     fontWeight: 600,
-    color: '#fff',
+    color: '#333333',
     margin: 0,
     overflow: 'hidden',
     textOverflow: 'ellipsis',
@@ -86,7 +85,7 @@ const s: Record<string, CSSProperties> = {
   },
   companyName: {
     fontSize: 13,
-    color: '#9ca3af',
+    color: '#777777',
     margin: '3px 0 0',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
@@ -100,22 +99,14 @@ const s: Record<string, CSSProperties> = {
     flexShrink: 0,
     minWidth: 80,
   },
-  itemCountCardRight: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'flex-end',
-    gap: 4,
-    flexShrink: 0,
-    minWidth: 80,
-  },
   date: {
     fontSize: 13,
-    color: '#9ca3af',
+    color: '#777777',
     margin: 0,
   },
   tapHint: {
     fontSize: 11,
-    color: '#6b7280',
+    color: '#888888',
     margin: 0,
   },
   deleteButton: {
@@ -134,38 +125,35 @@ const s: Record<string, CSSProperties> = {
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 10,
-    transition: 'transform 0.2s ease',
   },
   confirmOverlay: {
     position: 'fixed',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    background: 'rgba(0, 0, 0, 0.5)',
+    top: 0, left: 0, right: 0, bottom: 0,
+    background: 'rgba(0, 0, 0, 0.4)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 1000,
   },
   confirmDialog: {
-    background: '#1f2937',
-    border: '1px solid rgba(255, 255, 255, 0.1)',
+    background: '#FFFFFF',
+    border: '1px solid #E5E0DA',
     borderRadius: 12,
     padding: 24,
     maxWidth: 320,
     width: '90%',
+    boxShadow: '0 8px 32px rgba(0,0,0,0.15)',
   },
   confirmText: {
     fontSize: 16,
     fontWeight: 600,
-    color: '#fff',
+    color: '#333333',
     margin: '0 0 8px',
     textAlign: 'center',
   },
   confirmSubText: {
     fontSize: 13,
-    color: '#9ca3af',
+    color: '#777777',
     margin: '0 0 20px',
     textAlign: 'center',
   },
@@ -178,9 +166,9 @@ const s: Record<string, CSSProperties> = {
     padding: '10px 16px',
     fontSize: 14,
     fontWeight: 600,
-    background: 'rgba(255, 255, 255, 0.1)',
-    color: '#9ca3af',
-    border: '1px solid rgba(255, 255, 255, 0.2)',
+    background: '#F0EDE8',
+    color: '#555555',
+    border: '1px solid #E5E0DA',
     borderRadius: 8,
     cursor: 'pointer',
   },
@@ -191,7 +179,7 @@ const s: Record<string, CSSProperties> = {
     fontWeight: 600,
     background: '#ef4444',
     color: '#fff',
-    border: '1px solid #ef4444',
+    border: 'none',
     borderRadius: 8,
     cursor: 'pointer',
   },

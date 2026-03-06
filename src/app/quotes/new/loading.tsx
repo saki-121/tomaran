@@ -2,7 +2,7 @@ import type { CSSProperties } from 'react'
 
 const skBlock = (w: number | string, h: number): CSSProperties => ({
   width: w, height: h, borderRadius: 6,
-  background: 'rgba(255,255,255,0.08)',
+  background: '#E5E0DA',
 })
 
 export default function Loading() {
@@ -14,8 +14,8 @@ export default function Loading() {
     }}>
       {/* header bar skeleton */}
       <div style={{
-        background: '#111827',
-        borderBottom: '1px solid rgba(255,215,0,0.12)',
+        background: '#FDFCFB',
+        borderBottom: '1px solid #E5E0DA',
         padding: '12px 16px',
         display: 'flex',
         alignItems: 'center',

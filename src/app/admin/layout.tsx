@@ -5,17 +5,18 @@ const nav = [
   { href: '/admin',                   label: '納品一覧' },
   { href: '/admin/invoices',          label: '請求書' },
   { href: '/admin/masters/companies', label: '取引先' },
-  { href: '/admin/masters/products', label: '商品' },
-  { href: '/admin/masters/own',      label: '自社設定' },
+  { href: '/admin/masters/products',  label: '商品' },
+  { href: '/admin/masters/own',       label: '自社設定' },
 ]
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
   return (
-    <div style={{ minHeight: '100vh', background: '#0a0f1e' }}>
+    <div style={{ minHeight: '100vh', background: '#FDFCFB' }}>
       <nav style={{
-        background: '#05080f',
-        borderBottom: '1px solid rgba(255,215,0,0.12)',
-        color: '#fff',
+        background: '#FDFCFB',
+        borderBottom: '1px solid #E5E0DA',
+        boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
+        color: '#333333',
         display: 'flex',
         alignItems: 'center',
         gap: 0,
@@ -24,13 +25,14 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         position: 'sticky',
         top: 0,
         zIndex: 100,
+        overflowX: 'auto',
       }}>
-        <Link href="/deliveries" style={{ fontWeight: 900, marginRight: 24, fontSize: 15, letterSpacing: 1, color: '#FFD700', textDecoration: 'none' }}>
+        <Link href="/deliveries" style={{ fontWeight: 900, marginRight: 24, fontSize: 15, letterSpacing: 1, color: '#A16207', textDecoration: 'none', whiteSpace: 'nowrap' }}>
           tomaran
         </Link>
         {nav.map(({ href, label }) => (
           <Link key={href} href={href} style={{
-            color: '#9ca3af',
+            color: '#555555',
             textDecoration: 'none',
             padding: '0 14px',
             height: 48,
@@ -38,16 +40,16 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
             alignItems: 'center',
             fontSize: 14,
             fontWeight: 500,
-            borderRight: '1px solid rgba(255,255,255,0.06)',
+            borderRight: '1px solid #E5E0DA',
             cursor: 'pointer',
+            whiteSpace: 'nowrap',
           }}>
             {label}
           </Link>
         ))}
         <span style={{ marginLeft: 'auto' }} />
-        {/* スマホ画面リンク */}
         <Link href="/deliveries" style={{
-          color: '#34d399',
+          color: '#16A34A',
           textDecoration: 'none',
           padding: '0 14px',
           height: 48,
@@ -55,14 +57,14 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           alignItems: 'center',
           fontSize: 13,
           fontWeight: 600,
-          borderLeft: '1px solid rgba(255,255,255,0.06)',
+          borderLeft: '1px solid #E5E0DA',
           gap: 4,
           whiteSpace: 'nowrap',
         }}>
           📱 納品入力
         </Link>
         <Link href="/quotes" style={{
-          color: '#34d399',
+          color: '#16A34A',
           textDecoration: 'none',
           padding: '0 14px',
           height: 48,
@@ -70,7 +72,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           alignItems: 'center',
           fontSize: 13,
           fontWeight: 600,
-          borderLeft: '1px solid rgba(255,255,255,0.06)',
+          borderLeft: '1px solid #E5E0DA',
           gap: 4,
           whiteSpace: 'nowrap',
         }}>
@@ -85,8 +87,9 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           alignItems: 'center',
           fontSize: 13,
           fontWeight: 600,
-          borderLeft: '1px solid rgba(255,255,255,0.06)',
+          borderLeft: '1px solid #E5E0DA',
           cursor: 'pointer',
+          whiteSpace: 'nowrap',
         }}>
           解約
         </Link>

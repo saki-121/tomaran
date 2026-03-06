@@ -116,7 +116,7 @@ export default function QuoteEditPage({ params }: { params: Promise<{ id: string
       <div style={s.card}>
         <div style={s.cardHeader}>
           <h2 style={s.cardTitle}>基本情報</h2>
-          <div style={s.statusBadge}>
+          <div style={{ ...s.statusBadge, color: isEditable ? '#16A34A' : '#777777', background: isEditable ? '#DCFCE7' : '#F0EDE8' }}>
             {isEditable ? '編集可能' : '確定済み'}
           </div>
         </div>
@@ -184,12 +184,13 @@ const s: Record<string, CSSProperties> = {
     padding: '20px 16px',
     fontFamily: 'system-ui, -apple-system, sans-serif',
     minHeight: '100dvh',
+    backgroundColor: '#FDFCFB',
   },
   loading: {
     textAlign: 'center',
     padding: '40px 0',
     fontSize: 16,
-    color: '#9ca3af',
+    color: '#888888',
   },
   error: {
     textAlign: 'center',
@@ -206,7 +207,7 @@ const s: Record<string, CSSProperties> = {
   backButton: {
     background: 'none',
     border: 'none',
-    color: '#9ca3af',
+    color: '#A16207',
     fontSize: 14,
     fontWeight: 500,
     cursor: 'pointer',
@@ -216,13 +217,14 @@ const s: Record<string, CSSProperties> = {
     margin: 0,
     fontSize: 24,
     fontWeight: 700,
-    color: '#fff',
+    color: '#333333',
   },
   card: {
-    background: '#111827',
-    border: '1px solid rgba(255,255,255,0.08)',
+    background: '#FFFFFF',
+    border: '1px solid #E5E0DA',
     borderRadius: 12,
     padding: 24,
+    boxShadow: '2px 2px 0 #E5E0DA',
   },
   cardHeader: {
     display: 'flex',
@@ -234,13 +236,11 @@ const s: Record<string, CSSProperties> = {
     margin: 0,
     fontSize: 18,
     fontWeight: 600,
-    color: '#fff',
+    color: '#333333',
   },
   statusBadge: {
     fontSize: 12,
     fontWeight: 600,
-    color: isEditable => isEditable ? '#34d399' : '#9ca3af',
-    background: isEditable => isEditable ? 'rgba(52,211,153,0.1)' : 'rgba(255,255,255,0.05)',
     padding: '3px 10px',
     borderRadius: 20,
   },
@@ -251,21 +251,21 @@ const s: Record<string, CSSProperties> = {
     display: 'block',
     fontSize: 14,
     fontWeight: 600,
-    color: '#9ca3af',
+    color: '#777777',
     marginBottom: 8,
   },
   input: {
     width: '100%',
     padding: '10px 12px',
     fontSize: 14,
-    border: '1px solid rgba(255,255,255,0.1)',
+    border: '1px solid #D0CAC3',
     borderRadius: 6,
-    background: '#1a2035',
-    color: '#fff',
+    background: '#FFFFFF',
+    color: '#333333',
     boxSizing: 'border-box',
   },
   summary: {
-    background: '#1a2035',
+    background: '#F5F0EB',
     borderRadius: 8,
     padding: 16,
     marginTop: 20,
@@ -278,11 +278,11 @@ const s: Record<string, CSSProperties> = {
   },
   summaryLabel: {
     fontSize: 14,
-    color: '#9ca3af',
+    color: '#777777',
   },
   summaryValue: {
     fontSize: 14,
-    color: '#fff',
+    color: '#333333',
     fontWeight: 500,
   },
   viewButton: {

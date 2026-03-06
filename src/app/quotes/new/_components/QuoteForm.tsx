@@ -117,7 +117,7 @@ function ComboBox({
         onFocus={() => { cancelBlur(); if (!disabled) setOpen(true) }}
         onBlur={() => { blurTimer.current = setTimeout(() => setOpen(false), 200) }}
         onChange={e => { setQuery(e.target.value); setOpen(true) }}
-        style={{ ...s.input, backgroundColor: disabled ? '#0f1629' : '#1a2035' }}
+        style={{ ...s.input, backgroundColor: disabled ? '#F0EDE8' : '#FFFFFF' }}
       />
       {open && query && (
         <ul style={cb.list}>
@@ -382,8 +382,8 @@ export default function QuoteForm({ initialCompanies, initialProducts }: Props) 
           className="no-print"
           style={{
             position: 'sticky', top: 0,
-            background: '#111827',
-            borderBottom: '1px solid rgba(255,215,0,0.12)',
+            background: '#FDFCFB',
+            borderBottom: '1px solid #E5E0DA',
             padding: '12px 16px',
             display: 'flex', justifyContent: 'space-between', alignItems: 'center',
             zIndex: 10,
@@ -627,12 +627,12 @@ export default function QuoteForm({ initialCompanies, initialProducts }: Props) 
                         <span style={s.priceValue}>
                           {unitPrice !== null
                             ? `¥${unitPrice.toLocaleString('ja-JP')}`
-                            : <span style={{ color: '#9ca3af', fontSize: 13 }}>後日連絡</span>}
+                            : <span style={{ color: '#888888', fontSize: 13 }}>後日連絡</span>}
                         </span>
                       </div>
                       <div style={s.priceCell}>
                         <span style={s.priceLabel}>金額</span>
-                        <span style={{ ...s.priceValue, color: unitPrice !== null ? '#fff' : '#6b7280' }}>
+                        <span style={{ ...s.priceValue, color: unitPrice !== null ? '#333333' : '#888888' }}>
                           {unitPrice !== null ? `¥${amount.toLocaleString('ja-JP')}` : '—'}
                         </span>
                       </div>
@@ -649,15 +649,15 @@ export default function QuoteForm({ initialCompanies, initialProducts }: Props) 
 
       {/* ── 合計 ─────────────────────────────────── */}
       {validItems.length > 0 && (
-        <section style={{ ...s.card, background: '#0f1629' }}>
+        <section style={{ ...s.card, background: '#F5F0EB' }}>
           <div style={{ textAlign: 'right' }}>
-            <p style={{ fontSize: 20, fontWeight: 700, margin: '0 0 4px', color: '#fff' }}>
+            <p style={{ fontSize: 20, fontWeight: 700, margin: '0 0 4px', color: '#333333' }}>
               合計（税抜き）　¥{subtotal.toLocaleString('ja-JP')}
             </p>
-            <p style={{ fontSize: 13, color: '#9ca3af', margin: '0 0 2px' }}>
+            <p style={{ fontSize: 13, color: '#777777', margin: '0 0 2px' }}>
               消費税（10%）　¥{tax.toLocaleString('ja-JP')}
             </p>
-            <p style={{ fontSize: 13, color: '#9ca3af', margin: 0 }}>
+            <p style={{ fontSize: 13, color: '#777777', margin: 0 }}>
               税込合計　¥{grandTotal.toLocaleString('ja-JP')}
             </p>
           </div>
@@ -683,83 +683,84 @@ const s: Record<string, CSSProperties> = {
     margin: '0 auto',
     padding: '16px 16px 120px',
     fontFamily: 'system-ui, -apple-system, sans-serif',
-    backgroundColor: '#0a0f1e',
+    backgroundColor: '#FDFCFB',
     minHeight: '100dvh',
   },
   header: { display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 },
   backBtn: {
     background: 'none', border: 'none', fontSize: 14,
-    color: '#FFD700', cursor: 'pointer', padding: '8px 0', minHeight: 44,
+    color: '#A16207', cursor: 'pointer', padding: '8px 0', minHeight: 44,
   },
-  heading: { fontSize: 18, fontWeight: 700, color: '#fff', margin: 0 },
+  heading: { fontSize: 18, fontWeight: 700, color: '#333333', margin: 0 },
   errorBox: {
-    background: 'rgba(239,68,68,0.1)',
-    border: '1px solid rgba(239,68,68,0.2)',
-    color: '#ef4444',
+    background: '#FEF2F2',
+    border: '1px solid #FECACA',
+    color: '#DC2626',
     borderRadius: 8,
     padding: '10px 14px',
     fontSize: 14,
     margin: '0 0 12px',
   },
   card: {
-    background: '#111827',
-    border: '1px solid rgba(255,255,255,0.08)',
+    background: '#FFFFFF',
+    border: '1px solid #E5E0DA',
     borderRadius: 12,
     padding: '14px 16px',
     marginBottom: 12,
     display: 'flex',
     flexDirection: 'column',
     gap: 8,
+    boxShadow: '2px 2px 0 #E5E0DA',
   },
   labelRow: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
-  label: { fontSize: 13, fontWeight: 600, color: '#9ca3af' },
-  selectedValue: { fontSize: 16, fontWeight: 500, color: '#fff', padding: '6px 0', margin: 0 },
+  label: { fontSize: 13, fontWeight: 600, color: '#777777' },
+  selectedValue: { fontSize: 16, fontWeight: 500, color: '#333333', padding: '6px 0', margin: 0 },
   changeBtn: {
     background: 'none', border: 'none', fontSize: 13,
-    color: '#FFD700', cursor: 'pointer', padding: '4px 8px', minHeight: 44, flexShrink: 0,
+    color: '#A16207', cursor: 'pointer', padding: '4px 8px', minHeight: 44, flexShrink: 0,
   },
   input: {
     width: '100%', padding: '10px 12px',
-    border: '1px solid rgba(255,255,255,0.1)',
+    border: '1px solid #D0CAC3',
     borderRadius: 8, fontSize: 16, boxSizing: 'border-box',
-    minHeight: 44, color: '#fff', background: '#1a2035',
+    minHeight: 44, color: '#333333', background: '#FFFFFF',
   },
-  hint: { fontSize: 14, color: '#6b7280', margin: 0 },
+  hint: { fontSize: 14, color: '#888888', margin: 0 },
   itemList: { display: 'flex', flexDirection: 'column', gap: 12 },
   itemBox: {
-    border: '1px solid rgba(255,255,255,0.05)',
-    borderRadius: 8, padding: 12, backgroundColor: '#1a2035',
+    border: '1px solid #E5E0DA',
+    borderRadius: 8, padding: 12, backgroundColor: '#F5F0EB',
     display: 'flex', flexDirection: 'column', gap: 8,
   },
   itemHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
-  itemNum: { fontSize: 12, fontWeight: 600, color: '#6b7280' },
+  itemNum: { fontSize: 12, fontWeight: 600, color: '#888888' },
   itemBtns: { display: 'flex', gap: 4 },
   removeBtn: {
     background: 'none', border: 'none', color: '#ef4444',
     fontSize: 13, cursor: 'pointer', padding: '4px 8px', minHeight: 44,
   },
   qtyRow: { display: 'flex', alignItems: 'center', gap: 12 },
-  qtyLabel: { fontSize: 13, color: '#9ca3af', whiteSpace: 'nowrap', flexShrink: 0 },
+  qtyLabel: { fontSize: 13, color: '#777777', whiteSpace: 'nowrap', flexShrink: 0 },
   qtyInput: {
     flex: 1, padding: '10px 12px',
-    border: '1px solid rgba(255,255,255,0.1)',
+    border: '1px solid #D0CAC3',
     borderRadius: 8, fontSize: 16, minHeight: 44,
-    boxSizing: 'border-box', background: '#111827', color: '#fff',
+    boxSizing: 'border-box', background: '#FFFFFF', color: '#333333',
   },
   // 見積追加: 単価・金額行
   priceRow: {
     display: 'flex', gap: 12,
-    borderTop: '1px solid rgba(255,255,255,0.05)',
+    borderTop: '1px solid #F0EDE8',
     paddingTop: 8,
   },
   priceCell: { flex: 1, display: 'flex', flexDirection: 'column', gap: 2 },
-  priceLabel: { fontSize: 11, color: '#6b7280' },
-  priceValue: { fontSize: 15, fontWeight: 600, color: '#fff' },
+  priceLabel: { fontSize: 11, color: '#888888' },
+  priceValue: { fontSize: 15, fontWeight: 600, color: '#333333' },
   addItemBtn: {
     marginTop: 4, padding: '12px 0', width: '100%',
     background: 'transparent',
-    border: '1px dashed rgba(255,215,0,0.25)',
-    borderRadius: 8, fontSize: 14, color: '#FFD700', cursor: 'pointer', minHeight: 44,
+    border: '1px dashed #D0CAC3',
+    borderRadius: 8, fontSize: 14, color: '#A16207', cursor: 'pointer', minHeight: 44,
   },
   submitBtn: {
     position: 'fixed', bottom: 24, left: 16, right: 16,
@@ -772,34 +773,34 @@ const s: Record<string, CSSProperties> = {
 const cb: Record<string, CSSProperties> = {
   list: {
     position: 'absolute', top: '100%', left: 0, right: 0, zIndex: 50,
-    background: '#111827', border: '1px solid rgba(255,255,255,0.1)',
+    background: '#FFFFFF', border: '1px solid #D0CAC3',
     borderRadius: 8, marginTop: 4, maxHeight: 220, overflowY: 'auto',
-    boxShadow: '0 4px 24px rgba(0,0,0,0.5)',
+    boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
     listStyle: 'none', padding: 0, margin: '4px 0 0',
   },
   item: {
-    padding: '12px 14px', fontSize: 15, color: '#d1d5db', cursor: 'pointer',
-    borderBottom: '1px solid rgba(255,255,255,0.05)',
+    padding: '12px 14px', fontSize: 15, color: '#555555', cursor: 'pointer',
+    borderBottom: '1px solid #F0EDE8',
     minHeight: 44, display: 'flex', alignItems: 'center',
   },
-  empty: { padding: '12px 14px', fontSize: 14, color: '#6b7280', listStyle: 'none' },
+  empty: { padding: '12px 14px', fontSize: 14, color: '#888888', listStyle: 'none' },
   addNew: {
-    padding: '12px 14px', fontSize: 14, fontWeight: 600, color: '#FFD700',
-    cursor: 'pointer', borderTop: '1px solid rgba(255,255,255,0.08)',
+    padding: '12px 14px', fontSize: 14, fontWeight: 600, color: '#A16207',
+    cursor: 'pointer', borderTop: '1px solid #E5E0DA',
     minHeight: 44, display: 'flex', alignItems: 'center', listStyle: 'none',
   },
 }
 
 const ia: Record<string, CSSProperties> = {
   wrap: {
-    background: 'rgba(255,215,0,0.04)',
-    border: '1px solid rgba(255,215,0,0.15)',
+    background: '#FFFBEB',
+    border: '1px solid #FDE68A',
     borderRadius: 8, padding: 12, display: 'flex', flexDirection: 'column', gap: 8,
   },
   input: {
     width: '100%', padding: '10px 12px',
-    border: '1px solid rgba(255,255,255,0.1)',
-    borderRadius: 8, fontSize: 16, boxSizing: 'border-box', background: '#1a2035', color: '#fff',
+    border: '1px solid #D0CAC3',
+    borderRadius: 8, fontSize: 16, boxSizing: 'border-box', background: '#FFFFFF', color: '#333333',
   },
   row: { display: 'flex', gap: 8 },
   btnAdd: {
@@ -807,8 +808,8 @@ const ia: Record<string, CSSProperties> = {
     border: 'none', borderRadius: 8, fontSize: 14, fontWeight: 700, cursor: 'pointer', minHeight: 44,
   },
   btnCancel: {
-    flex: 1, padding: '10px 0', background: '#1a2035', color: '#9ca3af',
-    border: '1px solid rgba(255,255,255,0.08)', borderRadius: 8, fontSize: 14, cursor: 'pointer', minHeight: 44,
+    flex: 1, padding: '10px 0', background: '#F0EDE8', color: '#777777',
+    border: '1px solid #D0CAC3', borderRadius: 8, fontSize: 14, cursor: 'pointer', minHeight: 44,
   },
 }
 
@@ -816,13 +817,13 @@ const thStyle: CSSProperties = {
   padding: '8px 10px', textAlign: 'left', fontSize: 13, fontWeight: 600,
   color: '#374151', borderBottom: '2px solid #e5e7eb',
 }
-const tdStyle: CSSProperties = { padding: '8px 10px', fontSize: 14, color: '#111827' }
+const tdStyle: CSSProperties = { padding: '8px 10px', fontSize: 14, color: '#333333' }
 const btnPrimaryStyle: CSSProperties = {
   padding: '10px 18px', fontSize: 15, fontWeight: 700,
   background: '#FFD700', color: '#000', border: 'none', borderRadius: 8, cursor: 'pointer', minHeight: 44,
 }
 const btnSecondaryStyle: CSSProperties = {
-  padding: '10px 14px', fontSize: 15, background: 'none', color: '#FFD700',
-  border: '1px solid rgba(255,215,0,0.3)', borderRadius: 8, cursor: 'pointer', minHeight: 44,
+  padding: '10px 14px', fontSize: 15, background: 'none', color: '#A16207',
+  border: '1px solid #D0CAC3', borderRadius: 8, cursor: 'pointer', minHeight: 44,
 }
 

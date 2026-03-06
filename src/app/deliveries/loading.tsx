@@ -2,7 +2,7 @@ import type { CSSProperties } from 'react'
 
 const skBlock = (w: number | string, h: number): CSSProperties => ({
   width: w, height: h, borderRadius: 6,
-  background: 'rgba(255,255,255,0.08)',
+  background: '#E5E0DA',
 })
 
 export default function Loading() {
@@ -28,7 +28,7 @@ export default function Loading() {
       ))}
 
       {/* divider */}
-      <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)', marginTop: 16, paddingTop: 4 }}>
+      <div style={{ borderTop: '1px solid #E5E0DA', marginTop: 16, paddingTop: 4 }}>
         <div className="sk" style={{ ...skBlock(120, 12), margin: '10px 0' }} />
         {[1, 2].map(i => (
           <div key={i} className="sk" style={{

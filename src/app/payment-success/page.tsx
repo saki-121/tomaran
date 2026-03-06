@@ -2,8 +2,8 @@ import Link from 'next/link'
 import Stripe from 'stripe'
 import { createClient } from '@/lib/supabase/server'
 
-const BG   = '#0a0f1e'
-const CARD = '#111827'
+const BG   = '#FDFCFB'
+const CARD = '#FFFFFF'
 const Y    = '#FFD700'
 
 export default async function PaymentSuccessPage({
@@ -52,7 +52,7 @@ export default async function PaymentSuccessPage({
       fontFamily: 'system-ui, -apple-system, sans-serif',
       padding: '16px',
     }}>
-      <p style={{ fontWeight: 900, fontSize: 22, color: Y, letterSpacing: 1, marginBottom: 40 }}>
+      <p style={{ fontWeight: 900, fontSize: 22, color: '#A16207', letterSpacing: 1, marginBottom: 40 }}>
         tomaran
       </p>
 
@@ -64,18 +64,18 @@ export default async function PaymentSuccessPage({
           { n: '3', label: '会社名登録', active: true },
         ].map((step, i) => (
           <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            {i > 0 && <span style={{ color: 'rgba(255,255,255,0.2)', fontSize: 12 }}>→</span>}
+            {i > 0 && <span style={{ color: '#D0CAC3', fontSize: 12 }}>→</span>}
             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
               <span style={{
                 width: 24, height: 24, borderRadius: '50%',
-                background: step.done || step.active ? Y : 'rgba(255,255,255,0.1)',
-                color: step.done || step.active ? '#000' : '#6b7280',
+                background: step.done || step.active ? Y : '#F0EDE8',
+                color: step.done || step.active ? '#000' : '#888888',
                 fontSize: 11, fontWeight: 700,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
               }}>
                 {step.done ? '✓' : step.n}
               </span>
-              <span style={{ fontSize: 12, color: step.active ? '#fff' : step.done ? '#9ca3af' : '#6b7280', fontWeight: step.active ? 700 : 400 }}>
+              <span style={{ fontSize: 12, color: step.active ? '#333333' : step.done ? '#777777' : '#888888', fontWeight: step.active ? 700 : 400 }}>
                 {step.label}
               </span>
             </div>
@@ -89,34 +89,35 @@ export default async function PaymentSuccessPage({
         borderRadius: 12,
         padding: '48px 32px',
         textAlign: 'center',
-        border: '1px solid rgba(255,215,0,0.15)',
+        border: '1px solid #E5E0DA',
+        boxShadow: '4px 4px 0 #E5E0DA',
       }}>
         <div style={{
           width: 64, height: 64, borderRadius: '50%',
-          background: '#34d399', color: '#000',
+          background: '#16A34A', color: '#fff',
           fontSize: 32, fontWeight: 700,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           margin: '0 auto 20px',
         }}>
           ✓
         </div>
-        <h1 style={{ margin: '0 0 8px', fontSize: 22, fontWeight: 700, color: '#fff' }}>
+        <h1 style={{ margin: '0 0 8px', fontSize: 22, fontWeight: 700, color: '#333333' }}>
           決済完了しました！
         </h1>
-        <p style={{ margin: '0 0 32px', fontSize: 14, color: '#9ca3af', lineHeight: 1.75 }}>
+        <p style={{ margin: '0 0 32px', fontSize: 14, color: '#777777', lineHeight: 1.75 }}>
           最後に会社名を登録してください。<br />
           あとから変更できます。
         </p>
-        
+
         {/* LINEお問い合わせ案内 */}
         <div style={{
-          background: 'rgba(0, 200, 0, 0.1)',
-          border: '1px solid rgba(0, 200, 0, 0.3)',
+          background: 'rgba(0, 200, 0, 0.07)',
+          border: '1px solid rgba(0, 200, 0, 0.25)',
           borderRadius: 8,
           padding: '16px',
           margin: '0 0 32px',
         }}>
-          <p style={{ margin: '0 0 12px', fontSize: 13, color: '#9ca3af' }}>
+          <p style={{ margin: '0 0 12px', fontSize: 13, color: '#555555' }}>
             🤔 ご不明な点はLINEからお気軽にお問い合わせください
           </p>
           <a
