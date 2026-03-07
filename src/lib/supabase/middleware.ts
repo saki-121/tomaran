@@ -67,7 +67,8 @@ export async function updateSession(request: NextRequest) {
     const status       = (profile?.subscription_status ?? '') as string
     const isSubscribed = status === 'active' || status === 'trialing'
 
-    if (profile && !isSubscribed) {
+    // profile が null（未決済の新規ユーザー含む）も未購読として扱う
+    if (!isSubscribed) {
       const url = request.nextUrl.clone()
       url.pathname = '/payment-required'
       return NextResponse.redirect(url)
