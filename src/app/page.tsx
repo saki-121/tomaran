@@ -126,6 +126,9 @@ export default async function Page() {
             <span style={{ fontSize: 24 }}>▶</span>
             30秒でわかる動画を見る
           </a>
+          <p style={{ textAlign: 'center', fontSize: 14, color: TEXT3, margin: '-4px 0 0' }}>
+            ※ 動画準備中
+          </p>
 
           <Link
             href="/login"
@@ -582,6 +585,9 @@ export default async function Page() {
               <span style={{ fontSize: 24 }}>▶</span>
               30秒動画を見る
             </a>
+            <p style={{ textAlign: 'center', fontSize: 14, color: TEXT3, margin: '-4px 0 0' }}>
+              ※ 動画準備中
+            </p>
 
             <Link
               href="/login"
