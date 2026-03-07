@@ -53,11 +53,13 @@ export default function PrivacyPage() {
               body: (
                 <>
                   <p style={{ marginBottom: 12 }}>
-                    当サービスはメールアドレスとパスワードによるログインに対応しています。登録・ログイン時に取得するのは以下の1点だけです。
+                    当サービスはGoogleアカウントによるログイン（OAuth 2.0）のみに対応しています。ログイン時に取得するのは以下の3点だけです。
                   </p>
                   <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
                     {[
-                      'メールアドレス',
+                      'Googleアカウントのメールアドレス',
+                      'Googleアカウントの表示名',
+                      'プロフィール画像URL（使用する場合）',
                     ].map(i => (
                       <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, color: '#555555', fontSize: 15 }}>
                         <span style={{ color: Y, flexShrink: 0, fontWeight: 700 }}>▸</span>{i}
@@ -65,7 +67,7 @@ export default function PrivacyPage() {
                     ))}
                   </ul>
                   <p style={{ marginTop: 12, color: '#777777', fontSize: 14 }}>
-                    パスワードはSupabaseによりハッシュ化されて安全に管理されます。当サービスが平文パスワードを保存・参照することはありません。
+                    パスワードは当サービスでは一切保存・管理しません。
                   </p>
                 </>
               ),
@@ -103,6 +105,7 @@ export default function PrivacyPage() {
                     {[
                       'Supabase —— 認証・データベース',
                       'Stripe, Inc. —— 決済処理',
+                      'Google LLC —— OAuth認証',
                     ].map(i => (
                       <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, color: '#555555', fontSize: 15 }}>
                         <span style={{ color: '#888888', flexShrink: 0 }}>—</span>{i}
