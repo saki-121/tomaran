@@ -20,6 +20,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
       .from('user_tenants')
       .select('tenants(name)')
       .eq('user_id', user.id)
+      .order('created_at', { ascending: false })
       .limit(1)
       .maybeSingle()
     tenantName = (data?.tenants as { name?: string } | null)?.name ?? null

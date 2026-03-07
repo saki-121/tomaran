@@ -25,7 +25,16 @@ export default function OnboardingPage() {
     })
     const d = await res.json()
     setLoading(false)
-    if (!res.ok) { setError(d.error ?? 'エラーが発生しました'); return }
+    if (!res.ok) {
+      const msg: string = d.error ?? ''
+      if (msg.includes('already_has_tenant')) {
+        // すでに登録済み → そのまま進む
+        router.push('/deliveries')
+        return
+      }
+      setError(msg || 'エラーが発生しました')
+      return
+    }
     router.push('/deliveries')
   }
 
