@@ -42,10 +42,18 @@ export async function updateSession(request: NextRequest) {
 
   const { pathname } = request.nextUrl
 
+  const isDemoMode = process.env.NEXT_PUBLIC_DEMO_MODE === 'true'
+
   // ── 未認証ガード ─────────────────────────────────────────────────────────
   if (!user && !isPublic(pathname)) {
     const url = request.nextUrl.clone()
-    url.pathname = '/login'
+    if (isDemoMode) {
+      // デモモード: 自動ログインエンドポイントへ
+      url.pathname = '/api/auth/demo-login'
+      url.searchParams.set('next', pathname)
+    } else {
+      url.pathname = '/login'
+    }
     return NextResponse.redirect(url)
   }
 
@@ -56,21 +64,24 @@ export async function updateSession(request: NextRequest) {
 
   if (user && !isPublic(pathname)) {
     // ── サブスクリプションガード ────────────────────────────────────────────
-    // active / trialing のみ有料機能を許可。それ以外（inactive, canceled, past_due 等）はブロック。
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { data: profile } = await (supabase as any)
-      .from('profiles')
-      .select('subscription_status')
-      .eq('id', user.id)
-      .maybeSingle()
+    // デモモードではスキップ
+    if (!isDemoMode) {
+      // active / trialing のみ有料機能を許可。それ以外（inactive, canceled, past_due 等）はブロック。
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data: profile } = await (supabase as any)
+        .from('profiles')
+        .select('subscription_status')
+        .eq('id', user.id)
+        .maybeSingle()
 
-    const status       = (profile?.subscription_status ?? '') as string
-    const isSubscribed = status === 'active' || status === 'trialing'
+      const status       = (profile?.subscription_status ?? '') as string
+      const isSubscribed = status === 'active' || status === 'trialing'
 
-    if (profile && !isSubscribed) {
-      const url = request.nextUrl.clone()
-      url.pathname = '/payment-required'
-      return NextResponse.redirect(url)
+      if (profile && !isSubscribed) {
+        const url = request.nextUrl.clone()
+        url.pathname = '/payment-required'
+        return NextResponse.redirect(url)
+      }
     }
 
     // ── 会社登録ガード（/onboarding 自体はスキップ）────────────────────────
