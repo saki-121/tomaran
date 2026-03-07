@@ -17,7 +17,8 @@
       "Bash(npx tsc:*)",
       "Bash(xargs grep:*)",
       "Bash(grep:*)",
-      "Bash(npm info:*)"
+      "Bash(npm info:*)",
+      "Bash(git:*)"
     ]
   }
 }
