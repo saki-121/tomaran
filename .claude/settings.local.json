@@ -21,7 +21,8 @@
       "Bash(git:*)",
       "Bash(\"C:/Users/xxsak/SAKI/restore_all.sql\":*)",
       "Bash(sed:*)",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "Bash(mkdir:*)"
     ]
   }
 }

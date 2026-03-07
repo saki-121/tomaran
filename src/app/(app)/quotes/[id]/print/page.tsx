@@ -1,6 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect, notFound } from 'next/navigation'
-import PrintToolbar from '@/app/deliveries/[id]/print/_components/PrintToolbar'
+import PrintToolbar from '@/app/(app)/deliveries/[id]/print/_components/PrintToolbar'
 
 // ---------------------------------------------------------------------------
 // Types

@@ -1,11 +1,12 @@
-// Supabase session refresh + auth/payment/onboarding guard middleware helper.
+// Supabase session refresh + 未認証ガード
+// サブスク・テナントチェックは (app)/layout.tsx で行う
 
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 import type { Database } from '@/types/database'
 
 // ログイン不要なパス
-const PUBLIC_PREFIXES = ['/login', '/signup', '/forgot-password', '/reset-password', '/auth', '/api', '/_next', '/legal', '/privacy']
+const PUBLIC_PREFIXES = ['/login', '/signup', '/forgot-password', '/reset-password', '/auth', '/api', '/_next', '/legal', '/privacy', '/payment']
 const PUBLIC_EXACT    = ['/']
 
 function isPublic(pathname: string) {
@@ -36,67 +37,13 @@ export async function updateSession(request: NextRequest) {
   )
 
   // セッション更新（必須・削除不可）
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  const { pathname } = request.nextUrl
+  const { data: { user } } = await supabase.auth.getUser()
 
   // ── 未認証ガード ─────────────────────────────────────────────────────────
-  if (!user && !isPublic(pathname)) {
+  if (!user && !isPublic(request.nextUrl.pathname)) {
     const url = request.nextUrl.clone()
     url.pathname = '/login'
     return NextResponse.redirect(url)
-  }
-
-  // /payment* は決済フロー（全ガードをスキップ）
-  if (user && pathname.startsWith('/payment')) {
-    return supabaseResponse
-  }
-
-  if (user && !isPublic(pathname)) {
-    // ── サブスクリプションガード ────────────────────────────────────────────
-    // active / trialing のみ有料機能を許可。それ以外（inactive, canceled, past_due 等）はブロック。
-    let isSubscribed = false
-    try {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { data: profile, error } = await (supabase as any)
-        .from('profiles')
-        .select('subscription_status')
-        .eq('id', user.id)
-        .maybeSingle()
-
-      console.log('[middleware] profile:', JSON.stringify(profile), 'error:', error?.message)
-
-      if (!error && profile) {
-        const status = profile.subscription_status as string
-        isSubscribed = status === 'active' || status === 'trialing'
-      }
-    } catch (e) {
-      console.log('[middleware] profiles query threw:', e)
-    }
-
-    console.log('[middleware] isSubscribed:', isSubscribed, 'pathname:', pathname)
-
-    if (!isSubscribed) {
-      const url = request.nextUrl.clone()
-      url.pathname = '/payment-required'
-      return NextResponse.redirect(url)
-    }
-
-    // ── 会社登録ガード（/onboarding 自体はスキップ）────────────────────────
-    if (!pathname.startsWith('/onboarding')) {
-      const { count } = await supabase
-        .from('user_tenants')
-        .select('*', { count: 'exact', head: true })
-        .eq('user_id', user.id)
-
-      if (!count) {
-        const url = request.nextUrl.clone()
-        url.pathname = '/onboarding'
-        return NextResponse.redirect(url)
-      }
-    }
   }
 
   return supabaseResponse
