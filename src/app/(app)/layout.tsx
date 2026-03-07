@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { redirect } from 'next/navigation'
 import type { ReactNode } from 'react'
 
@@ -8,9 +9,10 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
 
   if (!user) redirect('/login')
 
-  // サブスクリプションチェック
+  // サブスクリプションチェック（admin client で RLS をバイパス）
+  const admin = createAdminClient()
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data: profile } = await (supabase as any)
+  const { data: profile } = await (admin as any)
     .from('profiles')
     .select('subscription_status')
     .eq('id', user.id)
