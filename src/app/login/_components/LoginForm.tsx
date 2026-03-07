@@ -65,6 +65,10 @@ export default function LoginForm() {
       </button>
 
       <p style={{ margin: 0, fontSize: 13, color: '#777', textAlign: 'center' }}>
+        <a href="/forgot-password" style={{ color: '#A16207', fontWeight: 600 }}>パスワードをお忘れの方はこちら</a>
+      </p>
+
+      <p style={{ margin: 0, fontSize: 13, color: '#777', textAlign: 'center' }}>
         アカウントをお持ちでない方は{' '}
         <a href="/signup" style={{ color: '#A16207', fontWeight: 600 }}>新規登録</a>
       </p>
