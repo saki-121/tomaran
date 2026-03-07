@@ -71,9 +71,10 @@ export default async function PaymentRequiredPage() {
 
           <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
             {[
-              '納品管理・請求書発行 無制限',
+              '納品管理、納品書発行もスマホで完結。',
+              '請求書発行はExcel出力。',
               '取引先・商品マスタ登録',
-              'Excelインポート対応',
+              '単価表も取引先もExcelで取り込み可能。',
               '見積書PDF出力',
               'LINEサポート付き',
             ].map(f => (
