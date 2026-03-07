@@ -20,7 +20,9 @@ export default async function PaymentSuccessPage({
       if (!user) {
         console.error('[payment-success] user not found in session')
       } else {
-        const session = await stripe.checkout.sessions.retrieve(session_id)
+        const session = await stripe.checkout.sessions.retrieve(session_id, {
+          expand: ['subscription'],
+        })
         if (session.payment_status === 'paid') {
           const customerId     = typeof session.customer === 'string'
             ? session.customer
