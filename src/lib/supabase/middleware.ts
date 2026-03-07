@@ -57,17 +57,23 @@ export async function updateSession(request: NextRequest) {
   if (user && !isPublic(pathname)) {
     // ── サブスクリプションガード ────────────────────────────────────────────
     // active / trialing のみ有料機能を許可。それ以外（inactive, canceled, past_due 等）はブロック。
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { data: profile } = await (supabase as any)
-      .from('profiles')
-      .select('subscription_status')
-      .eq('id', user.id)
-      .maybeSingle()
+    let isSubscribed = false
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data: profile, error } = await (supabase as any)
+        .from('profiles')
+        .select('subscription_status')
+        .eq('id', user.id)
+        .maybeSingle()
 
-    const status       = (profile?.subscription_status ?? '') as string
-    const isSubscribed = status === 'active' || status === 'trialing'
+      if (!error && profile) {
+        const status = profile.subscription_status as string
+        isSubscribed = status === 'active' || status === 'trialing'
+      }
+    } catch {
+      // クエリ失敗時は未購読扱いのままにする（isSubscribed = false）
+    }
 
-    // profile が null（未決済の新規ユーザー含む）も未購読として扱う
     if (!isSubscribed) {
       const url = request.nextUrl.clone()
       url.pathname = '/payment-required'
