@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import Link from 'next/link'
+import { createClient } from '@/lib/supabase/server'
 
 const nav = [
   { href: '/admin',                   label: '納品一覧' },
@@ -9,7 +10,21 @@ const nav = [
   { href: '/admin/masters/own',       label: '自社設定' },
 ]
 
-export default function AdminLayout({ children }: { children: ReactNode }) {
+export default async function AdminLayout({ children }: { children: ReactNode }) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  let tenantName: string | null = null
+  if (user) {
+    const { data } = await supabase
+      .from('user_tenants')
+      .select('tenants(name)')
+      .eq('user_id', user.id)
+      .limit(1)
+      .maybeSingle()
+    tenantName = (data?.tenants as { name?: string } | null)?.name ?? null
+  }
+
   return (
     <div style={{ minHeight: '100vh', background: '#FDFCFB' }}>
       <nav style={{
@@ -21,15 +36,22 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         alignItems: 'center',
         gap: 0,
         padding: '0 16px',
-        height: 48,
+        height: 52,
         position: 'sticky',
         top: 0,
         zIndex: 100,
         overflowX: 'auto',
       }}>
-        <Link href="/deliveries" style={{ fontWeight: 900, marginRight: 24, fontSize: 15, letterSpacing: 1, color: '#A16207', textDecoration: 'none', whiteSpace: 'nowrap' }}>
-          tomaran
-        </Link>
+        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', marginRight: 24 }}>
+          <Link href="/deliveries" style={{ fontWeight: 900, fontSize: 15, letterSpacing: 1, color: '#A16207', textDecoration: 'none', whiteSpace: 'nowrap', lineHeight: 1.2 }}>
+            tomaran
+          </Link>
+          {tenantName && (
+            <span style={{ fontSize: 11, color: '#888888', lineHeight: 1.2, whiteSpace: 'nowrap' }}>
+              ログイン：{tenantName}
+            </span>
+          )}
+        </div>
         {nav.map(({ href, label }) => (
           <Link key={href} href={href} style={{
             color: '#555555',

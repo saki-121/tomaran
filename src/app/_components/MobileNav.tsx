@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
-export default function MobileNav() {
+export default function MobileNav({ tenantName }: { tenantName?: string | null }) {
   const path = usePathname()
 
   const tabs = [
@@ -19,19 +19,26 @@ export default function MobileNav() {
       display: 'flex',
       alignItems: 'center',
       padding: '0 16px',
-      height: 48,
+      height: 52,
       position: 'sticky',
       top: 0,
       zIndex: 100,
       fontFamily: 'system-ui, -apple-system, sans-serif',
     }}>
-      <Link href="/deliveries" style={{
-        fontWeight: 900, marginRight: 16, fontSize: 15,
-        letterSpacing: 1, color: '#A16207', textDecoration: 'none',
-        whiteSpace: 'nowrap',
-      }}>
-        tomaran
-      </Link>
+      <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', marginRight: 16 }}>
+        <Link href="/deliveries" style={{
+          fontWeight: 900, fontSize: 15,
+          letterSpacing: 1, color: '#A16207', textDecoration: 'none',
+          whiteSpace: 'nowrap', lineHeight: 1.2,
+        }}>
+          tomaran
+        </Link>
+        {tenantName && (
+          <span style={{ fontSize: 11, color: '#888888', lineHeight: 1.2, whiteSpace: 'nowrap' }}>
+            ログイン：{tenantName}
+          </span>
+        )}
+      </div>
 
       {tabs.map(tab => {
         const isActive = path === tab.href || path.startsWith(tab.href + '/')

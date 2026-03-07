@@ -604,32 +604,32 @@ export default async function Page() {
           FOOTER
       ══════════════════════════════════════════════════════════ */}
       <footer style={{
-        background: '#05080f',
-        borderTop: '1px solid rgba(255,215,0,0.1)',
-        padding: '48px 20px 40px',
+        background: '#F5F0EB',
+        borderTop: '1px solid #E5E0DA',
+        padding: '32px 24px',
         textAlign: 'center',
       }}>
-        <p style={{ fontWeight: 900, fontSize: 26, color: Y, marginBottom: 20, marginTop: 0, letterSpacing: '0.05em' }}>
+        <p style={{ fontWeight: 900, fontSize: 18, color: AMBER, marginBottom: 12, marginTop: 0, letterSpacing: '0.05em' }}>
           tomaran
         </p>
-        <p style={{ color: '#9ca3af', fontSize: 17, marginBottom: 24, lineHeight: 1.9 }}>
+        <p style={{ color: '#888888', fontSize: 13, marginBottom: 16, lineHeight: 1.9 }}>
           ご相談・お問い合わせはメールにて。<br />
-          <a href="mailto:support@tomaran.net" style={{ color: '#d1d5db', textDecoration: 'underline' }}>
+          <a href="mailto:support@tomaran.net" style={{ color: AMBER, textDecoration: 'underline' }}>
             support@tomaran.net
           </a>
         </p>
-        <div style={{ display: 'flex', justifyContent: 'center', gap: 24, marginBottom: 24, flexWrap: 'wrap' }}>
-          <Link href="/legal" style={{ color: '#9ca3af', fontSize: 17, textDecoration: 'underline' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', gap: 24, marginBottom: 16, flexWrap: 'wrap' }}>
+          <Link href="/legal" style={{ color: '#888888', fontSize: 13, textDecoration: 'underline' }}>
             特定商取引法に基づく表記
           </Link>
-          <Link href="/privacy" style={{ color: '#9ca3af', fontSize: 17, textDecoration: 'underline' }}>
+          <Link href="/privacy" style={{ color: '#888888', fontSize: 13, textDecoration: 'underline' }}>
             プライバシーポリシー
           </Link>
-          <Link href="/login" style={{ color: '#9ca3af', fontSize: 17, textDecoration: 'underline' }}>
+          <Link href="/login" style={{ color: '#888888', fontSize: 13, textDecoration: 'underline' }}>
             ログイン
           </Link>
         </div>
-        <p style={{ color: '#4b5563', fontSize: 16, margin: 0 }}>
+        <p style={{ color: '#374151', fontSize: 12, margin: 0 }}>
           © 2025 tomaran. All rights reserved.
         </p>
       </footer>

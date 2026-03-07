@@ -84,10 +84,23 @@ export default function OnboardingPage() {
         <h1 style={{ margin: '0 0 6px', fontSize: 20, fontWeight: 700, color: '#333333' }}>
           あなたの会社名を登録
         </h1>
-        <p style={{ margin: '0 0 24px', fontSize: 13, color: '#777777', lineHeight: 1.7 }}>
-          登録後すぐに全機能が使えます。<br />
-          あとから変更可能です。
+        <p style={{ margin: '0 0 12px', fontSize: 13, color: '#777777', lineHeight: 1.7 }}>
+          登録後すぐに全機能が使えます。
         </p>
+        <div style={{
+          margin: '0 0 20px',
+          padding: '10px 14px',
+          background: '#FFF8EC',
+          border: '1px solid #F5D78E',
+          borderLeft: '3px solid #D97706',
+          borderRadius: 6,
+          fontSize: 12,
+          color: '#92400E',
+          lineHeight: 1.7,
+        }}>
+          ⚠️ 会社名は登録後に変更できません。<br />
+          正確な会社名をご入力ください。
+        </div>
 
         <label style={{ display: 'block', fontSize: 12, fontWeight: 600, marginBottom: 6, color: '#777777' }}>
           会社名 <span style={{ color: '#ef4444' }}>*</span>
