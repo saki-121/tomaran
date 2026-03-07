@@ -41,6 +41,20 @@ export async function POST(req: Request) {
 
   const supabase = createAdminClient()
 
+  // ── 冪等性チェック: 同一 event_id を二重処理しない ───────────────────────
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data: existing } = await (supabase as any)
+    .from('stripe_webhook_logs')
+    .select('id, status')
+    .eq('event_id', event.id)
+    .eq('status', 'success')
+    .maybeSingle()
+
+  if (existing) {
+    console.log(`[stripe/webhook] 既処理済み event をスキップ: ${event.id}`)
+    return NextResponse.json({ received: true })
+  }
+
   // ── ログ: 受信記録（pending） ────────────────────────────────────────────
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data: logRow } = await (supabase as any)

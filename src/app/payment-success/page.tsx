@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import Stripe from 'stripe'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 
 const BG   = '#FDFCFB'
 const CARD = '#FFFFFF'
@@ -15,8 +16,9 @@ export default async function PaymentSuccessPage({
 
   if (session_id) {
     try {
-      const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
-      const supabase = await createClient()
+      const stripe     = new Stripe(process.env.STRIPE_SECRET_KEY!)
+      const supabase   = await createClient()
+      const admin      = createAdminClient()
       const { data: { user } } = await supabase.auth.getUser()
 
       if (!user) {
@@ -31,23 +33,29 @@ export default async function PaymentSuccessPage({
             ? session.subscription
             : (session.subscription as { id?: string } | null)?.id ?? null
 
+          // mark_user_as_paid RPC: is_paid = true + subscription_status = 'active'
+          // SECURITY DEFINER 関数なので RLS をバイパスして安全に更新できる
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const { error } = await (supabase as any).rpc('mark_user_as_paid', {
+          const { error: rpcError } = await (supabase as any).rpc('mark_user_as_paid', {
             target_user_id: user.id,
           })
-          if (error) {
-            console.error('[payment-success] mark_user_as_paid failed:', error)
+          if (rpcError) {
+            console.error('[payment-success] mark_user_as_paid failed:', rpcError)
           }
 
-          // Webhook に頼らず、ここでも確実に保存する
+          // Stripe ID の書き込みは admin client で行う（profiles に UPDATE RLS policy なし）
+          // webhook でも書かれるが、ここで先行して書くことでリダイレクト直後も反映される
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          await (supabase as any)
+          const { error: updateError } = await (admin as any)
             .from('profiles')
             .update({
               ...(customerId     ? { stripe_customer_id:      customerId     } : {}),
               ...(subscriptionId ? { stripe_subscription_id: subscriptionId } : {}),
             })
             .eq('id', user.id)
+          if (updateError) {
+            console.error('[payment-success] stripe ID update failed:', updateError)
+          }
         }
       }
     } catch (err) {

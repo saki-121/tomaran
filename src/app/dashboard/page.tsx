@@ -24,13 +24,19 @@ export default async function DashboardPage() {
     redirect('/onboarding')
   }
 
-  const { data: profile } = await supabase
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data: profile } = await (supabase as any)
     .from('profiles')
-    .select('is_paid')
+    .select('is_paid, subscription_status')
     .eq('id', user.id)
     .single()
 
-  if (!profile?.is_paid) {
+  // subscription_status が active/trialing のどちらでもなければブロック
+  // (webhook で canceled/past_due 等に更新された場合もここで弾く)
+  const status = (profile?.subscription_status ?? '') as string
+  const isActive = status === 'active' || status === 'trialing'
+
+  if (!isActive) {
     redirect('/payment-required')
   }
 
