@@ -20,7 +20,8 @@
       "Bash(npm info:*)",
       "Bash(git:*)",
       "Bash(\"C:/Users/xxsak/SAKI/restore_all.sql\":*)",
-      "Bash(sed:*)"
+      "Bash(sed:*)",
+      "Bash(rm:*)"
     ]
   }
 }

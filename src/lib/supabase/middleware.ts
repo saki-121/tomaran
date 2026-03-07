@@ -66,13 +66,17 @@ export async function updateSession(request: NextRequest) {
         .eq('id', user.id)
         .maybeSingle()
 
+      console.log('[middleware] profile:', JSON.stringify(profile), 'error:', error?.message)
+
       if (!error && profile) {
         const status = profile.subscription_status as string
         isSubscribed = status === 'active' || status === 'trialing'
       }
-    } catch {
-      // クエリ失敗時は未購読扱いのままにする（isSubscribed = false）
+    } catch (e) {
+      console.log('[middleware] profiles query threw:', e)
     }
+
+    console.log('[middleware] isSubscribed:', isSubscribed, 'pathname:', pathname)
 
     if (!isSubscribed) {
       const url = request.nextUrl.clone()
