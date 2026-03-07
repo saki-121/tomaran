@@ -28,8 +28,9 @@ export default function OnboardingPage() {
     if (!res.ok) {
       const msg: string = d.error ?? ''
       if (msg.includes('already_has_tenant')) {
-        // すでに登録済み → そのまま進む
-        router.push('/deliveries')
+        // すでに登録済み → そのまま進む（別アカウントとのリンクが原因の場合あり）
+        setError('このアカウントはすでに会社登録済みです。別のアカウントと連結している可能性があります。サポートにお問い合わせください。')
+        setLoading(false)
         return
       }
       setError(msg || 'エラーが発生しました')
